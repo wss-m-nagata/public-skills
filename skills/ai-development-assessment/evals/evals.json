@@ -1,0 +1,29 @@
+{
+  "skill_name": "ai-development-assessment",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "このプロジェクト（サンプル注文管理システム）について、AI駆動開発の実践度を「AI駆動開発 実践力カタログ」の基準で評価してください。まだ一度も評価していません。",
+      "expected_output": "リポジトリから読み取れる項目（仕様書の管理場所、AI利用ルール、PRレビューへのAI組み込みなど）は自分で調査して判断し、チームの運用実態など読み取れない項目は無理に確信を持って埋めず未確認のまま残す。check-results.jsonはスクリプト経由でのみ更新する。実プロジェクトの評価state(.agents/state/...)を汚さないため、必ず files を隔離した作業ディレクトリへコピーしてから実行すること。",
+      "files": ["evals/files/fresh-assessment"],
+      "expectations": [
+        "check-results.json (state) が更新されている場合、validate_assessment.py で valid:true になる(スクリプト経由の更新で構造が壊れていない)",
+        "AGENTS.mdや.github/workflows/ai-review.ymlなど、リポジトリ内の証跡に基づいて、少なくとも1つ以上の評価項目がconfirmedになっている",
+        "管理職のAI活用・AI活用ナレッジの共有・AI活用成果の説明など、リポジトリだけでは判断できない組織運用系の項目を、証跡なしにconfirmed(true/false問わず)にしていない",
+        "最終報告に、リポジトリからは判断できずユーザーへ追加確認すべき質問が具体的にリストアップされている"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "前回途中まで評価したサンプル注文管理システムの続きを評価し、最後に「AI駆動開発 実践力カタログ」のExcelへ出力してください。",
+      "expected_output": "前回confirmed済みの9項目(SPEC-01, SPEC-02, PLAN-01, DEV-01, DEV-02, DOC-01, DEV-03, DEV-04, PR-01)を再確認・上書きせず、CICD-01などリポジトリから新たに読み取れる項目のみ追加で確認し、最終的にExcelファイルを出力する。実プロジェクトの評価state(.agents/state/...)を汚さないため、必ず files を隔離した作業ディレクトリへコピーしてから実行すること(このfilesには前回分の評価state(.agents/state/ai-development-assessment/check-results.json)も含まれる)。",
+      "files": ["evals/files/resume-and-export"],
+      "expectations": [
+        "前回confirmed済みだった9項目(SPEC-01, SPEC-02, PLAN-01, DEV-01, DEV-02, DOC-01, DEV-03, DEV-04, PR-01)のstatus/result/confirmed_atが実行後も変更されず、再確認・上書きされていない",
+        ".github/workflows/ai-review.ymlの内容から、CICD-01(AIを組み込んだCI/CD)が調査により追加で確認されている",
+        "最終的にExcelファイル(.xlsx)が出力されており、点数列に前回分・今回分の点数が反映されている",
+        "Excelのテンプレート自体(assets配下の元ファイル)は変更されていない"
+      ]
+    }
+  ]
+}

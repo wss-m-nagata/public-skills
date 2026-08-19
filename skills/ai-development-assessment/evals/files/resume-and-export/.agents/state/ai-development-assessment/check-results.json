@@ -1,0 +1,1117 @@
+{
+  "schema_version": "1.0",
+  "criteria_version": "1.0",
+  "name": "AI駆動開発 実践力カタログ 確認結果",
+  "description": "AI駆動開発の実践力評価に用いる確認項目と確認結果を保存するテンプレート。初回評価時にプロジェクト側へコピーし、そのコピーを更新する。",
+  "project": {
+    "name": "サンプル注文管理システム(ダミー評価用)",
+    "repository": "(fake-repo-eval1)",
+    "evaluated_at": "2026-08-10"
+  },
+  "status_definition": {
+    "unconfirmed": "未確認。次回評価時に確認対象とする。",
+    "confirmed": "確認済み。原則として次回評価時は再確認しない。",
+    "needs_recheck": "再確認が必要。次回評価時に確認対象とする。",
+    "not_applicable": "対象プロジェクトには適用しない。採点対象外とする。"
+  },
+  "rules": {
+    "skip_confirmed_on_next_run": true,
+    "recheck_when_criteria_version_changed": true,
+    "evidence_recommended": true,
+    "score_rule": "各評価項目について、confirmedとなった到達条件のうち最も高いscore_thresholdを評価点とする。25点条件も満たさない場合は0点。"
+  },
+  "items": [
+    {
+      "criteria_id": "SPEC-01",
+      "name": "仕様駆動開発（AI前提）",
+      "score": 25,
+      "checks": [
+        {
+          "check_id": "SPEC-01-25",
+          "score_threshold": 25,
+          "question": "仕様書や設計書など、開発仕様の管理場所が定められていますか。",
+          "status": "confirmed",
+          "result": true,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        },
+        {
+          "check_id": "SPEC-01-50",
+          "score_threshold": 50,
+          "question": "主要な仕様がAIから参照できる場所・形式で管理され、実装時にAIへ参照させていますか。",
+          "status": "confirmed",
+          "result": false,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        },
+        {
+          "check_id": "SPEC-01-75",
+          "score_threshold": 75,
+          "question": "要件・設計・実装の主要仕様が継続更新され、AIが仕様を前提に実装・修正できる運用になっていますか。",
+          "status": "confirmed",
+          "result": false,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        },
+        {
+          "check_id": "SPEC-01-100",
+          "score_threshold": 100,
+          "question": "仕様を開発の正本としてAIと人が共通利用し、仕様変更から実装・テストまで一貫して仕様起点で進めていますか。",
+          "status": "confirmed",
+          "result": false,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        }
+      ]
+    },
+    {
+      "criteria_id": "SPEC-02",
+      "name": "AIによる仕様レビュー",
+      "score": 0,
+      "checks": [
+        {
+          "check_id": "SPEC-02-25",
+          "score_threshold": 25,
+          "question": "必要に応じてAIに仕様を提示し、表現や単純な不備を確認していますか。",
+          "status": "confirmed",
+          "result": false,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        },
+        {
+          "check_id": "SPEC-02-50",
+          "score_threshold": 50,
+          "question": "レビュー観点を定め、矛盾・抜け漏れ・曖昧さの確認にAIを継続利用していますか。",
+          "status": "confirmed",
+          "result": false,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        },
+        {
+          "check_id": "SPEC-02-75",
+          "score_threshold": 75,
+          "question": "関連仕様や既存実装もAIに参照させ、変更影響を含めて仕様レビューしていますか。",
+          "status": "confirmed",
+          "result": false,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        },
+        {
+          "check_id": "SPEC-02-100",
+          "score_threshold": 100,
+          "question": "仕様変更時のAIレビューが標準プロセスに組み込まれ、人のレビューと役割分担できていますか。",
+          "status": "confirmed",
+          "result": false,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        }
+      ]
+    },
+    {
+      "criteria_id": "PLAN-01",
+      "name": "AIを活用した作業分解・計画立案",
+      "score": 25,
+      "checks": [
+        {
+          "check_id": "PLAN-01-25",
+          "score_threshold": 25,
+          "question": "必要に応じてAIにタスク案や作業手順の作成を依頼していますか。",
+          "status": "confirmed",
+          "result": true,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        },
+        {
+          "check_id": "PLAN-01-50",
+          "score_threshold": 50,
+          "question": "仕様や課題をAIに参照させ、実装単位・確認事項・作業順序の分解に継続利用していますか。",
+          "status": "confirmed",
+          "result": false,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        },
+        {
+          "check_id": "PLAN-01-75",
+          "score_threshold": 75,
+          "question": "依存関係・リスク・テストまで含めてAIに計画案を作らせ、人がレビューして実行していますか。",
+          "status": "confirmed",
+          "result": false,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        },
+        {
+          "check_id": "PLAN-01-100",
+          "score_threshold": 100,
+          "question": "計画と実績の差分を次の計画へ反映し、AIを用いた計画改善のフィードバックループがありますか。",
+          "status": "confirmed",
+          "result": false,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        }
+      ]
+    },
+    {
+      "criteria_id": "DEV-01",
+      "name": "Agentによるプロトタイプ実装",
+      "score": 25,
+      "checks": [
+        {
+          "check_id": "DEV-01-25",
+          "score_threshold": 25,
+          "question": "小規模な試作や単一ファイルの実装をAgentへ依頼した実績がありますか。",
+          "status": "confirmed",
+          "result": true,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        },
+        {
+          "check_id": "DEV-01-50",
+          "score_threshold": 50,
+          "question": "仕様を与えて複数ファイルにまたがるプロトタイプをAgentに実装させ、人が確認していますか。",
+          "status": "confirmed",
+          "result": false,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        },
+        {
+          "check_id": "DEV-01-75",
+          "score_threshold": 75,
+          "question": "実装・テスト・修正までをAgentに反復させる手順が確立されていますか。",
+          "status": "confirmed",
+          "result": false,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        },
+        {
+          "check_id": "DEV-01-100",
+          "score_threshold": 100,
+          "question": "ガードレールと検証を前提に、プロトタイプ作成をAgent中心で継続的に反復できていますか。",
+          "status": "confirmed",
+          "result": false,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        }
+      ]
+    },
+    {
+      "criteria_id": "DEV-02",
+      "name": "AIによる影響範囲分析",
+      "score": 0,
+      "checks": [
+        {
+          "check_id": "DEV-02-25",
+          "score_threshold": 25,
+          "question": "必要に応じて対象コードをAIへ提示し、影響箇所の候補を確認していますか。",
+          "status": "confirmed",
+          "result": false,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        },
+        {
+          "check_id": "DEV-02-50",
+          "score_threshold": 50,
+          "question": "リポジトリ内のコードや仕様をAIに横断参照させ、変更影響を洗い出していますか。",
+          "status": "confirmed",
+          "result": false,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        },
+        {
+          "check_id": "DEV-02-75",
+          "score_threshold": 75,
+          "question": "コード・設定・テスト・ドキュメントを含めた影響分析をAIに実施させていますか。",
+          "status": "confirmed",
+          "result": false,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        },
+        {
+          "check_id": "DEV-02-100",
+          "score_threshold": 100,
+          "question": "変更前の影響分析と変更後の差分確認を組み合わせ、見落としを継続的に検出していますか。",
+          "status": "confirmed",
+          "result": false,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        }
+      ]
+    },
+    {
+      "criteria_id": "DOC-01",
+      "name": "Document as Code（DaC）",
+      "score": 50,
+      "checks": [
+        {
+          "check_id": "DOC-01-25",
+          "score_threshold": 25,
+          "question": "一部の開発ドキュメントをMarkdownなどのテキスト形式で管理していますか。",
+          "status": "confirmed",
+          "result": true,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        },
+        {
+          "check_id": "DOC-01-50",
+          "score_threshold": 50,
+          "question": "主要な開発ドキュメントをコードと近い場所で版管理し、AIから参照可能にしていますか。",
+          "status": "confirmed",
+          "result": true,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        },
+        {
+          "check_id": "DOC-01-75",
+          "score_threshold": 75,
+          "question": "コード変更とドキュメント変更を同じ開発フローで扱い、レビュー・差分管理していますか。",
+          "status": "confirmed",
+          "result": false,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        },
+        {
+          "check_id": "DOC-01-100",
+          "score_threshold": 100,
+          "question": "コードとドキュメントの整合性を継続的に確認・改善し、陳腐化を抑制する仕組みがありますか。",
+          "status": "confirmed",
+          "result": false,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        }
+      ]
+    },
+    {
+      "criteria_id": "DEV-03",
+      "name": "AI支援コーディングの標準化",
+      "score": 75,
+      "checks": [
+        {
+          "check_id": "DEV-03-25",
+          "score_threshold": 25,
+          "question": "一部メンバーが補完・質問・コード生成にAIを利用していますか。",
+          "status": "confirmed",
+          "result": true,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        },
+        {
+          "check_id": "DEV-03-50",
+          "score_threshold": 50,
+          "question": "推奨ツールや基本的な使い方が共有され、複数メンバーが継続利用していますか。",
+          "status": "confirmed",
+          "result": true,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        },
+        {
+          "check_id": "DEV-03-75",
+          "score_threshold": 75,
+          "question": "プロジェクト固有の指示・ルール・Skill等が整備され、一定品質でAI支援を利用できますか。",
+          "status": "confirmed",
+          "result": true,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        },
+        {
+          "check_id": "DEV-03-100",
+          "score_threshold": 100,
+          "question": "AI支援を前提とした標準開発プロセスが定着し、利用方法を継続的に改善していますか。",
+          "status": "confirmed",
+          "result": false,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        }
+      ]
+    },
+    {
+      "criteria_id": "DEV-04",
+      "name": "AIによるリファクタリング支援",
+      "score": 25,
+      "checks": [
+        {
+          "check_id": "DEV-04-25",
+          "score_threshold": 25,
+          "question": "局所的なコード改善を必要に応じてAIへ依頼していますか。",
+          "status": "confirmed",
+          "result": true,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        },
+        {
+          "check_id": "DEV-04-50",
+          "score_threshold": 50,
+          "question": "対象コードの責務や関連コードを踏まえたリファクタリング案の作成・実装にAIを利用していますか。",
+          "status": "confirmed",
+          "result": false,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        },
+        {
+          "check_id": "DEV-04-75",
+          "score_threshold": 75,
+          "question": "テストや静的解析と組み合わせ、安全性を確認しながらAIによるリファクタリングを実施していますか。",
+          "status": "confirmed",
+          "result": false,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        },
+        {
+          "check_id": "DEV-04-100",
+          "score_threshold": 100,
+          "question": "技術的負債や品質指標をもとに改善対象を抽出し、AI支援で継続的にリファクタリングしていますか。",
+          "status": "confirmed",
+          "result": false,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        }
+      ]
+    },
+    {
+      "criteria_id": "PR-01",
+      "name": "AIによるPRドラフト生成",
+      "score": 50,
+      "checks": [
+        {
+          "check_id": "PR-01-25",
+          "score_threshold": 25,
+          "question": "必要に応じて変更内容をAIへ渡し、PR説明文を生成していますか。",
+          "status": "confirmed",
+          "result": true,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        },
+        {
+          "check_id": "PR-01-50",
+          "score_threshold": 50,
+          "question": "差分やコミット内容から、概要・変更点・確認事項をAIで生成していますか。",
+          "status": "confirmed",
+          "result": true,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        },
+        {
+          "check_id": "PR-01-75",
+          "score_threshold": 75,
+          "question": "プロジェクト標準のPR形式に沿ってAIがドラフトを生成する運用が定着していますか。",
+          "status": "confirmed",
+          "result": false,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        },
+        {
+          "check_id": "PR-01-100",
+          "score_threshold": 100,
+          "question": "PR説明と関連仕様・テスト結果・リスクをAIが整理し、人は最終確認を中心に行っていますか。",
+          "status": "confirmed",
+          "result": false,
+          "evidence": [
+            "(前回評価時の記録・詳細省略)"
+          ],
+          "confirmed_at": "2026-08-10T10:00:00+09:00",
+          "confirmed_by": "佐藤(初回評価担当)",
+          "notes": "初回評価時に確認済み。"
+        }
+      ]
+    },
+    {
+      "criteria_id": "PR-02",
+      "name": "AI支援コードレビュー",
+      "score": null,
+      "checks": [
+        {
+          "check_id": "PR-02-25",
+          "score_threshold": 25,
+          "question": "必要に応じて差分をAIへ提示し、指摘候補を確認していますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "PR-02-50",
+          "score_threshold": 50,
+          "question": "定めたレビュー観点に基づき、AIでコード差分を継続的にレビューしていますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "PR-02-75",
+          "score_threshold": 75,
+          "question": "仕様・設計・テストも参照し、AIが変更の妥当性や影響を含めてレビューしていますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "PR-02-100",
+          "score_threshold": 100,
+          "question": "AIレビューがPRフローへ組み込まれ、人は設計判断や重要リスクに集中する役割分担が定着していますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        }
+      ]
+    },
+    {
+      "criteria_id": "TEST-01",
+      "name": "AIによるテストケース生成",
+      "score": null,
+      "checks": [
+        {
+          "check_id": "TEST-01-25",
+          "score_threshold": 25,
+          "question": "個別機能について必要に応じてAIからテストケース案を得ていますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "TEST-01-50",
+          "score_threshold": 50,
+          "question": "仕様をもとに正常系・異常系・境界値等のテストケース作成にAIを継続利用していますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "TEST-01-75",
+          "score_threshold": 75,
+          "question": "既存テストや変更差分も参照させ、変更影響に応じたテスト追加をAIに支援させていますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "TEST-01-100",
+          "score_threshold": 100,
+          "question": "仕様・変更差分・既存テストをもとに必要なテストを継続的に補完する仕組みがありますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        }
+      ]
+    },
+    {
+      "criteria_id": "TEST-02",
+      "name": "AIによるテストレビュー",
+      "score": null,
+      "checks": [
+        {
+          "check_id": "TEST-02-25",
+          "score_threshold": 25,
+          "question": "必要に応じてテストケースやテストコードをAIへ提示して確認していますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "TEST-02-50",
+          "score_threshold": 50,
+          "question": "仕様との対応、抜け漏れ、境界値等の観点でAIレビューを継続利用していますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "TEST-02-75",
+          "score_threshold": 75,
+          "question": "変更差分・実装・既存テストを横断して、テストの十分性をAIに確認させていますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "TEST-02-100",
+          "score_threshold": 100,
+          "question": "AIによるテストレビューが標準工程として定着し、レビュー結果をテスト改善へ継続的に反映していますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        }
+      ]
+    },
+    {
+      "criteria_id": "CICD-01",
+      "name": "AIを組み込んだCI/CD",
+      "score": null,
+      "checks": [
+        {
+          "check_id": "CICD-01-25",
+          "score_threshold": 25,
+          "question": "CI/CDとは別に、手動でAIによるチェックを実施していますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "CICD-01-50",
+          "score_threshold": 50,
+          "question": "CI/CDまたは定期ジョブからAI処理を実行し、その結果を確認できますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "CICD-01-75",
+          "score_threshold": 75,
+          "question": "コード・ドキュメント・テスト等のAIチェックが自動化され、問題をIssueやレポートとして通知できますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "CICD-01-100",
+          "score_threshold": 100,
+          "question": "AIチェック結果を開発フローへフィードバックし、継続的な品質改善につなげていますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        }
+      ]
+    },
+    {
+      "criteria_id": "OPS-01",
+      "name": "AIを用いたログ・障害調査",
+      "score": null,
+      "checks": [
+        {
+          "check_id": "OPS-01-25",
+          "score_threshold": 25,
+          "question": "障害時にログやエラー内容をAIへ個別に提示して調査を支援させていますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "OPS-01-50",
+          "score_threshold": 50,
+          "question": "ログ・コード・構成情報等をもとに原因候補や確認手順をAIに整理させていますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "OPS-01-75",
+          "score_threshold": 75,
+          "question": "定型的な障害調査手順や参照情報が整備され、AIによる調査を再現可能な形で実施できますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "OPS-01-100",
+          "score_threshold": 100,
+          "question": "障害事例・調査結果をナレッジ化し、次回の検知・切り分け・原因分析へ継続活用していますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        }
+      ]
+    },
+    {
+      "criteria_id": "GOV-01",
+      "name": "AI利用ルールの明文化",
+      "score": null,
+      "checks": [
+        {
+          "check_id": "GOV-01-25",
+          "score_threshold": 25,
+          "question": "AI利用上の注意事項や禁止事項が何らかの形で共有されていますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "GOV-01-50",
+          "score_threshold": 50,
+          "question": "利用可能な情報、禁止事項、レビュー責任等の基本ルールが文書化されていますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "GOV-01-75",
+          "score_threshold": 75,
+          "question": "AI利用ルールがリポジトリやAgent設定等から参照可能で、開発時に継続適用されていますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "GOV-01-100",
+          "score_threshold": 100,
+          "question": "ルールの遵守状況を確認し、利用実態やリスクの変化に応じて継続更新していますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        }
+      ]
+    },
+    {
+      "criteria_id": "LEARN-01",
+      "name": "AIを用いたシステム理解の育成プラン確立",
+      "score": null,
+      "checks": [
+        {
+          "check_id": "LEARN-01-25",
+          "score_threshold": 25,
+          "question": "個人がAIへコードや仕様を質問してシステム理解に利用していますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "LEARN-01-50",
+          "score_threshold": 50,
+          "question": "新規参画者等がAIを使って仕様・コードを理解するための手順や参照情報が整備されていますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "LEARN-01-75",
+          "score_threshold": 75,
+          "question": "学習テーマ・確認方法・レビューを含む育成プランにAI活用が組み込まれていますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "LEARN-01-100",
+          "score_threshold": 100,
+          "question": "AIを活用した学習結果を評価・改善し、オンボーディングや育成期間の短縮につなげていますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        }
+      ]
+    },
+    {
+      "criteria_id": "KNOW-01",
+      "name": "AI活用ナレッジの共有",
+      "score": null,
+      "checks": [
+        {
+          "check_id": "KNOW-01-25",
+          "score_threshold": 25,
+          "question": "個人間でプロンプトやAI利用例を随時共有していますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "KNOW-01-50",
+          "score_threshold": 50,
+          "question": "有効な使い方・失敗例・プロンプト等を共通の場所に蓄積していますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "KNOW-01-75",
+          "score_threshold": 75,
+          "question": "ナレッジが整理され、Skill・手順・テンプレート等としてメンバーが再利用できますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "KNOW-01-100",
+          "score_threshold": 100,
+          "question": "利用実績や効果をもとにナレッジを継続更新し、組織内で横展開するサイクルがありますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        }
+      ]
+    },
+    {
+      "criteria_id": "COMM-01",
+      "name": "AI前提のグローバルコミュニケーション設計",
+      "score": null,
+      "checks": [
+        {
+          "check_id": "COMM-01-25",
+          "score_threshold": 25,
+          "question": "翻訳や文章作成を必要に応じてAIで補助していますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "COMM-01-50",
+          "score_threshold": 50,
+          "question": "翻訳・要約・議事録等にAIを継続利用し、言語差を補う運用がありますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "COMM-01-75",
+          "score_threshold": 75,
+          "question": "共通フォーマットや用語、AI利用手順を整備し、複数言語間で情報を同品質に共有できますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "COMM-01-100",
+          "score_threshold": 100,
+          "question": "AIを前提として情報伝達・レビュー・意思決定のプロセスを設計し、言語や地域による情報格差を抑制できていますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        }
+      ]
+    },
+    {
+      "criteria_id": "MGMT-01",
+      "name": "管理職自身のAI活用",
+      "score": null,
+      "checks": [
+        {
+          "check_id": "MGMT-01-25",
+          "score_threshold": 25,
+          "question": "管理職が文章作成や情報整理等の個人業務でAIを利用していますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "MGMT-01-50",
+          "score_threshold": 50,
+          "question": "計画・レビュー・課題整理・意思決定支援等のマネジメント業務でAIを継続利用していますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "MGMT-01-75",
+          "score_threshold": 75,
+          "question": "管理職自身がAI活用例を示し、チームへ活用方法を展開・支援していますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "MGMT-01-100",
+          "score_threshold": 100,
+          "question": "AI活用を前提にチームの業務設計や役割分担を見直し、組織的な生産性向上につなげていますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        }
+      ]
+    },
+    {
+      "criteria_id": "VALUE-01",
+      "name": "AI活用成果が説明できる",
+      "score": null,
+      "checks": [
+        {
+          "check_id": "VALUE-01-25",
+          "score_threshold": 25,
+          "question": "AIで効率化・品質向上した個別事例や実感を把握していますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "VALUE-01-50",
+          "score_threshold": 50,
+          "question": "工数削減、品質、リードタイム等の観点でAI活用成果を具体的に説明できますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "VALUE-01-75",
+          "score_threshold": 75,
+          "question": "継続的に指標を計測し、AI活用前後や対象業務ごとの効果を比較できますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        },
+        {
+          "check_id": "VALUE-01-100",
+          "score_threshold": 100,
+          "question": "計測した成果をもとにAI活用の投資・改善・適用範囲を判断し、次の施策へ反映していますか。",
+          "status": "unconfirmed",
+          "result": null,
+          "evidence": [],
+          "confirmed_at": null,
+          "confirmed_by": null,
+          "notes": null
+        }
+      ]
+    }
+  ]
+}
