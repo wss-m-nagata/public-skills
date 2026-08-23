@@ -1,7 +1,7 @@
 ---
 name: nablarch-basic-design-excel
 description: Nablarch開発標準のバックエンドの基本設計書Excelを作成・更新するスキル。バックエンドの設計（システム機能一覧・システム機能設計書・外部インタフェース一覧/設計書・WebサービスAPI一覧・テーブル一覧/定義書）の8種類を対象とする。「基本設計書を作って」「テーブル定義書に◯◯テーブルを追加して」「外部インタフェース一覧に登録して」「システム機能一覧にログイン機能を追加して」など、対象Excelへの記入・追加・更新を依頼された場合は、スキル名が明示されていなくても使用する。結合セル・背景色・罫線・プルダウン・隠れた数式を壊さずに反映し、行追加、シート複製、記入可能行数を超える登録にも対応する。Claude for Microsoft 365では参照資料を使い、Claude Code等のローカル環境ではopenpyxlスクリプトを使って編集する。
-compatibility: Python 3・openpyxl 3.1系・Pillowが必要（ローカルでExcelを編集する場合）。処理フロー図をMermaidから画像化するには`@mermaid-js/mermaid-cli`（`mmdc`コマンド）があると望ましいが必須ではない（無い場合はMermaidソースの貼り付けのみ行い、ユーザーに画像作成を案内する）。見た目を確認する`export_sheet_preview.py`はWindows＋Microsoft Excelインストール済み環境でのみ動作する（`pywin32`が必要。無い環境では省略可）。Claude for Microsoft 365では追加ツール不要。
+compatibility: Python 3.7以降・openpyxl（3.1系で動作確認済み）が必要（ローカルでExcelを編集する場合）。Pillowは`insert_flow_diagram.py`（Mermaidの処理フロー図を画像化する場合）でのみ必要で、それ以外のスクリプトの実行には不要。処理フロー図をMermaidから画像化するには`@mermaid-js/mermaid-cli`（`mmdc`コマンド）があると望ましいが必須ではない（無い場合はMermaidソースの貼り付けのみ行い、ユーザーに画像作成を案内する）。見た目を確認する`export_sheet_preview.py`はWindows＋Microsoft Excelインストール済み環境でのみ動作する（`pywin32`が必要。無い環境では省略可）。Claude for Microsoft 365では追加ツール不要。
 license: MIT
 allowed-tools: Read Grep Glob Write Bash(./skills/nablarch-basic-design-excel/scripts/*)
 ---
