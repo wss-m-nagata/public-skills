@@ -9,6 +9,7 @@
 | スキル | 概要 |
 | --- | --- |
 | [ai-development-assessment](skills/ai-development-assessment/SKILL.md) | プロジェクトのAI駆動開発の実践状況を「AI駆動開発 実践力カタログ」評価基準に基づいて確認・採点し、Excelへ出力する。 |
+| [nablarch-basic-design-excel](skills/nablarch-basic-design-excel/SKILL.md) | Nablarch開発標準のバックエンド基本設計書Excel（システム機能一覧・システム機能設計書・外部インタフェース一覧/設計書・WebサービスAPI一覧・テーブル一覧/定義書）を、結合セルや書式を壊さずに作成・更新する。 |
 
 ## インストール方法
 
