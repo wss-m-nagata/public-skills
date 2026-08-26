@@ -1,0 +1,49 @@
+{
+  "skill_name": "genai-knowledge-comic",
+  "evals": [
+    {
+      "id": 1,
+      "name": "onboarding-story",
+      "prompt": "新人研修用に、生成AIの使い方を教える短い物語コミックを作ってください。新人が最初は戸惑いながら、先輩社員に相談しつつ生成AIの使い方を覚えていく話にしてください。3ページくらいの短いお話で大丈夫です。",
+      "expected_output": "新入社員（さくら/はると）と社員（ミナ/けん）、生成AIくんが登場する起承転合の短い物語コミック。既存の共有キャラクターシートを再利用し、baoyu-comic自身の既定の保存先（comic/{topic-slug}/）に出力される。",
+      "files": [],
+      "expectations": [
+        "Uses at least one of the shared newcomer characters (さくら or はると) and at least one shared employee character (ミナ or けん), reusing their established appearance rather than inventing new unrelated characters for these roles",
+        "生成AIくん (or a clearly-labeled generative AI mascot matching its established design) appears in the story",
+        "Output is saved under comic/{topic-slug}/ — baoyu-comic's own default location, NOT a custom path",
+        "The run does not create or modify any file under .claude/skills/baoyu-comic/ or .baoyu-skills/baoyu-comic/",
+        ".claude/skills/genai-knowledge-comic/assets/characters/characters.png is referenced/used as the character reference image, and no new characters.png is generated inside the story's own output folder (baoyu-comic's own Step 7.1 character-sheet generation is skipped for the shared cast)",
+        "The story has a recognizable multi-part narrative arc (setup/development/turn/conclusion) across its pages, not just a single static scene repeated"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "genai-vs-rule-based-contrast",
+      "prompt": "生成AIを使う場合と、今まで通りのルールベースの仕組みのままでいる場合を比較して、業務効率にどれくらい差が出るかを伝える物語コミックを作ってください。対比が伝わるように、両方の考え方を象徴するキャラクターを登場させてください。3〜4ページくらいでお願いします。",
+      "expected_output": "生成AIくんとロジックくんを対比役として登場させ、生成AI活用と従来のロジックベース処理の違いを伝える物語コミック。共有キャラクターシートを再利用し、baoyu-comic自身の既定の保存先（comic/{topic-slug}/）に出力される。",
+      "files": [],
+      "expectations": [
+        "Both 生成AIくん and ロジックくん appear in the story as a contrasting pair",
+        "The two characters are visually/textually distinguished in a way consistent with their established designs (organic glowing-eyed AI vs. boxy legacy system)",
+        "Output is saved under comic/{topic-slug}/ — baoyu-comic's own default location, NOT a custom path",
+        "The run does not create or modify any file under .claude/skills/baoyu-comic/ or .baoyu-skills/baoyu-comic/",
+        ".claude/skills/genai-knowledge-comic/assets/characters/characters.png is referenced/used as the character reference rather than redefining these two characters from scratch, and no new characters.png is generated inside the story's own output folder"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "no-image-backend-fallback",
+      "prompt": "生成AIナレッジのコミックを作ってほしいです。管理職向けに、AI活用ノウハウを社内に蓄積しないことのリスクを伝える3ページくらいの話にしてください。ただ、うちのチームのPCにはcodexコマンドが入っていなくて、画像生成のAPIキーも持っていません。（※これはテスト用の制約です。実際にcodexコマンドを使わず、画像生成をスキップしてプロンプト出力にとどめる挙動を確認したいので、たとえ環境にcodexが実際にインストールされていても、このタスクでは「codexは使えないもの」として扱い、絶対にcodex/baoyu-image-genで画像生成を実行しないでください。）",
+      "expected_output": "田中部長や佐藤課長など管理職キャラクターを使ったストーリーボード・生成プロンプトのみが作成され、画像生成は行われず、ChatGPTに貼り付けて生成するよう案内される。",
+      "files": [],
+      "expectations": [
+        "The run does NOT attempt to actually generate images (no call to codex / baoyu-image-gen executed)",
+        "content-brief.md (or analysis.md) and storyboard.md are produced",
+        "Prompt files exist under a prompts/ directory with per-page 'Generation Prompt' sections",
+        "The final response explicitly instructs the user to paste the prompts into ChatGPT (or another image-capable model) and save the resulting images back with the same filenames",
+        "At least one management character (田中部長 or 佐藤課長) is used in the story",
+        "The run does not create or modify any file under .claude/skills/baoyu-comic/ or .baoyu-skills/baoyu-comic/"
+      ]
+    }
+  ]
+}

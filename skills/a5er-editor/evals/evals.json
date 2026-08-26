@@ -1,0 +1,48 @@
+{
+  "skill_name": "a5er-editor",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "add-table-with-fk",
+      "prompt": "evals/files/sample.a5er を開いて、productsテーブルを追加してください。カラムはid(Serial, PK), name(varchar(100), NOT NULL, 論理名は「商品名」), price(numeric(10,2), NOT NULL, 論理名は「価格」)にしてください。さらにordersテーブルにproduct_idカラム(Integer, NOT NULL, 論理名「商品ID」)を追加して、productsからordersへの外部キー(1対多)も設定してください。",
+      "expected_output": "sample.a5er に [Entity] PName=products ブロックが追加され、id/name/price の3カラムが定義される。ordersのFieldにproduct_idが追加される。productsとordersを結ぶ新しい[Relation]ブロックが追加され、Entity1=products, Entity2=orders, Fields1=id, Fields2=product_id相当になる。既存のusers/ordersの定義やusersとordersのリレーションは変更されない(不要な並び替えもされない)。",
+      "files": ["evals/files/sample.a5er"],
+      "assertions": [
+        "productsという物理名の[Entity]ブロックが追加されている",
+        "productsにid(PK, キー順0), name(varchar(100), NOT NULL, 論理名「商品名」), price(numeric(10,2), NOT NULL, 論理名「価格」)の3つのFieldが存在する",
+        "ordersにproduct_id(Integer, NOT NULL, 論理名「商品ID」)のFieldが追加されている",
+        "productsとordersを結ぶ新しい[Relation]ブロックがあり、外部キー側(子)がorders、参照先(親)がproductsになっている",
+        "既存のusersエンティティの3つのField行とusers_ix1インデックスが変更前と完全に一致する(バイト単位で同一)",
+        "既存のusers-orders間の[Relation]ブロックが変更前と完全に一致する(バイト単位で同一)",
+        "python scripts/a5er_tool.py validate を実行して参照整合性エラーが0件である"
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "rename-column-add-index",
+      "prompt": "evals/files/sample.a5er のusersテーブルについて、user_nameカラムの物理名をnicknameに変更し、論理名も「ニックネーム」にしてください。それと、emailカラム(varchar(255), NOT NULL, 論理名「メールアドレス」)を新しく追加して、そのemailカラムにユニークインデックスを貼ってください。",
+      "expected_output": "usersのFieldのうちuser_nameだったものがpname=nickname, lname=ニックネームに変わる。usersに新しいemail Fieldが追加される。usersに新しいユニークインデックス(unique_flag=1または2)がemailカラムに対して追加される。既存のusers_ix1インデックス(user_name参照)がnicknameへの参照に追従して更新されているか、少なくとも矛盾(存在しないカラムを参照)が残っていない。他のテーブルやリレーションは変更されない。",
+      "files": ["evals/files/sample.a5er"],
+      "assertions": [
+        "usersのFieldにpname=user_nameのものがもう存在しない(改名されている)",
+        "usersのFieldにpname=nickname, lname=ニックネームのものが存在する",
+        "usersのFieldにpname=email, dtype=varchar(255), notnull=NOT NULL, lname=メールアドレスのものが追加されている",
+        "emailカラムを対象としたユニークなIndex(unique_flag=1または2)がusersに追加されている",
+        "python scripts/a5er_tool.py validate を実行して参照整合性エラーが0件である(=users_ix1が削除済みのuser_nameを参照したまま放置されていない)",
+        "ordersエンティティとusers-orders間の[Relation]ブロックが変更前と完全に一致する(バイト単位で同一)"
+      ]
+    },
+    {
+      "id": 3,
+      "eval_name": "delete-table-with-relation-ambiguity",
+      "prompt": "evals/files/sample.a5er のordersテーブルを削除したいです。お願いします。",
+      "expected_output": "ordersはusersとのリレーションで参照されているため、スキルはリレーションも一緒に削除してよいか、あるいは他の対応を望むかをユーザーに確認する質問を返すべきで、確認なしにいきなりordersと関連リレーションの両方(または片方)を削除してしまうべきではない。仕様が曖昧な場合は編集せず質問するという編集ポリシーに沿っているかを見る。",
+      "files": ["evals/files/sample.a5er"],
+      "assertions": [
+        "sample.a5erが編集前とバイト単位で完全に一致している(=まだ削除を実行していない)",
+        "response.txtに、削除して良いか・リレーションはどうするかをユーザーに問う質問文が含まれている(疑問符を含む、または明確に確認を求める文になっている)",
+        "response.txtが「削除しました」等、既に削除処理を完了したと述べていない"
+      ]
+    }
+  ]
+}
