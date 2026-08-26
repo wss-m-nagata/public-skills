@@ -1,9 +1,9 @@
 ---
 name: genai-knowledge-comic
 description: 生成AIの活用・導入・不活用リスク・社内AIスキル運用などを説明する、複数ページの物語形式ナレッジコミック（起承転合構成）を作成するスキル。既存の`baoyu-comic`スキルを使って実際のコミックを生成し、社内共通の画風とキャラクターで統一する。ユーザーが「AIの使い方を漫画にして」「生成AIナレッジのコミックの続きを作って」「新人向けにAI活用の話を漫画で」のように、このスキル名や登場人物・画風に一切触れずに依頼してきた場合でも、社内向けの「生成AI」関連のコミック・漫画・複数ページの物語を求めていればbaoyu-comicよりこのスキルを優先して使うこと。ただし、番号付きステップの列や比較表を使うグリッド/表形式の解説図（インフォグラフィック）のジャンルは得意でない。その場合は直接画像生成するか、ユーザーに進め方を確認すること。
-compatibility: `baoyu-comic`スキルがインストールされ、`Skill`ツール経由で利用可能であることが必須——このスキルはbaoyu-comicへの薄いラッパーであり、単体では機能しない。画像生成は`baoyu-image-gen`スキルと`codex` CLI（PATH上にあり`codex login`済み）が利用可能な場合にのみ行われるが、必須ではない：利用できない場合でも、物語・ストーリーボード・各ページの生成プロンプトまでは完成させ、画像生成を失敗させる代わりにChatGPT貼り付け用の案内をして止まる（詳細は本文「画像生成」参照）。
+compatibility: "`baoyu-comic`スキルがインストールされ、`Skill`ツール経由で利用可能であることが必須——このスキルはbaoyu-comicへの薄いラッパーであり、単体では機能しない。画像生成は`baoyu-image-gen`スキルと`codex` CLI（PATH上にあり`codex login`済み）が利用可能な場合にのみ行われるが、必須ではない：利用できない場合でも、物語・ストーリーボード・各ページの生成プロンプトまでは完成させ、画像生成を失敗させる代わりにChatGPT貼り付け用の案内をして止まる（詳細は本文「画像生成」参照）。"
 metadata:
-  tags: [genai, comic, manga, knowledge-comic, baoyu-comic, 生成AI, 社内ナレッジ, 起承転合]
+  tags: "genai, comic, manga, knowledge-comic, baoyu-comic, 生成AI, 社内ナレッジ, 起承転合"
   version: "1.0"
 license: MIT
 allowed-tools: Read Grep Glob Write Bash Skill
