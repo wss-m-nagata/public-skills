@@ -32,6 +32,7 @@ import sys
 import re
 import shutil
 import zipfile
+import posixpath
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
@@ -174,6 +175,7 @@ def restore_shapes(original_path, processed_path, output_path, text_replacements
         # 変更が必要なファイルをメモリ上に保持
         updated_files = {}  # path -> bytes
         new_files = {}  # path -> bytes
+        removed_paths = set()  # openpyxlが自前生成したdrawingパーツ等、不要になったパス
 
         for sheet_name, orig_target in orig_sheet_map.items():
             if sheet_name not in proc_sheet_map:
@@ -209,6 +211,52 @@ def restore_shapes(original_path, processed_path, output_path, text_replacements
                 drawing_bytes = drawing_text.encode("utf-8")
             new_files[new_drawing_name] = drawing_bytes
 
+            # 1.5. drawing自身の.rels(画像等メディアへの参照)があれば、新しい名前で複製する。
+            # ⚠️drawingが実際の画像(<xdr:pic>。insert_flow_diagram.py等で埋め込んだもの)を
+            # 含む場合、その画像の関係(rId→xl/media/xxx.png)はdrawing自身の.relsに書かれている。
+            # これをコピーし忘れると、drawing XMLは複製されても画像への参照が解決できず、
+            # 次にopenpyxlで読み込んだ際にfind_images()が壊れる(実機で確認済み。
+            # 純粋な図形/テキストボックスだけの場合はこの.relsが無いため、従来は不要だった)。
+            drawing_dir_orig = "/".join(drawing_path.split("/")[:-1])
+            drawing_file_orig = drawing_path.split("/")[-1]
+            orig_drawing_rels_path = (
+                f"{drawing_dir_orig}/_rels/{drawing_file_orig}.rels"
+            )
+            if orig_drawing_rels_path in orig_names:
+                drawing_rels_bytes = zorig.read(orig_drawing_rels_path)
+                new_drawing_dir = "/".join(new_drawing_name.split("/")[:-1])
+                new_drawing_file = new_drawing_name.split("/")[-1]
+                new_drawing_rels_path = (
+                    f"{new_drawing_dir}/_rels/{new_drawing_file}.rels"
+                )
+                new_files[new_drawing_rels_path] = drawing_rels_bytes
+                # このrelsが参照するメディア(画像等)が加工後ファイルに無ければ、元ファイルから
+                # 実体をコピーする(openpyxlが同じパスでメディアを引き継いでいれば不要)。
+                for media_target in re.findall(
+                    r'Target="([^"]+)"', drawing_rels_bytes.decode("utf-8")
+                ):
+                    if media_target.startswith("/"):
+                        media_path = media_target.lstrip("/")
+                    else:
+                        media_path = posixpath.normpath(
+                            f"{drawing_dir_orig}/{media_target}"
+                        )
+                    if media_path in proc_names or media_path in new_files:
+                        continue
+                    if media_path in orig_names:
+                        new_files[media_path] = zorig.read(media_path)
+                        ext = media_path.rsplit(".", 1)[-1].lower()
+                        default_decl = f'Extension="{ext}"'
+                        if default_decl not in proc_content_types:
+                            orig_ct = zorig.read("[Content_Types].xml").decode("utf-8")
+                            m = re.search(
+                                rf'<Default Extension="{ext}"[^>]*/>', orig_ct
+                            )
+                            if m:
+                                proc_content_types = proc_content_types.replace(
+                                    "</Types>", m.group(0) + "</Types>"
+                                )
+
             # 2. Content_Types.xmlにOverrideを追加
             override = (
                 f'<Override PartName="/{new_drawing_name}" '
@@ -232,6 +280,63 @@ def restore_shapes(original_path, processed_path, output_path, text_replacements
                     f'<Relationships xmlns="{NS_RELS}"></Relationships>'
                 )
 
+            # 加工後シートXMLを先に読む(次のdrawing要素の重複チェックに使うため)
+            if proc_target in updated_files:
+                sheet_xml = updated_files[proc_target].decode("utf-8")
+            else:
+                sheet_xml = zproc.read(proc_target).decode("utf-8")
+
+            # ⚠️シートに実際の画像(<xdr:pic>。insert_flow_diagram.py等が埋め込んだもの)が
+            # 含まれている場合、openpyxlは保存時にそれを自力で認識し、自前のdrawingN.xmlと
+            # <drawing r:id="..."/>要素を再生成する(DrawingML図形/テキストボックスと違い、
+            # 単純な画像はopenpyxl自身が一部サポートしているため)。この状態で気づかずに
+            # 本関数が新しい<drawing>要素を追加すると、1シートに<drawing>要素が2つできてしまい
+            # 不正なOOXMLになる(openpyxlで再読込した際にfind_imagesが例外を投げて壊れる。
+            # 実機で確認済み)。既存の<drawing r:id="..."/>があれば、それを解除し、対応する
+            # リレーションシップも削除してから、元ファイルの完全な図形(画像+テキストボックス等)で
+            # 上書きする。元ファイルの図形には既にこの画像自体が含まれているため、情報は失われない。
+            existing_drawing_match = re.search(
+                r'<drawing\b[^>]*\br:id="(rId\d+)"[^>]*/>', sheet_xml
+            )
+            if existing_drawing_match:
+                old_rid = existing_drawing_match.group(1)
+                sheet_xml = sheet_xml.replace(existing_drawing_match.group(0), "")
+                old_rel_match = re.search(
+                    rf'<Relationship[^>]*Id="{old_rid}"[^>]*/>', rels_xml
+                )
+                if old_rel_match:
+                    rels_xml = rels_xml.replace(old_rel_match.group(0), "")
+                    # openpyxlが自前生成したdrawingパーツ本体・そのrels・Content_Typesの
+                    # 登録も丸ごと削除する。中途半端に残すと、そのdrawingパーツ自身のrels
+                    # (画像メディアへの参照)が"孤立した部品"として残り、次にopenpyxlで
+                    # 読み込んだ際にfind_images()が壊れる(実機で確認済み)。
+                    target_match = re.search(
+                        r'Target="([^"]+)"', old_rel_match.group(0)
+                    )
+                    if target_match:
+                        raw_target = target_match.group(1)
+                        if raw_target.startswith("/"):
+                            old_drawing_path = raw_target.lstrip("/")
+                        else:
+                            old_drawing_path = posixpath.normpath(
+                                f"{sheet_dir}/{raw_target}"
+                            )
+                        old_drawing_dir = "/".join(old_drawing_path.split("/")[:-1])
+                        old_drawing_file = old_drawing_path.split("/")[-1]
+                        old_drawing_rels_path = (
+                            f"{old_drawing_dir}/_rels/{old_drawing_file}.rels"
+                        )
+                        removed_paths.add(old_drawing_path)
+                        removed_paths.add(old_drawing_rels_path)
+                        old_override = re.search(
+                            rf'<Override PartName="/{re.escape(old_drawing_path)}"[^>]*/>',
+                            proc_content_types,
+                        )
+                        if old_override:
+                            proc_content_types = proc_content_types.replace(
+                                old_override.group(0), ""
+                            )
+
             existing_rids = re.findall(r'Id="rId(\d+)"', rels_xml)
             new_rid_num = max([int(x) for x in existing_rids], default=0) + 1
             new_rid = f"rId{new_rid_num}"
@@ -247,11 +352,6 @@ def restore_shapes(original_path, processed_path, output_path, text_replacements
             updated_files[rels_path] = rels_xml.encode("utf-8")
 
             # 4. 加工後シートXMLに<drawing r:id="..."/>を挿入(legacyDrawingの直前、無ければ</worksheet>の直前)
-            if proc_target in updated_files:
-                sheet_xml = updated_files[proc_target].decode("utf-8")
-            else:
-                sheet_xml = zproc.read(proc_target).decode("utf-8")
-
             # <drawing r:id="..."/> を使うには、ルート要素にr名前空間の宣言が必要
             # (openpyxlの出力は、他にr:属性を使う要素が無いシートではxmlns:rを省略するため)
             if "xmlns:r=" not in sheet_xml.split(">", 1)[0]:
@@ -288,11 +388,13 @@ def restore_shapes(original_path, processed_path, output_path, text_replacements
         with zipfile.ZipFile(output_path, "w", zipfile.ZIP_DEFLATED) as zout:
             written = set()
             for item in zproc.infolist():
+                if item.filename in removed_paths:
+                    continue
                 data = updated_files.get(item.filename, zproc.read(item.filename))
                 zout.writestr(item, data)
                 written.add(item.filename)
             for path, data in list(new_files.items()) + list(updated_files.items()):
-                if path not in written:
+                if path not in written and path not in removed_paths:
                     zout.writestr(path, data)
                     written.add(path)
 
