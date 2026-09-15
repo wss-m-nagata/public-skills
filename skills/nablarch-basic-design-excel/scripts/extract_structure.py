@@ -6,18 +6,17 @@ Markdownのリファレンスとして書き出すツール。
 Claude for Microsoft 365 (Claude in Excel) が編集する際に、
 「どこが構造として保護されるべきか」を事前に伝えるための資料を作る。
 
-あわせて、ラベルセルとその値入力セルのペアをヒューリスティックに検出し、
-「ラベル → 値入力セル」の形で構造メモに出力する(結合セルの範囲を見ただけでは
-記入対象セルを誤認しやすいため。例: D列がラベル・H列が値、という構造を見落として
-D列に直接書き込んでしまう間違いが起こりやすい)。この検出はあくまで機械的な
-推測であり、最終的には記入要領・公式サンプルとの突合せが必要。
-
 使い方:
     python extract_structure.py <対象xlsxパス> <出力md名>
+
+例(テーブル一覧.xlsxの構造を再抽出する場合):
+    python extract_structure.py テーブル一覧.xlsx 構造メモ_テーブル一覧.md
 """
+
 import sys
 import io
 from pathlib import Path
+
 import openpyxl
 from openpyxl.utils import get_column_letter
 
@@ -168,41 +167,54 @@ def detect_label_value_pairs(ws, max_row, max_col):
 
         # パターン(b): 縦長ラベル -> 右隣列の複数空セルを値エリアとする
         if height >= 3:
-            empties = [r for r in range(m.min_row, m.max_row + 1) if is_cell_empty(r, right_col)]
+            empties = [
+                r
+                for r in range(m.min_row, m.max_row + 1)
+                if is_cell_empty(r, right_col)
+            ]
             all_unmerged = all(
-                (r, right_col) not in merge_covering or
-                merge_covering[(r, right_col)].min_col == merge_covering[(r, right_col)].max_col
+                (r, right_col) not in merge_covering
+                or merge_covering[(r, right_col)].min_col
+                == merge_covering[(r, right_col)].max_col
                 for r in range(m.min_row, m.max_row + 1)
             )
             if all_unmerged and len(empties) >= height * 0.6:
                 col_letter = get_column_letter(right_col)
-                pairs.append({
-                    "label": label,
-                    "label_cell": f"{get_column_letter(m.min_col)}{m.min_row}",
-                    "value_area": f"{col_letter}{m.min_row}〜{col_letter}{m.max_row}",
-                    "pattern": "縦長ラベル(値は右隣の列に1行1件で記入)",
-                })
+                pairs.append(
+                    {
+                        "label": label,
+                        "label_cell": f"{get_column_letter(m.min_col)}{m.min_row}",
+                        "value_area": f"{col_letter}{m.min_row}〜{col_letter}{m.max_row}",
+                        "pattern": "縦長ラベル(値は右隣の列に1行1件で記入)",
+                    }
+                )
                 seen_labels.add((m.min_row, m.min_col))
                 continue
 
         # パターン(a): 横並び -> 右隣の結合(または単独)セルが空なら値セルとする
         right_merge = merge_covering.get((m.min_row, right_col))
         if right_merge is not None:
-            if right_merge.min_row == m.min_row and is_cell_empty(right_merge.min_row, right_merge.min_col):
-                pairs.append({
-                    "label": label,
-                    "label_cell": f"{get_column_letter(m.min_col)}{m.min_row}",
-                    "value_area": str(right_merge),
-                    "pattern": "横並び(ラベル:値)",
-                })
+            if right_merge.min_row == m.min_row and is_cell_empty(
+                right_merge.min_row, right_merge.min_col
+            ):
+                pairs.append(
+                    {
+                        "label": label,
+                        "label_cell": f"{get_column_letter(m.min_col)}{m.min_row}",
+                        "value_area": str(right_merge),
+                        "pattern": "横並び(ラベル:値)",
+                    }
+                )
                 seen_labels.add((m.min_row, m.min_col))
         elif is_cell_empty(m.min_row, right_col):
-            pairs.append({
-                "label": label,
-                "label_cell": f"{get_column_letter(m.min_col)}{m.min_row}",
-                "value_area": f"{get_column_letter(right_col)}{m.min_row}",
-                "pattern": "横並び(ラベル:値)",
-            })
+            pairs.append(
+                {
+                    "label": label,
+                    "label_cell": f"{get_column_letter(m.min_col)}{m.min_row}",
+                    "value_area": f"{get_column_letter(right_col)}{m.min_row}",
+                    "pattern": "横並び(ラベル:値)",
+                }
+            )
             seen_labels.add((m.min_row, m.min_col))
 
     return pairs
@@ -232,31 +244,46 @@ def analyze_sheet(wb, ws):
     lines = []
     lines.append(f"### シート『{ws.title}』")
     lines.append("")
-    lines.append(f"- 使用範囲の目安: 最大 {max_row}行 × {max_col}列（それ以降は未フォーマット領域の可能性あり）")
+    lines.append(
+        f"- 使用範囲の目安: 最大 {max_row}行 × {max_col}列（それ以降は未フォーマット領域の可能性あり）"
+    )
 
     # 結合セル
     merges = sorted(str(m) for m in ws.merged_cells.ranges)
     lines.append(f"- 結合セル数: {len(merges)}")
     if merges:
-        lines.append("  - 一覧: " + ", ".join(merges[:60]) + (" ..." if len(merges) > 60 else ""))
+        lines.append(
+            "  - 一覧: " + ", ".join(merges[:60]) + (" ..." if len(merges) > 60 else "")
+        )
 
     # 行の高さ(既定と異なるもの)
     custom_heights = {
-        r: dim.height for r, dim in ws.row_dimensions.items()
+        r: dim.height
+        for r, dim in ws.row_dimensions.items()
         if dim.height is not None and r <= max_row
     }
     if custom_heights:
-        lines.append(f"- 行高が個別指定されている行数: {len(custom_heights)}（例: " +
-                      ", ".join(f"{r}行={h}" for r, h in list(custom_heights.items())[:10]) + " ）")
+        lines.append(
+            f"- 行高が個別指定されている行数: {len(custom_heights)}（例: "
+            + ", ".join(f"{r}行={h}" for r, h in list(custom_heights.items())[:10])
+            + " ）"
+        )
 
     # 列幅
     col_widths = {
-        get_column_letter(idx if isinstance(idx, int) else 0) if isinstance(idx, int) else idx: dim.width
-        for idx, dim in ws.column_dimensions.items() if dim.width is not None
+        (
+            get_column_letter(idx if isinstance(idx, int) else 0)
+            if isinstance(idx, int)
+            else idx
+        ): dim.width
+        for idx, dim in ws.column_dimensions.items()
+        if dim.width is not None
     }
     if col_widths:
-        lines.append("- 列幅（個別指定分）: " +
-                      ", ".join(f"{k}列={v:.1f}" for k, v in list(col_widths.items())[:20]))
+        lines.append(
+            "- 列幅（個別指定分）: "
+            + ", ".join(f"{k}列={v:.1f}" for k, v in list(col_widths.items())[:20])
+        )
 
     # 背景色
     fills = summarize_fills(ws, max_row, max_col)
@@ -278,8 +305,14 @@ def analyze_sheet(wb, ws):
         for c in range(1, max_col + 1):
             cell = ws.cell(row=r, column=c)
             b = cell.border
-            if b and any([b.top and b.top.style, b.bottom and b.bottom.style,
-                          b.left and b.left.style, b.right and b.right.style]):
+            if b and any(
+                [
+                    b.top and b.top.style,
+                    b.bottom and b.bottom.style,
+                    b.left and b.left.style,
+                    b.right and b.right.style,
+                ]
+            ):
                 bordered.append(cell.coordinate)
     if bordered:
         lines.append(f"- 罫線が設定されているセル: {compress_ranges(bordered)}")
@@ -287,25 +320,35 @@ def analyze_sheet(wb, ws):
     # ラベル→値入力セルの候補(ヒューリスティック検出。要サンプル突合せ)
     label_pairs = detect_label_value_pairs(ws, max_row, max_col)
     if label_pairs:
-        lines.append(f"- ラベル→値入力セルの候補: {len(label_pairs)}件"
-                      "（※機械的な推測です。実際にそこへ書くかは記入要領・公式サンプルで必ず確認すること）")
+        lines.append(
+            f"- ラベル→値入力セルの候補: {len(label_pairs)}件"
+            "（※機械的な推測です。実際にそこへ書くかは記入要領・公式サンプルで必ず確認すること）"
+        )
         for p in label_pairs:
-            lines.append(f"  - 『{p['label']}』({p['label_cell']}) → {p['value_area']} 【{p['pattern']}】")
+            lines.append(
+                f"  - 『{p['label']}』({p['label_cell']}) → {p['value_area']} 【{p['pattern']}】"
+            )
 
     # 入力規則(プルダウン等) - 自由記述にせず、必ずこの選択肢から選ぶ必要がある
     validations = summarize_validations(wb, ws)
     if validations:
-        lines.append(f"- 入力規則（プルダウン等）: {len(validations)}件 ※記入時はここに列挙した選択肢以外を入力しないこと")
+        lines.append(
+            f"- 入力規則（プルダウン等）: {len(validations)}件 ※記入時はここに列挙した選択肢以外を入力しないこと"
+        )
         for v in validations:
             if v["type"] == "list":
                 vals = v.get("values") or []
                 lines.append(f"  - `{v['range']}` : プルダウン選択肢 = {vals}")
             else:
-                lines.append(f"  - `{v['range']}` : 種別={v['type']}, 条件式1={v.get('formula1')}, 条件式2={v.get('formula2')}")
+                lines.append(
+                    f"  - `{v['range']}` : 種別={v['type']}, 条件式1={v.get('formula1')}, 条件式2={v.get('formula2')}"
+                )
 
     # 条件付き書式
     if ws.conditional_formatting._cf_rules:
-        lines.append(f"- 条件付き書式が設定されている範囲: {list(ws.conditional_formatting._cf_rules.keys())}")
+        lines.append(
+            f"- 条件付き書式が設定されている範囲: {list(ws.conditional_formatting._cf_rules.keys())}"
+        )
 
     # シート保護
     if ws.protection.sheet:
@@ -317,10 +360,6 @@ def analyze_sheet(wb, ws):
 
 def main():
     ensure_utf8_stdio()
-    if len(sys.argv) != 3 or sys.argv[1] in ("-h", "--help"):
-        print(__doc__)
-        sys.exit(0 if len(sys.argv) > 1 and sys.argv[1] in ("-h", "--help") else 2)
-
     xlsx_path = sys.argv[1]
     out_path = sys.argv[2]
 
@@ -328,9 +367,15 @@ def main():
 
     out = io.StringIO()
     out.write(f"# 構造メモ: {xlsx_path}\n\n")
-    out.write("このファイルは元のExcelテンプレートの構造（結合セル・背景色・フォント色・行列サイズ・罫線・入力規則）を\n")
-    out.write("機械的に抽出したものです。編集時にこれらを変更しないよう注意してください。\n")
-    out.write("特に「入力規則（プルダウン等）」に記載された項目は、一覧にある選択肢以外の値を入力しないこと。\n\n")
+    out.write(
+        "このファイルは元のExcelテンプレートの構造（結合セル・背景色・フォント色・行列サイズ・罫線・入力規則）を\n"
+    )
+    out.write(
+        "機械的に抽出したものです。編集時にこれらを変更しないよう注意してください。\n"
+    )
+    out.write(
+        "特に「入力規則（プルダウン等）」に記載された項目は、一覧にある選択肢以外の値を入力しないこと。\n\n"
+    )
     out.write(f"シート一覧: {', '.join(wb.sheetnames)}\n\n")
 
     for ws in wb.worksheets:

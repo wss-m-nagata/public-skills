@@ -21,6 +21,7 @@ openpyxlのcopy_worksheet()の既知の制約への対応:
 例(テーブル定義書に「顧客」テーブル用のシートを追加する場合):
     python duplicate_sheet.py テーブル定義書_xxx.xlsx 論理テーブル名 顧客 出力.xlsx --before-sheet データ
 """
+
 import sys
 import argparse
 from pathlib import Path
@@ -31,13 +32,17 @@ sys.path.insert(0, str(Path(__file__).parent))
 from xlsx_common import copy_data_validations, save_with_shapes, ensure_utf8_stdio
 
 
-def duplicate_sheet(xlsx_path, source_sheet, new_sheet_name, output_path, before_sheet=None):
+def duplicate_sheet(
+    xlsx_path, source_sheet, new_sheet_name, output_path, before_sheet=None
+):
     wb = openpyxl.load_workbook(xlsx_path)
 
     if source_sheet not in wb.sheetnames:
         raise ValueError(f"複製元シートが存在しません: {source_sheet}")
     if new_sheet_name in wb.sheetnames:
-        raise ValueError(f"シート名が既に存在します(重複はできません): {new_sheet_name}")
+        raise ValueError(
+            f"シート名が既に存在します(重複はできません): {new_sheet_name}"
+        )
 
     src_ws = wb[source_sheet]
     new_ws = wb.copy_worksheet(src_ws)
@@ -47,7 +52,9 @@ def duplicate_sheet(xlsx_path, source_sheet, new_sheet_name, output_path, before
 
     if before_sheet is not None:
         if before_sheet not in wb.sheetnames:
-            raise ValueError(f"--before-sheetで指定されたシートが存在しません: {before_sheet}")
+            raise ValueError(
+                f"--before-sheetで指定されたシートが存在しません: {before_sheet}"
+            )
         target_index = wb.sheetnames.index(before_sheet)
         current_index = wb.sheetnames.index(new_sheet_name)
         wb.move_sheet(new_sheet_name, offset=(target_index - current_index))
@@ -63,7 +70,9 @@ def duplicate_sheet(xlsx_path, source_sheet, new_sheet_name, output_path, before
 
 def main():
     ensure_utf8_stdio()
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     parser.add_argument("xlsx_path")
     parser.add_argument("source_sheet")
     parser.add_argument("new_sheet_name")
@@ -71,15 +80,24 @@ def main():
     parser.add_argument("--before-sheet", default=None)
     args = parser.parse_args()
 
-    result = duplicate_sheet(args.xlsx_path, args.source_sheet, args.new_sheet_name,
-                              args.output_path, args.before_sheet)
+    result = duplicate_sheet(
+        args.xlsx_path,
+        args.source_sheet,
+        args.new_sheet_name,
+        args.output_path,
+        args.before_sheet,
+    )
 
     print(f"=== シート複製結果: {args.output_path} ===")
     print(f"新規シート: {result['new_sheet']}")
     print(f"複製した入力規則(プルダウン)の数: {result['data_validations_copied']}")
     print(f"複製後のシート順: {result['sheet_order']}")
-    print("\n※このシートにはまだ値が入っていません。apply_mapping.pyで値を反映してください。")
-    print("※目次シートは自動更新されません。記入要領_共通シート.mdの案内に従い手動で追記してください。")
+    print(
+        "\n※このシートにはまだ値が入っていません。apply_mapping.pyで値を反映してください。"
+    )
+    print(
+        "※目次シートは自動更新されません。記入要領_共通シート.mdの案内に従い手動で追記してください。"
+    )
 
 
 if __name__ == "__main__":

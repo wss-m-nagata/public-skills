@@ -9,13 +9,16 @@
 最終データ行と同じ書式(罫線・背景色・フォント・結合セル)を複製するだけなので、
 これより下や他のシートの内容には一切影響しない。
 
+⚠️**表の下に別の表やブロックがある場合は使えない。** その領域を上書きしてしまい、
+既存の結合セルと衝突して `MergedCell object attribute 'value' is read-only` で失敗する。
+外部インタフェース設計書(JSON)の『【レコード名】』シートのように、1シートへブロックが
+縦に並ぶレイアウトがこれに当たる。その場合は `insert_rows.py` を使うこと。
+
 入力規則(プルダウン)が最終データ行に設定されている場合は、その適用範囲を
 新しく増やした行にも拡張する。
 
 **安全確認**：追加先の範囲内に、既に値が入っているセル(次のセクションの見出し等)が
 無いかを事前に確認し、あれば拒否する(後続の見出し行を上書きしないための対策)。
-複数行から成るセクションごと後ろにずらしたい場合は、このスクリプトではなく
-`insert_row_block.py`を使うこと。
 
 使い方:
     python extend_table_rows.py <元xlsxパス> <シート名> <最終データ行番号> <追加する行数> \\
@@ -27,6 +30,7 @@
    10行追加する場合):
     python extend_table_rows.py 外部インタフェース一覧_xxx.xlsx 1 18 10 B AX 出力.xlsx
 """
+
 import sys
 import argparse
 from pathlib import Path
@@ -38,13 +42,25 @@ from openpyxl.utils import column_index_from_string, get_column_letter
 
 sys.path.insert(0, str(Path(__file__).parent))
 from xlsx_common import (
-    get_single_row_merges, extend_validation_ranges, get_bordered_bbox,
-    find_next_populated_row, save_with_shapes, ensure_utf8_stdio,
+    get_single_row_merges,
+    extend_validation_ranges,
+    get_bordered_bbox,
+    find_next_populated_row,
+    save_with_shapes,
+    ensure_utf8_stdio,
 )
 
 
-def extend_table_rows(xlsx_path, sheet_name, source_row, num_new_rows, min_col_letter, max_col_letter,
-                       output_path, allow_overwrite=False):
+def extend_table_rows(
+    xlsx_path,
+    sheet_name,
+    source_row,
+    num_new_rows,
+    min_col_letter,
+    max_col_letter,
+    output_path,
+    allow_overwrite=False,
+):
     wb = openpyxl.load_workbook(xlsx_path)
     if sheet_name not in wb.sheetnames:
         raise ValueError(f"シートが存在しません: {sheet_name}")
@@ -70,8 +86,6 @@ def extend_table_rows(xlsx_path, sheet_name, source_row, num_new_rows, min_col_l
                     f"(次のセクションの見出し等の可能性が高い)。"
                     f"{source_row}行目から安全に追加できるのは最大{max(safe_new_rows, 0)}行までです"
                     f"(指定された{num_new_rows}行では{boundary_row}行目以降を上書きします)。\n"
-                    f"複数行から成るセクションごと後ろにずらして拡張したい場合は、"
-                    f"このスクリプトではなく`insert_row_block.py`を使ってください。"
                     f"(意図的にこのまま拡張したい場合のみ --allow-overwrite を指定)"
                 )
 
@@ -91,16 +105,24 @@ def extend_table_rows(xlsx_path, sheet_name, source_row, num_new_rows, min_col_l
             dst_cell.number_format = src_cell.number_format
             dst_cell.protection = copy(src_cell.protection)
             if src_cell.comment is not None:
-                dst_cell.comment = Comment(src_cell.comment.text, src_cell.comment.author or "")
+                dst_cell.comment = Comment(
+                    src_cell.comment.text, src_cell.comment.author or ""
+                )
 
         if row_height is not None:
             ws.row_dimensions[new_row].height = row_height
 
-        for (mcol_start, mcol_end) in row_merges:
-            ws.merge_cells(start_row=new_row, start_column=mcol_start,
-                            end_row=new_row, end_column=mcol_end)
+        for mcol_start, mcol_end in row_merges:
+            ws.merge_cells(
+                start_row=new_row,
+                start_column=mcol_start,
+                end_row=new_row,
+                end_column=mcol_end,
+            )
 
-    extended = extend_validation_ranges(ws, source_row, new_row_numbers, min_col, max_col)
+    extended = extend_validation_ranges(
+        ws, source_row, new_row_numbers, min_col, max_col
+    )
 
     save_with_shapes(wb, xlsx_path, output_path)
 
@@ -114,7 +136,9 @@ def extend_table_rows(xlsx_path, sheet_name, source_row, num_new_rows, min_col_l
 
 def main():
     ensure_utf8_stdio()
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     parser.add_argument("xlsx_path")
     parser.add_argument("sheet_name")
     parser.add_argument("source_row", type=int)
@@ -125,16 +149,27 @@ def main():
     parser.add_argument("--allow-overwrite", action="store_true")
     args = parser.parse_args()
 
-    result = extend_table_rows(args.xlsx_path, args.sheet_name, args.source_row,
-                                args.num_new_rows, args.min_col, args.max_col, args.output_path,
-                                args.allow_overwrite)
+    result = extend_table_rows(
+        args.xlsx_path,
+        args.sheet_name,
+        args.source_row,
+        args.num_new_rows,
+        args.min_col,
+        args.max_col,
+        args.output_path,
+        args.allow_overwrite,
+    )
 
     print(f"=== 行拡張結果: {args.output_path} ===")
     print(f"追加した行: {result['new_rows']}")
-    print(f"複製した結合セルパターン数(1行あたり): {result['merges_replicated_per_row']}")
+    print(
+        f"複製した結合セルパターン数(1行あたり): {result['merges_replicated_per_row']}"
+    )
     if result["validations_extended"]:
         print(f"拡張した入力規則: {result['validations_extended']}")
-    print("\n※新しい行にはまだ値が入っていません。apply_mapping.pyで値を反映してください。")
+    print(
+        "\n※新しい行にはまだ値が入っていません。apply_mapping.pyで値を反映してください。"
+    )
 
 
 if __name__ == "__main__":

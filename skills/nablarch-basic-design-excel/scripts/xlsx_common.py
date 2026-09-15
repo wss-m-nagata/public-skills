@@ -7,7 +7,12 @@ extend_table_rows.py で共有するExcel構造解析・操作の共通処理。
 get_bordered_bbox, snapshot_sheet_structure)はファイルを書き換えない。
 操作系の関数(copy_data_validations, extend_validation_range)は
 呼び出し側が明示的にworkbookを保存するまでは書き換えを確定させない。
+
+単独では実行しない(CLIを持たない)。他のスクリプトから次のように読み込んで使う:
+    sys.path.insert(0, str(Path(__file__).parent))
+    from xlsx_common import save_with_shapes, ensure_utf8_stdio
 """
+
 import os
 import sys
 import tempfile
@@ -109,8 +114,12 @@ def get_validations_map(wb, ws, pending=None):
         if values is None:
             continue
         for rng in dv.sqref.ranges:
-            for row in ws.iter_rows(min_row=rng.min_row, max_row=rng.max_row,
-                                     min_col=rng.min_col, max_col=rng.max_col):
+            for row in ws.iter_rows(
+                min_row=rng.min_row,
+                max_row=rng.max_row,
+                min_col=rng.min_col,
+                max_col=rng.max_col,
+            ):
                 for cell in row:
                     result[cell.coordinate] = values
     return result
@@ -124,8 +133,10 @@ def get_merge_anchor(ws, coordinate):
     col_str, row = coordinate_from_string(coordinate)
     col = column_index_from_string(col_str)
     for merged_range in ws.merged_cells.ranges:
-        if (merged_range.min_row <= row <= merged_range.max_row and
-                merged_range.min_col <= col <= merged_range.max_col):
+        if (
+            merged_range.min_row <= row <= merged_range.max_row
+            and merged_range.min_col <= col <= merged_range.max_col
+        ):
             return f"{get_column_letter(merged_range.min_col)}{merged_range.min_row}"
     return coordinate
 
@@ -141,20 +152,41 @@ def get_bordered_bbox(ws, max_scan_row=300, max_scan_col=60):
         for c in range(1, min(ws.max_column, max_scan_col) + 1):
             cell = ws.cell(row=r, column=c)
             b = cell.border
-            if b and any([b.top and b.top.style, b.bottom and b.bottom.style,
-                          b.left and b.left.style, b.right and b.right.style]):
+            if b and any(
+                [
+                    b.top and b.top.style,
+                    b.bottom and b.bottom.style,
+                    b.left and b.left.style,
+                    b.right and b.right.style,
+                ]
+            ):
                 max_row = max(max_row, r)
                 max_col = max(max_col, c)
     return max_row, max_col
 
 
-def snapshot_sheet_structure(wb, ws):
+def snapshot_sheet_structure(wb, ws, sanity_limit_row=2000, sanity_limit_col=200):
     """
     verify_layout.py での前後比較用に、1シート分の構造情報をまとめて取得する。
     値(value)は含めない -- あくまで構造(レイアウト)のスナップショット。
+
+    対象範囲はシートの実際の使用範囲(ws.max_row / ws.max_column)全体とする
+    (固定の行数・列数で打ち切ると、その範囲外の結合セル・罫線・数式の変化が
+    検証対象から漏れてしまうため)。ただし異常に大きいシート(壊れたファイル等で
+    max_row/max_columnが巨大な値を返すケース)に対する安全弁として、
+    sanity_limit_row・sanity_limit_colを超える場合はそこで打ち切り、警告を表示する。
     """
-    max_row = min(ws.max_row, 300)
-    max_col = min(ws.max_column, 60)
+    max_row = ws.max_row
+    max_col = ws.max_column
+    if max_row > sanity_limit_row or max_col > sanity_limit_col:
+        print(
+            f"WARNING: シート『{ws.title}』の使用範囲が{max_row}行×{max_col}列と大きすぎるため、"
+            f"{min(max_row, sanity_limit_row)}行×{min(max_col, sanity_limit_col)}列までで構造検証を打ち切ります。"
+            f"それを超える範囲の変化は検出されません。",
+            file=sys.stderr,
+        )
+        max_row = min(max_row, sanity_limit_row)
+        max_col = min(max_col, sanity_limit_col)
 
     fills = {}
     fonts = {}
@@ -174,8 +206,14 @@ def snapshot_sheet_structure(wb, ws):
                 if col:
                     fonts[cell.coordinate] = col
             b = cell.border
-            if b and any([b.top and b.top.style, b.bottom and b.bottom.style,
-                          b.left and b.left.style, b.right and b.right.style]):
+            if b and any(
+                [
+                    b.top and b.top.style,
+                    b.bottom and b.bottom.style,
+                    b.left and b.left.style,
+                    b.right and b.right.style,
+                ]
+            ):
                 borders.add(cell.coordinate)
             if cell.data_type == "f":
                 formulas[cell.coordinate] = cell.value
@@ -183,8 +221,12 @@ def snapshot_sheet_structure(wb, ws):
     return {
         "dimensions": (ws.max_row, ws.max_column),
         "merged_cells": sorted(str(m) for m in ws.merged_cells.ranges),
-        "row_heights": {r: d.height for r, d in ws.row_dimensions.items() if d.height is not None},
-        "col_widths": {k: d.width for k, d in ws.column_dimensions.items() if d.width is not None},
+        "row_heights": {
+            r: d.height for r, d in ws.row_dimensions.items() if d.height is not None
+        },
+        "col_widths": {
+            k: d.width for k, d in ws.column_dimensions.items() if d.width is not None
+        },
         "fills": fills,
         "fonts": fonts,
         "borders": borders,
@@ -236,12 +278,17 @@ def extend_validation_ranges(ws, source_row, new_rows, min_col, max_col):
     extended = []
     for dv in ws.data_validations.dataValidation:
         for rng in list(dv.sqref.ranges):
-            if (rng.min_row <= source_row <= rng.max_row
-                    and rng.min_col >= min_col and rng.max_col <= max_col):
+            if (
+                rng.min_row <= source_row <= rng.max_row
+                and rng.min_col >= min_col
+                and rng.max_col <= max_col
+            ):
                 for r in new_rows:
                     new_range = CellRange(
-                        min_col=rng.min_col, min_row=r,
-                        max_col=rng.max_col, max_row=r,
+                        min_col=rng.min_col,
+                        min_row=r,
+                        max_col=rng.max_col,
+                        max_row=r,
                     )
                     dv.sqref.ranges.add(new_range)
                     extended.append((str(dv.formula1), str(new_range)))
@@ -253,8 +300,8 @@ def find_next_populated_row(ws, after_row, min_col, max_col, max_scan_row=1000):
     after_row より後で、指定列範囲のいずれかのセルに値が入っている最初の行番号を返す。
     見つからなければNoneを返す。
 
-    extend_table_rows.py・insert_row_block.pyで、複製先が後続のセクション見出し等の
-    既存内容を上書きしてしまうことを防ぐための安全確認に使う。
+    extend_table_rows.pyで、複製先が後続のセクション見出し等の既存内容を
+    上書きしてしまうことを防ぐための安全確認に使う。
     """
     max_row = min(ws.max_row, max_scan_row)
     for r in range(after_row + 1, max_row + 1):
@@ -268,7 +315,12 @@ def get_single_row_merges(ws, row, min_col, max_col):
     """指定した行の中に収まっている(複数行にまたがらない)結合セル範囲を取得する"""
     result = []
     for m in ws.merged_cells.ranges:
-        if m.min_row == row and m.max_row == row and m.min_col >= min_col and m.max_col <= max_col:
+        if (
+            m.min_row == row
+            and m.max_row == row
+            and m.min_col >= min_col
+            and m.max_col <= max_col
+        ):
             result.append((m.min_col, m.max_col))
     return result
 
@@ -297,10 +349,43 @@ def save_with_shapes(wb, original_path, output_path, text_replacements=None):
         tmp_path = tmp.name
     try:
         wb.save(tmp_path)
-        report = restore_shapes.restore_shapes(original_path, tmp_path, output_path, text_replacements)
+        report = restore_shapes.restore_shapes(
+            original_path, tmp_path, output_path, text_replacements
+        )
     finally:
         try:
             os.remove(tmp_path)
         except OSError:
             pass
     return report
+
+
+def lines_to_cells(text, start_cell, col_step=0):
+    """複数行の内容を「1行につき1セル」のマッピングへ展開する。
+
+    Excelはセル内の改行を既定では表示しないため、構成イメージ・データ構成サンプル・
+    処理詳細のような複数行の記述は、1行ずつ下のセルへ書く必要がある。
+
+    text     : 改行区切りの文字列、または (深さ, 文字列) のリスト。
+               深さを渡すと、その分だけ列を右へずらして階層を表す。
+    start_cell : 書き始めのセル（例 "A40"）。
+    col_step : 深さ1あたりにずらす列数。既定0（ずらさない）。
+
+    戻り値は {"A40": "…", "A41": "…"} のような辞書で、apply_mapping.py へそのまま渡せる。
+    """
+    from openpyxl.utils.cell import coordinate_from_string
+    from openpyxl.utils import column_index_from_string, get_column_letter
+
+    col_letter, row = coordinate_from_string(start_cell)
+    base_col = column_index_from_string(col_letter)
+
+    if isinstance(text, str):
+        rows = [(0, line) for line in text.splitlines()]
+    else:
+        rows = list(text)
+
+    out = {}
+    for i, (depth, line) in enumerate(rows):
+        col = get_column_letter(base_col + depth * col_step)
+        out["%s%d" % (col, row + i)] = line
+    return out

@@ -22,7 +22,12 @@ openpyxlで一度読み込んで保存すると（apply_mapping.py / duplicate_s
 
 置換JSON(省略可): 表紙のテキストボックス内プレースホルダーを実値に置き換える場合に指定する。
     例: '{"プロジェクト名": "サンプルプロジェクト", "サブシステム名": "顧客管理システム"}'
+
+例(通常はapply_mapping.py等がsave_with_shapes()経由で自動的に呼び出すため、
+   単独で実行するのは復元に失敗した疑いがあるときの手動リカバリ時のみ):
+    python restore_shapes.py テーブル一覧.xlsx 加工後.xlsx 出力.xlsx
 """
+
 import sys
 import re
 import shutil
@@ -114,8 +119,8 @@ def shape_anchor_counts(xlsx_path):
 
     sheets_with_drawings()は図形の「有無」しか見ないため、例えば元々1個だった図形が
     (誤って別のファイルから図形を復元したことで)2個に増えたケースを検知できない。
-    このケースは、表紙のセルベースのタイトルに、古い図形ベースのタイトル
-    (サンプル/実例ファイルのもの)が重なって二重表示される原因になる。
+    このケースは実際に発生した事故で、表紙のセルベースのタイトルに、古い図形ベースの
+    タイトル(サンプル/実例ファイルのもの)が重なって二重表示される原因になった。
     """
     result = {}
     with zipfile.ZipFile(xlsx_path) as zf:
@@ -126,7 +131,9 @@ def shape_anchor_counts(xlsx_path):
             if drawing_path is None or drawing_path not in names:
                 continue
             content = zf.read(drawing_path).decode("utf-8", errors="replace")
-            count = len(re.findall(r"<xdr:twoCellAnchor", content)) + len(re.findall(r"<xdr:oneCellAnchor", content))
+            count = len(re.findall(r"<xdr:twoCellAnchor", content)) + len(
+                re.findall(r"<xdr:oneCellAnchor", content)
+            )
             result[name] = count
     return result
 
@@ -136,11 +143,17 @@ def restore_shapes(original_path, processed_path, output_path, text_replacements
     text_replacements: {"プロジェクト名": "サンプルプロジェクト", "サブシステム名": "顧客管理システム"} のように、
     図形内のテキストランを置き換えたい場合に指定する(表紙のテキストボックスの
     `[プロジェクト名]`のようなプレースホルダーを実値に更新するため)。
-    角括弧`[` `]`は別のテキストランになっているため置き換え対象に含めず、角括弧はそのまま残る。
+    角括弧`[` `]`の扱いはテンプレートのXML構造により異なる。
+    `<a:t>[プロジェクト名]</a:t>`のように角括弧と中身が同じテキストランに
+    入っている場合は、角括弧ごと値に置き換わる(角括弧は残らない)。
+    `<a:t>[</a:t><a:t>プロジェクト名</a:t><a:t>]</a:t>`のように角括弧が
+    別のテキストランに分かれている場合は、中身のランだけが置き換わり角括弧は残る。
     """
     report = {"restored_sheets": [], "skipped_sheets": []}
 
-    with zipfile.ZipFile(original_path) as zorig, zipfile.ZipFile(processed_path) as zproc:
+    with zipfile.ZipFile(original_path) as zorig, zipfile.ZipFile(
+        processed_path
+    ) as zproc:
         orig_names = zorig.namelist()
         proc_names = zproc.namelist()
 
@@ -149,7 +162,8 @@ def restore_shapes(original_path, processed_path, output_path, text_replacements
 
         # 加工後ファイル内で既に使われているdrawingファイル名の最大番号を調べ、衝突を避ける
         existing_drawing_nums = [
-            int(m.group(1)) for n in proc_names
+            int(m.group(1))
+            for n in proc_names
             for m in [re.match(r"xl/drawings/restoredDrawing(\d+)\.xml$", n)]
             if m
         ]
@@ -168,7 +182,9 @@ def restore_shapes(original_path, processed_path, output_path, text_replacements
 
             drawing_path = _find_drawing_for_sheet(zorig, orig_target)
             if drawing_path is None or drawing_path not in orig_names:
-                report["skipped_sheets"].append({"sheet": sheet_name, "reason": "元シートに図形なし"})
+                report["skipped_sheets"].append(
+                    {"sheet": sheet_name, "reason": "元シートに図形なし"}
+                )
                 continue
 
             # 1. 図形XMLをコピー(新しい名前を割り当てて衝突回避)
@@ -184,8 +200,12 @@ def restore_shapes(original_path, processed_path, output_path, text_replacements
                     # (<a:t>[プロジェクト名]</a:t>) と、別ランに分かれている場合
                     # (<a:t>[</a:t><a:t>プロジェクト名</a:t><a:t>]</a:t>) の両方がある。
                     # 前者は角括弧ごと値に置き換え、後者は中身のランだけを置き換える(角括弧は残る)。
-                    drawing_text = drawing_text.replace(f"<a:t>[{key}]</a:t>", f"<a:t>{value}</a:t>")
-                    drawing_text = drawing_text.replace(f"<a:t>{key}</a:t>", f"<a:t>{value}</a:t>")
+                    drawing_text = drawing_text.replace(
+                        f"<a:t>[{key}]</a:t>", f"<a:t>{value}</a:t>"
+                    )
+                    drawing_text = drawing_text.replace(
+                        f"<a:t>{key}</a:t>", f"<a:t>{value}</a:t>"
+                    )
                 drawing_bytes = drawing_text.encode("utf-8")
             new_files[new_drawing_name] = drawing_bytes
 
@@ -195,7 +215,9 @@ def restore_shapes(original_path, processed_path, output_path, text_replacements
                 f'ContentType="application/vnd.openxmlformats-officedocument.drawing+xml"/>'
             )
             if override not in proc_content_types:
-                proc_content_types = proc_content_types.replace("</Types>", override + "</Types>")
+                proc_content_types = proc_content_types.replace(
+                    "</Types>", override + "</Types>"
+                )
 
             # 3. 加工後シートの.rels を読み込み(無ければ新規作成)し、リレーションシップを追加
             sheet_dir = "/".join(proc_target.split("/")[:-1])
@@ -219,7 +241,9 @@ def restore_shapes(original_path, processed_path, output_path, text_replacements
                 f'Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" '
                 f'Target="{rel_target}"/>'
             )
-            rels_xml = rels_xml.replace("</Relationships>", new_rel + "</Relationships>")
+            rels_xml = rels_xml.replace(
+                "</Relationships>", new_rel + "</Relationships>"
+            )
             updated_files[rels_path] = rels_xml.encode("utf-8")
 
             # 4. 加工後シートXMLに<drawing r:id="..."/>を挿入(legacyDrawingの直前、無ければ</worksheet>の直前)
@@ -230,7 +254,7 @@ def restore_shapes(original_path, processed_path, output_path, text_replacements
 
             # <drawing r:id="..."/> を使うには、ルート要素にr名前空間の宣言が必要
             # (openpyxlの出力は、他にr:属性を使う要素が無いシートではxmlns:rを省略するため)
-            if 'xmlns:r=' not in sheet_xml.split('>', 1)[0]:
+            if "xmlns:r=" not in sheet_xml.split(">", 1)[0]:
                 sheet_xml = sheet_xml.replace(
                     '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"',
                     f'<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" '
@@ -240,14 +264,20 @@ def restore_shapes(original_path, processed_path, output_path, text_replacements
 
             drawing_el = f'<drawing r:id="{new_rid}"/>'
             if "<legacyDrawing" in sheet_xml:
-                sheet_xml = sheet_xml.replace("<legacyDrawing", drawing_el + "<legacyDrawing", 1)
+                sheet_xml = sheet_xml.replace(
+                    "<legacyDrawing", drawing_el + "<legacyDrawing", 1
+                )
             elif "<extLst>" in sheet_xml:
                 sheet_xml = sheet_xml.replace("<extLst>", drawing_el + "<extLst>", 1)
             else:
-                sheet_xml = sheet_xml.replace("</worksheet>", drawing_el + "</worksheet>")
+                sheet_xml = sheet_xml.replace(
+                    "</worksheet>", drawing_el + "</worksheet>"
+                )
             updated_files[proc_target] = sheet_xml.encode("utf-8")
 
-            report["restored_sheets"].append({"sheet": sheet_name, "drawing": new_drawing_name})
+            report["restored_sheets"].append(
+                {"sheet": sheet_name, "drawing": new_drawing_name}
+            )
 
         updated_files["[Content_Types].xml"] = proc_content_types.encode("utf-8")
 
@@ -270,19 +300,17 @@ def restore_shapes(original_path, processed_path, output_path, text_replacements
 
 
 def main():
-    import json
-
     ensure_utf8_stdio()
-    if len(sys.argv) < 4 or sys.argv[1] in ("-h", "--help"):
-        print(__doc__)
-        sys.exit(0 if len(sys.argv) > 1 and sys.argv[1] in ("-h", "--help") else 2)
+    import json
 
     original_path = sys.argv[1]
     processed_path = sys.argv[2]
     output_path = sys.argv[3]
     text_replacements = json.loads(sys.argv[4]) if len(sys.argv) > 4 else None
 
-    report = restore_shapes(original_path, processed_path, output_path, text_replacements)
+    report = restore_shapes(
+        original_path, processed_path, output_path, text_replacements
+    )
 
     print(f"=== 図形復元結果: {output_path} ===")
     if report["restored_sheets"]:

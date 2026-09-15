@@ -16,10 +16,14 @@ apply_mapping.py / duplicate_sheet.py / extend_table_rows.py で処理した後�
 使い方:
     python verify_layout.py <反映前xlsxパス> <反映後xlsxパス>
 
+例(apply_mapping.pyで書き込む前後のファイルを比較する場合):
+    python verify_layout.py テーブル一覧.xlsx 出力.xlsx
+
 終了コード:
     0 = 構造の差分なし(合格)
     1 = 構造に差分あり(不合格。詳細を標準出力に表示)
 """
+
 import sys
 from pathlib import Path
 
@@ -34,7 +38,9 @@ def diff_sheet(name, before, after):
     diffs = []
 
     if before["dimensions"] != after["dimensions"]:
-        diffs.append(f"シート範囲(行数×列数)が変化: {before['dimensions']} -> {after['dimensions']}")
+        diffs.append(
+            f"シート範囲(行数×列数)が変化: {before['dimensions']} -> {after['dimensions']}"
+        )
 
     if before["merged_cells"] != after["merged_cells"]:
         added = sorted(set(after["merged_cells"]) - set(before["merged_cells"]))
@@ -50,15 +56,19 @@ def diff_sheet(name, before, after):
     if before["col_widths"] != after["col_widths"]:
         diffs.append("列の幅が変化した箇所があります")
 
-    fill_diff = {k: (before["fills"].get(k), after["fills"].get(k))
-                 for k in set(before["fills"]) | set(after["fills"])
-                 if before["fills"].get(k) != after["fills"].get(k)}
+    fill_diff = {
+        k: (before["fills"].get(k), after["fills"].get(k))
+        for k in set(before["fills"]) | set(after["fills"])
+        if before["fills"].get(k) != after["fills"].get(k)
+    }
     if fill_diff:
         diffs.append(f"背景色が変化したセル: {fill_diff}")
 
-    font_diff = {k: (before["fonts"].get(k), after["fonts"].get(k))
-                 for k in set(before["fonts"]) | set(after["fonts"])
-                 if before["fonts"].get(k) != after["fonts"].get(k)}
+    font_diff = {
+        k: (before["fonts"].get(k), after["fonts"].get(k))
+        for k in set(before["fonts"]) | set(after["fonts"])
+        if before["fonts"].get(k) != after["fonts"].get(k)
+    }
     if font_diff:
         diffs.append(f"フォント色が変化したセル: {font_diff}")
 
@@ -66,9 +76,15 @@ def diff_sheet(name, before, after):
     if removed_borders:
         diffs.append(f"罫線が消えたセル: {sorted(removed_borders)}")
 
-    formula_diff = {k: (before["formulas"].get(k), after["formulas"].get(k))
-                    for k in set(before["formulas"]) | set(after["formulas"])
-                    if before["formulas"].get(k) != after["formulas"].get(k)}
+    added_borders = after["borders"] - before["borders"]
+    if added_borders:
+        diffs.append(f"罫線が新たに追加されたセル: {sorted(added_borders)}")
+
+    formula_diff = {
+        k: (before["formulas"].get(k), after["formulas"].get(k))
+        for k in set(before["formulas"]) | set(after["formulas"])
+        if before["formulas"].get(k) != after["formulas"].get(k)
+    }
     if formula_diff:
         diffs.append(
             f"数式が変化・消失したセル: {formula_diff}"
@@ -76,7 +92,9 @@ def diff_sheet(name, before, after):
         )
 
     if before["validations"] != after["validations"]:
-        diffs.append(f"入力規則(プルダウン)が変化: {before['validations']} -> {after['validations']}")
+        diffs.append(
+            f"入力規則(プルダウン)が変化: {before['validations']} -> {after['validations']}"
+        )
 
     if before["sheet_protection"] != after["sheet_protection"]:
         diffs.append("シート保護の設定が変化しました")
@@ -118,8 +136,8 @@ def verify(before_path, after_path):
 
     # 図形の個数(シートごと)が変化していないかを確認。
     # 有無だけでなく個数を見るのは、「元ファイル」に誤ってサンプル/実例ファイルを指定した場合、
-    # 図形自体は失われないが、古い図形が新しい図形に上乗せされて増える(表紙の二重表示)ことを
-    # 検知するため。
+    # 図形自体は失われないが、古い図形が新しい図形に上乗せされて増える(表紙の二重表示)事故を
+    # 検知するため(実際にこの事故が発生したことを確認済み)。
     before_counts = shape_anchor_counts(before_path)
     after_counts = shape_anchor_counts(after_path)
     increased = {
@@ -130,11 +148,9 @@ def verify(before_path, after_path):
     if increased:
         all_diffs.setdefault("__workbook__", []).append(
             f"図形の個数が増えたシート: {increased}"
-            f"（`insert_flow_diagram.py`で処理フロー図を意図的に追加した場合は正常な差分。"
-            f"意図した追加でない場合は、「元ファイル」にsample/実例ファイルを誤って指定した"
-            f"可能性がある。古い図形ベースの表紙が新しいセルベースの表紙に重なって二重表示される"
-            f"事故が起きるため、restore_shapes.py・duplicate_sheet.py・apply_mapping.py等の"
-            f"「元xlsxパス」引数を確認すること）"
+            f"（「元ファイル」にsample/実例ファイルを誤って指定すると、古い図形ベースの表紙が"
+            f"新しいセルベースの表紙に重なって二重表示される事故が起きる。restore_shapes.py・"
+            f"duplicate_sheet.py・apply_mapping.py等の「元xlsxパス」引数を確認すること）"
         )
 
     return all_diffs
