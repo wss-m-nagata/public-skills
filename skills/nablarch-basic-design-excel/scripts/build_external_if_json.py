@@ -26,7 +26,9 @@
   "transfer": "Lambda Invoke（同期）",          # 授受方式
   "charset": "UTF-8",
   "encrypted": "無し",                          # 無し / 有り
-  "remarks": "なし。",                          # 特記事項
+  "remarks": ["なし。"],                        # 特記事項。1要素=1行(E28から連番セルへ)。
+                                                #   意味のまとまり(句点等)で呼び出し側が分割する。
+                                                #   最大4行(E28:E31の罫線内)。文字列1個でも可（後方互換）。
   "header": {"pj": "…", "system": "…", "author": "…", "date": 46279,
              "company": "…", "dept": "…"},      # date はExcelのシリアル値
   "records": [                                  # 先頭がルートレコード。最大3件
@@ -68,6 +70,9 @@ STRUCT_SHEET = "2. レコード構成"
 # 『【レコード名】』のブロック（レコード名行, レコードID行, データ先頭行）と1ブロックの行数
 BLOCKS = [(7, 8, 10), (18, 19, 20), (28, 29, 30)]
 BLOCK_ROWS = 7
+
+# 『1. 外部インタフェース仕様』シートの特記事項欄。E28を先頭に、罫線がE31までしか無いため最大4行
+REMARKS_MAX_LINES = 4
 SAMPLE_LABEL_ROW = 39  # データ構成サンプル／データ構成イメージの見出し行
 IMAGE_COL = "Y"  # データ構成イメージ欄の左端の列
 
@@ -207,11 +212,26 @@ def build_mapping(d, sheet_name):
         "E21": d["transfer"],
         ENCRYPT_CELL[d["encrypted"]]: "☑" + d["encrypted"],
         "E24": d["charset"],
-        "E28": d["remarks"],
     }
     cyc_cell, cyc_detail = CYCLE_CELL[d["cycle"]]
     spec[cyc_cell] = "☑" + d["cycle"]
     spec[cyc_detail] = d["cycle_detail"]
+
+    # 特記事項(E28)は、テンプレートの罫線がE28〜E31の4行分しか無い。
+    # 文字列(従来形式)ならE28の1行、配列(1要素=1行)ならE28から連番セルへ展開する。
+    # 意味のまとまり(句点等)での分割は呼び出し側(電文定義JSON)の責務とし、
+    # ここでは機械的な文字列処理(句点split等)を行わない。
+    remarks = d["remarks"]
+    if isinstance(remarks, str):
+        remarks = [remarks]
+    if len(remarks) > REMARKS_MAX_LINES:
+        raise ValueError(
+            "remarksは最大%d行までです（テンプレートのE28:E%dの罫線内）。"
+            "現在%d行あります。電文定義JSON側で行数を減らしてください。"
+            % (REMARKS_MAX_LINES, 27 + REMARKS_MAX_LINES, len(remarks))
+        )
+    for i, line in enumerate(remarks):
+        spec["E%d" % (28 + i)] = line
 
     # レコード構成はルートレコード1行だけ。該当しない欄は「-」で表す
     root = records[0]
