@@ -22,6 +22,7 @@ duplicate_sheet.pyとの違い:
 例:
     python rename_sheet.py システム機能設計書.xlsx "2. 取引ID（取引名）" "2. E10101（評価依頼受付）" 出力.xlsx
 """
+
 import sys
 import argparse
 from pathlib import Path
@@ -37,7 +38,9 @@ MAX_SHEET_NAME_LENGTH = 31
 def rename_sheet(xlsx_path, old_name, new_name, output_path):
     wb = openpyxl.load_workbook(xlsx_path)
     if old_name not in wb.sheetnames:
-        raise ValueError(f"シートが存在しません: {old_name}（現在のシート構成: {wb.sheetnames}）")
+        raise ValueError(
+            f"シートが存在しません: {old_name}（現在のシート構成: {wb.sheetnames}）"
+        )
     if new_name != old_name and new_name in wb.sheetnames:
         raise ValueError(f"シート名が既に存在します(重複はできません): {new_name}")
     if len(new_name) > MAX_SHEET_NAME_LENGTH:
@@ -61,18 +64,25 @@ def rename_sheet(xlsx_path, old_name, new_name, output_path):
 
 def main():
     ensure_utf8_stdio()
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     parser.add_argument("xlsx_path")
     parser.add_argument("old_name")
     parser.add_argument("new_name")
     parser.add_argument("output_path")
     args = parser.parse_args()
 
-    result = rename_sheet(args.xlsx_path, args.old_name, args.new_name, args.output_path)
+    result = rename_sheet(
+        args.xlsx_path, args.old_name, args.new_name, args.output_path
+    )
     print(f"=== シートリネーム結果: {args.output_path} ===")
     print(f"『{result['old_name']}』 -> 『{result['new_name']}』")
     print(f"シート構成: {result['sheet_order']}")
     print("\n※目次シートにこのシート名への参照がある場合は、手動での更新も忘れずに。")
+    print(
+        "  外部インタフェース設計書(JSON/CSV)の場合は sync_toc_record_sheets.py で機械的に同期できます。"
+    )
 
 
 if __name__ == "__main__":
