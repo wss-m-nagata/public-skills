@@ -1,0 +1,350 @@
+<mxfile host="app.diagrams.net" type="device">
+    <diagram id="page1" name="①新規作成・公開">
+        <mxGraphModel dx="1400" dy="800" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2700" pageHeight="1100" math="0" shadow="0" background="#FFFFFF">
+            <root>
+                <mxCell id="0" />
+                <mxCell id="1" parent="0" />
+                <mxCell id="n1" value="① お知らせ管理　新規作成から公開まで（左から右へ読む）" style="text;html=1;align=left;verticalAlign=middle;fontSize=18;fontStyle=1;fontColor=#263238;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="24" width="1200" height="30" as="geometry" />
+                </mxCell>
+                <mxCell id="n2" value="AWS（本システム）" style="sketch=0;outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=0;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_aws_cloud_alt;strokeColor=#232F3E;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#232F3E;dashed=0;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="70" width="2600" height="900" as="geometry" />
+                </mxCell>
+                <mxCell id="n3" value="担当者" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.user;" vertex="1" parent="1">
+                    <mxGeometry x="70" y="148" width="48" height="48" as="geometry" />
+                </mxCell>
+                <mxCell id="n4" value="お知らせ一覧画面" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1976D2;strokeWidth=2;fontColor=#0D47A1;fontSize=12;" vertex="1" parent="1">
+                    <mxGeometry x="150" y="140" width="170" height="64" as="geometry" />
+                </mxCell>
+                <mxCell id="n5" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#ED7100;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda_function;" vertex="1" parent="1">
+                    <mxGeometry x="463" y="338" width="36" height="36" as="geometry" />
+                </mxCell>
+                <mxCell id="n6" value="下書きを1件作る" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#ED7100;fontColor=#333333;fontSize=11;align=left;spacingLeft=10;verticalAlign=middle;" vertex="1" parent="1">
+                    <mxGeometry x="505" y="330" width="220" height="52" as="geometry" />
+                </mxCell>
+                <mxCell id="n7" value="お知らせ編集画面" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1976D2;strokeWidth=2;fontColor=#0D47A1;fontSize=12;" vertex="1" parent="1">
+                    <mxGeometry x="892" y="140" width="190" height="64" as="geometry" />
+                </mxCell>
+                <mxCell id="n8" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#ED7100;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda_function;" vertex="1" parent="1">
+                    <mxGeometry x="1560" y="338" width="36" height="36" as="geometry" />
+                </mxCell>
+                <mxCell id="n9" value="お知らせを公開する" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#ED7100;fontColor=#333333;fontSize=11;align=left;spacingLeft=10;verticalAlign=middle;" vertex="1" parent="1">
+                    <mxGeometry x="1602" y="330" width="220" height="52" as="geometry" />
+                </mxCell>
+                <mxCell id="n10" value="お知らせ詳細画面" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1976D2;strokeWidth=2;fontColor=#0D47A1;fontSize=12;" vertex="1" parent="1">
+                    <mxGeometry x="1800" y="140" width="190" height="64" as="geometry" />
+                </mxCell>
+                <mxCell id="n11" value="起動" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeColor=#546E7A;fontSize=10;fontColor=#546E7A;labelBackgroundColor=#FFFFFF;jettySize=auto;orthogonalLoop=1;" edge="1" parent="1" source="n3" target="n4">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="n12" value="① 新規作成を押す" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeColor=#546E7A;fontSize=10;fontColor=#546E7A;labelBackgroundColor=#FFFFFF;jettySize=auto;orthogonalLoop=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n4" target="n6">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="n13" value="② 採番されたIDを返す" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeColor=#8D6E63;fontSize=10;fontColor=#8D6E63;labelBackgroundColor=#FFFFFF;jettySize=auto;orthogonalLoop=1;dashed=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="n6" target="n4">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="n14" value="③ 採番されたIDの編集画面へ移る" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeColor=#546E7A;fontSize=10;fontColor=#546E7A;labelBackgroundColor=#FFFFFF;jettySize=auto;orthogonalLoop=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="n4" target="n7">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="n15" value="公開する" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeColor=#546E7A;fontSize=10;fontColor=#546E7A;labelBackgroundColor=#FFFFFF;jettySize=auto;orthogonalLoop=1;" edge="1" parent="1" source="n7" target="n9">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="n16" value="公開後の内容を見る" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeColor=#546E7A;fontSize=10;fontColor=#546E7A;labelBackgroundColor=#FFFFFF;jettySize=auto;orthogonalLoop=1;exitX=1;exitY=0.15;exitDx=0;exitDy=0;entryX=0;entryY=0.15;entryDx=0;entryDy=0;" edge="1" parent="1" source="n7" target="n10">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="n17" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#ED7100;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda_function;" vertex="1" parent="1">
+                    <mxGeometry x="110" y="338" width="36" height="36" as="geometry" />
+                </mxCell>
+                <mxCell id="n18" value="お知らせの一覧を返す" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#ED7100;fontColor=#333333;fontSize=11;align=left;spacingLeft=10;verticalAlign=middle;" vertex="1" parent="1">
+                    <mxGeometry x="152" y="330" width="230" height="52" as="geometry" />
+                </mxCell>
+                <mxCell id="n19" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#ED7100;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda_function;" vertex="1" parent="1">
+                    <mxGeometry x="790" y="338" width="36" height="36" as="geometry" />
+                </mxCell>
+                <mxCell id="n20" value="お知らせを1件返す" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#ED7100;fontColor=#333333;fontSize=11;align=left;spacingLeft=10;verticalAlign=middle;" vertex="1" parent="1">
+                    <mxGeometry x="832" y="330" width="230" height="52" as="geometry" />
+                </mxCell>
+                <mxCell id="n21" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#ED7100;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda_function;" vertex="1" parent="1">
+                    <mxGeometry x="1180" y="338" width="36" height="36" as="geometry" />
+                </mxCell>
+                <mxCell id="n22" value="お知らせを保存する" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#ED7100;fontColor=#333333;fontSize=11;align=left;spacingLeft=10;verticalAlign=middle;" vertex="1" parent="1">
+                    <mxGeometry x="1222" y="330" width="230" height="52" as="geometry" />
+                </mxCell>
+                <mxCell id="n23" value="一覧を表示する" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeColor=#546E7A;fontSize=10;fontColor=#546E7A;labelBackgroundColor=#FFFFFF;jettySize=auto;orthogonalLoop=1;exitX=0.3;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n4" target="n18">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="n24" value="開いたとき読み込む" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeColor=#546E7A;fontSize=10;fontColor=#546E7A;labelBackgroundColor=#FFFFFF;jettySize=auto;orthogonalLoop=1;exitX=0.3;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n7" target="n20">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="n25" value="一時保存する" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeColor=#546E7A;fontSize=10;fontColor=#546E7A;labelBackgroundColor=#FFFFFF;jettySize=auto;orthogonalLoop=1;exitX=0.7;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n7" target="n22">
+                    <mxGeometry relative="1" as="geometry" x="0.8" />
+                </mxCell>
+                <mxCell id="n26" value="読み取り元" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3F7FB;strokeColor=#90CAF9;dashed=0;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=11;fontColor=#1565C0;" vertex="1" parent="1">
+                    <mxGeometry x="152" y="420" width="256" height="76" as="geometry" />
+                </mxCell>
+                <mxCell id="n27" value="お知らせ" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=7;fillColor=#FFFFFF;strokeColor=#3949AB;fontColor=#1A237E;fontSize=10;" vertex="1" parent="1">
+                    <mxGeometry x="164" y="446" width="220" height="38" as="geometry" />
+                </mxCell>
+                <mxCell id="n28" value="読み取り" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeColor=#1976D2;fontSize=10;fontColor=#1976D2;labelBackgroundColor=#FFFFFF;jettySize=auto;orthogonalLoop=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="n26" target="n18">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="n29" value="一覧が使うのは題名・状態・公開日だけだが、&lt;br&gt;明細も同時に読んでいる。" style="text;html=1;align=left;verticalAlign=top;fontSize=10;fontColor=#78909C;" vertex="1" parent="1">
+                    <mxGeometry x="110" y="504" width="320" height="49" as="geometry" />
+                </mxCell>
+                <mxCell id="n30" value="書き込み先" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8F2;strokeColor=#A5D6A7;dashed=0;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=11;fontColor=#2E7D32;" vertex="1" parent="1">
+                    <mxGeometry x="492" y="420" width="256" height="76" as="geometry" />
+                </mxCell>
+                <mxCell id="n31" value="お知らせ" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=7;fillColor=#FFFFFF;strokeColor=#3949AB;fontColor=#1A237E;fontSize=10;" vertex="1" parent="1">
+                    <mxGeometry x="504" y="446" width="220" height="38" as="geometry" />
+                </mxCell>
+                <mxCell id="n32" value="追加" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeColor=#2E7D32;fontSize=10;fontColor=#2E7D32;labelBackgroundColor=#FFFFFF;jettySize=auto;orthogonalLoop=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n6" target="n30">
+                    <mxGeometry relative="1" as="geometry" x="-0.8" />
+                </mxCell>
+                <mxCell id="n33" value="読み取り元" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3F7FB;strokeColor=#90CAF9;dashed=0;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=11;fontColor=#1565C0;" vertex="1" parent="1">
+                    <mxGeometry x="819" y="420" width="256" height="122" as="geometry" />
+                </mxCell>
+                <mxCell id="n34" value="お知らせ" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=7;fillColor=#FFFFFF;strokeColor=#3949AB;fontColor=#1A237E;fontSize=10;" vertex="1" parent="1">
+                    <mxGeometry x="831" y="446" width="220" height="38" as="geometry" />
+                </mxCell>
+                <mxCell id="n35" value="お知らせ添付ファイル" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=7;fillColor=#FFFFFF;strokeColor=#3949AB;fontColor=#1A237E;fontSize=10;" vertex="1" parent="1">
+                    <mxGeometry x="831" y="492" width="220" height="38" as="geometry" />
+                </mxCell>
+                <mxCell id="n36" value="読み取り" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeColor=#1976D2;fontSize=10;fontColor=#1976D2;labelBackgroundColor=#FFFFFF;jettySize=auto;orthogonalLoop=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="n33" target="n20">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="n37" value="書き込み先" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8F2;strokeColor=#A5D6A7;dashed=0;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=11;fontColor=#2E7D32;" vertex="1" parent="1">
+                    <mxGeometry x="1222" y="420" width="256" height="122" as="geometry" />
+                </mxCell>
+                <mxCell id="n38" value="お知らせ" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=7;fillColor=#FFFFFF;strokeColor=#3949AB;fontColor=#1A237E;fontSize=10;" vertex="1" parent="1">
+                    <mxGeometry x="1234" y="446" width="220" height="38" as="geometry" />
+                </mxCell>
+                <mxCell id="n39" value="お知らせ添付ファイル" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=7;fillColor=#FFFFFF;strokeColor=#3949AB;fontColor=#1A237E;fontSize=10;" vertex="1" parent="1">
+                    <mxGeometry x="1234" y="492" width="220" height="38" as="geometry" />
+                </mxCell>
+                <mxCell id="n40" value="更新／入れ直し" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeColor=#2E7D32;fontSize=10;fontColor=#2E7D32;labelBackgroundColor=#FFFFFF;jettySize=auto;orthogonalLoop=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n22" target="n37">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="n41" value="書き込み先" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8F2;strokeColor=#A5D6A7;dashed=0;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=11;fontColor=#2E7D32;" vertex="1" parent="1">
+                    <mxGeometry x="1965" y="420" width="256" height="122" as="geometry" />
+                </mxCell>
+                <mxCell id="n42" value="お知らせ" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=7;fillColor=#FFFFFF;strokeColor=#3949AB;fontColor=#1A237E;fontSize=10;" vertex="1" parent="1">
+                    <mxGeometry x="1977" y="446" width="220" height="38" as="geometry" />
+                </mxCell>
+                <mxCell id="n43" value="公開履歴" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=7;fillColor=#FFFFFF;strokeColor=#3949AB;fontColor=#1A237E;fontSize=10;" vertex="1" parent="1">
+                    <mxGeometry x="1977" y="492" width="220" height="38" as="geometry" />
+                </mxCell>
+                <mxCell id="n44" value="状態を更新／公開履歴を追記" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeColor=#2E7D32;fontSize=10;fontColor=#2E7D32;labelBackgroundColor=#FFFFFF;jettySize=auto;orthogonalLoop=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n9" target="n41">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="n45" value="書き込み先" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8F2;strokeColor=#A5D6A7;dashed=0;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=11;fontColor=#2E7D32;" vertex="1" parent="1">
+                    <mxGeometry x="2305" y="420" width="256" height="76" as="geometry" />
+                </mxCell>
+                <mxCell id="n46" value="通知キュー" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#00838F;fontColor=#006064;fontSize=10;arcSize=20;" vertex="1" parent="1">
+                    <mxGeometry x="2317" y="446" width="220" height="38" as="geometry" />
+                </mxCell>
+                <mxCell id="n47" value="通知の依頼を積む" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeColor=#2E7D32;fontSize=10;fontColor=#2E7D32;labelBackgroundColor=#FFFFFF;jettySize=auto;orthogonalLoop=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n9" target="n45">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="n48" value="&lt;b&gt;この先はこの図では扱わない&lt;/b&gt;&lt;br&gt;キューから先の通知メール送信は&lt;br&gt;「通知機能」の図で整理する。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#9E9E9E;dashed=1;fontColor=#616161;fontSize=11;align=left;verticalAlign=middle;spacingLeft=12;" vertex="1" parent="1">
+                    <mxGeometry x="2047" y="140" width="340" height="84" as="geometry" />
+                </mxCell>
+                <mxCell id="n49" value="&lt;b&gt;T.B.D　実装者に確認&lt;/b&gt;&lt;br&gt;要件「公開したお知らせの変更履歴を確認できること」に対し、現状は次の点が不足している。&lt;br&gt;&lt;br&gt;・&lt;b&gt;変更内容が残らない&lt;/b&gt;。公開履歴には公開日時しか記録されず、どこを直したのかは分からない。差分を残すか。&lt;br&gt;・&lt;b&gt;下書きの変更は履歴に残らない&lt;/b&gt;。公開したときだけ1件記録される。このタイミングでよいか。&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;&quot;&gt;※ この T.B.D はAIの自動生成です。内容は必ずしも正しいとは限りません。重要な情報は確認するようにしてください。&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;strokeWidth=2;dashed=1;fontColor=#B71C1C;fontSize=11;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
+                    <mxGeometry x="790" y="620" width="740" height="170" as="geometry" />
+                </mxCell>
+                <mxCell id="n50" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=none;endFill=1;strokeColor=#C62828;fontSize=10;fontColor=#C62828;labelBackgroundColor=#FFFFFF;jettySize=auto;orthogonalLoop=1;dashed=1;exitX=1;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n49" target="n22">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="n51" value="新規作成のしくみ" style="text;html=1;align=left;verticalAlign=top;fontSize=12;fontStyle=1;fontColor=#37474F;" vertex="1" parent="1">
+                    <mxGeometry x="150" y="760" width="320" height="20" as="geometry" />
+                </mxCell>
+                <mxCell id="n52" value="「新規作成」を押した時点で、DBに下書きが1件できる。&lt;br&gt;空の編集画面を先に開いて後から保存するのではなく、&lt;b&gt;先に器を作ってから編集画面へ移る&lt;/b&gt;作りである。&lt;br&gt;編集画面のURLには、このとき採番されたIDを使う。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#FB8C00;fontColor=#5D4037;fontSize=11;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
+                    <mxGeometry x="150" y="785" width="500" height="110" as="geometry" />
+                </mxCell>
+                <mxCell id="n53" value="この図の見かた" style="text;html=1;align=left;verticalAlign=top;fontSize=12;fontStyle=1;fontColor=#37474F;" vertex="1" parent="1">
+                    <mxGeometry x="1620" y="760" width="300" height="20" as="geometry" />
+                </mxCell>
+                <mxCell id="n54" value="・上段が画面、中段がその画面から呼ばれる処理、下段がテーブル。左から右へ読む。&lt;br&gt;・テーブルへの&lt;b&gt;書き込みは下向きの緑&lt;/b&gt;、テーブルからの&lt;b&gt;読み取りは上向きの青&lt;/b&gt;。&lt;br&gt;・丸数字は「新規作成を押してから編集画面が開くまで」の順序を示す。&lt;br&gt;・同じテーブルが複数の処理に出てくる。処理ごとに流れを追えるよう重複して描いた。" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFDE7;strokeColor=#FBC02D;fontColor=#5D4037;fontSize=11;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
+                    <mxGeometry x="1620" y="785" width="700" height="110" as="geometry" />
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="page2" name="②削除">
+        <mxGraphModel dx="1400" dy="800" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2700" pageHeight="1100" math="0" shadow="0" background="#FFFFFF">
+            <root>
+                <mxCell id="0" />
+                <mxCell id="1" parent="0" />
+                <mxCell id="n1" value="② 削除（物理削除）" style="text;html=1;align=left;verticalAlign=middle;fontSize=18;fontStyle=1;fontColor=#263238;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="24" width="1200" height="30" as="geometry" />
+                </mxCell>
+                <mxCell id="n2" value="AWS（本システム）" style="sketch=0;outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=0;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_aws_cloud_alt;strokeColor=#232F3E;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#232F3E;dashed=0;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="70" width="1900" height="700" as="geometry" />
+                </mxCell>
+                <mxCell id="n3" value="担当者" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.user;" vertex="1" parent="1">
+                    <mxGeometry x="70" y="148" width="48" height="48" as="geometry" />
+                </mxCell>
+                <mxCell id="n4" value="お知らせ一覧画面" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1976D2;strokeWidth=2;fontColor=#0D47A1;fontSize=12;" vertex="1" parent="1">
+                    <mxGeometry x="150" y="140" width="170" height="64" as="geometry" />
+                </mxCell>
+                <mxCell id="n5" value="お知らせ詳細画面" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1976D2;strokeWidth=2;fontColor=#0D47A1;fontSize=12;" vertex="1" parent="1">
+                    <mxGeometry x="390" y="140" width="170" height="64" as="geometry" />
+                </mxCell>
+                <mxCell id="n6" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#ED7100;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda_function;" vertex="1" parent="1">
+                    <mxGeometry x="640" y="148" width="36" height="36" as="geometry" />
+                </mxCell>
+                <mxCell id="n7" value="お知らせを物理削除する" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#ED7100;fontColor=#333333;fontSize=11;align=left;spacingLeft=10;verticalAlign=middle;" vertex="1" parent="1">
+                    <mxGeometry x="682" y="140" width="240" height="52" as="geometry" />
+                </mxCell>
+                <mxCell id="n8" value="起動" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeColor=#546E7A;fontSize=10;fontColor=#546E7A;labelBackgroundColor=#FFFFFF;jettySize=auto;orthogonalLoop=1;" edge="1" parent="1" source="n3" target="n4">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="n9" value="開く" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeColor=#546E7A;fontSize=10;fontColor=#546E7A;labelBackgroundColor=#FFFFFF;jettySize=auto;orthogonalLoop=1;" edge="1" parent="1" source="n4" target="n5">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="n10" value="① 削除" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeColor=#546E7A;fontSize=10;fontColor=#546E7A;labelBackgroundColor=#FFFFFF;jettySize=auto;orthogonalLoop=1;" edge="1" parent="1" source="n5" target="n7">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="n11" value="① 削除" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeColor=#546E7A;fontSize=10;fontColor=#546E7A;labelBackgroundColor=#FFFFFF;jettySize=auto;orthogonalLoop=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.2;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n4" target="n7">
+                    <mxGeometry relative="1" as="geometry" x="-0.6" />
+                </mxCell>
+                <mxCell id="n12" value="② 削除する" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8F2;strokeColor=#A5D6A7;dashed=0;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=11;fontColor=#2E7D32;" vertex="1" parent="1">
+                    <mxGeometry x="700" y="420" width="256" height="76" as="geometry" />
+                </mxCell>
+                <mxCell id="n13" value="お知らせ" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=7;fillColor=#FFFFFF;strokeColor=#3949AB;fontColor=#1A237E;fontSize=10;" vertex="1" parent="1">
+                    <mxGeometry x="712" y="446" width="220" height="38" as="geometry" />
+                </mxCell>
+                <mxCell id="n14" value="行を削除する" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeColor=#C62828;fontSize=10;fontColor=#C62828;labelBackgroundColor=#FFFFFF;jettySize=auto;orthogonalLoop=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n7" target="n12">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="n15" value="③ 外部キーのCASCADEで一緒に消える" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8F2;strokeColor=#A5D6A7;dashed=0;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=11;fontColor=#2E7D32;" vertex="1" parent="1">
+                    <mxGeometry x="1016" y="420" width="256" height="122" as="geometry" />
+                </mxCell>
+                <mxCell id="n16" value="お知らせ添付ファイル" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=7;fillColor=#FFFFFF;strokeColor=#3949AB;fontColor=#1A237E;fontSize=10;" vertex="1" parent="1">
+                    <mxGeometry x="1028" y="446" width="220" height="38" as="geometry" />
+                </mxCell>
+                <mxCell id="n17" value="公開履歴" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=7;fillColor=#FFFFFF;strokeColor=#3949AB;fontColor=#1A237E;fontSize=10;" vertex="1" parent="1">
+                    <mxGeometry x="1028" y="492" width="220" height="38" as="geometry" />
+                </mxCell>
+                <mxCell id="n18" value="連鎖して削除される" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeColor=#C62828;fontSize=10;fontColor=#C62828;labelBackgroundColor=#FFFFFF;jettySize=auto;orthogonalLoop=1;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n12" target="n15">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="n19" value="権限判定" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3F7FB;strokeColor=#90CAF9;dashed=0;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=11;fontColor=#1565C0;" vertex="1" parent="1">
+                    <mxGeometry x="1450" y="420" width="256" height="76" as="geometry" />
+                </mxCell>
+                <mxCell id="n20" value="利用者マスタ" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=7;fillColor=#FFFFFF;strokeColor=#3949AB;fontColor=#1A237E;fontSize=10;" vertex="1" parent="1">
+                    <mxGeometry x="1462" y="446" width="220" height="38" as="geometry" />
+                </mxCell>
+                <mxCell id="n21" value="ロールを判定する" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeColor=#1976D2;fontSize=10;fontColor=#1976D2;labelBackgroundColor=#FFFFFF;jettySize=auto;orthogonalLoop=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n19" target="n7">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="n22" value="削除の性質" style="text;html=1;align=left;verticalAlign=top;fontSize=12;fontStyle=1;fontColor=#37474F;" vertex="1" parent="1">
+                    <mxGeometry x="150" y="680" width="320" height="20" as="geometry" />
+                </mxCell>
+                <mxCell id="n23" value="・論理削除ではなく物理削除。行そのものが消えるため元に戻せない。&lt;br&gt;・添付ファイルと公開履歴は外部キーのCASCADEで自動的に消えるため、処理は本体の1行だけを削除する。&lt;br&gt;・削除できるのは管理者のみ。すべての処理の入口でロールを判定する。" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFDE7;strokeColor=#FBC02D;fontColor=#5D4037;fontSize=11;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
+                    <mxGeometry x="150" y="705" width="1000" height="80" as="geometry" />
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="page3" name="③凡例・和名対応">
+        <mxGraphModel dx="1400" dy="800" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2700" pageHeight="1100" math="0" shadow="0" background="#FFFFFF">
+            <root>
+                <mxCell id="0" />
+                <mxCell id="1" parent="0" />
+                <mxCell id="n1" value="③ 凡例と和名の対応" style="text;html=1;align=left;verticalAlign=middle;fontSize=18;fontStyle=1;fontColor=#263238;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="24" width="1200" height="30" as="geometry" />
+                </mxCell>
+                <mxCell id="n2" value="記号の意味" style="text;html=1;align=left;verticalAlign=top;fontSize=12;fontStyle=1;fontColor=#37474F;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="80" width="300" height="20" as="geometry" />
+                </mxCell>
+                <mxCell id="n3" value="画面" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1976D2;strokeWidth=2;fontColor=#0D47A1;fontSize=12;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="110" width="240" height="44" as="geometry" />
+                </mxCell>
+                <mxCell id="n4" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#ED7100;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda_function;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="170" width="36" height="36" as="geometry" />
+                </mxCell>
+                <mxCell id="n5" value="処理（何をするかを1〜2行で書く）" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#ED7100;fontColor=#333333;fontSize=11;align=left;spacingLeft=10;verticalAlign=middle;" vertex="1" parent="1">
+                    <mxGeometry x="82" y="170" width="198" height="36" as="geometry" />
+                </mxCell>
+                <mxCell id="n6" value="テーブル" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=7;fillColor=#FFFFFF;strokeColor=#3949AB;fontColor=#1A237E;fontSize=10;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="222" width="240" height="40" as="geometry" />
+                </mxCell>
+                <mxCell id="n7" value="DB以外の保存先（認証基盤・キュー・外部システム等）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#00838F;fontColor=#006064;fontSize=10;arcSize=20;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="278" width="240" height="40" as="geometry" />
+                </mxCell>
+                <mxCell id="n8" value="この処理では扱わないテーブル" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=7;fillColor=#F5F5F5;strokeColor=#BDBDBD;fontColor=#9E9E9E;fontSize=10;dashed=1;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="334" width="240" height="40" as="geometry" />
+                </mxCell>
+                <mxCell id="n9" value="読みかた" style="text;html=1;align=left;verticalAlign=top;fontSize=12;fontStyle=1;fontColor=#37474F;" vertex="1" parent="1">
+                    <mxGeometry x="340" y="80" width="300" height="20" as="geometry" />
+                </mxCell>
+                <mxCell id="n10" value="・上段が画面、中段がその画面から呼ばれる処理、下段がテーブル。&lt;br&gt;・左から右へ、操作の順に読む。&lt;br&gt;・テーブルへの&lt;b&gt;書き込みは下向きの緑&lt;/b&gt;の矢印。&lt;br&gt;・テーブルからの&lt;b&gt;読み取りは上向きの青&lt;/b&gt;の矢印。&lt;br&gt;・丸数字は、その操作の中での処理の順序を示す。&lt;br&gt;・同じテーブルが複数の処理に出てくることがある。&lt;br&gt;　処理ごとに流れを追えるようにするため、あえて重複して描いている。" style="text;html=1;align=left;verticalAlign=top;fontSize=11;fontColor=#37474F;" vertex="1" parent="1">
+                    <mxGeometry x="340" y="110" width="520" height="150" as="geometry" />
+                </mxCell>
+                <mxCell id="n11" value="名前の後ろの（　）" style="text;html=1;align=left;verticalAlign=top;fontSize=12;fontStyle=1;fontColor=#37474F;" vertex="1" parent="1">
+                    <mxGeometry x="340" y="275" width="300" height="20" as="geometry" />
+                </mxCell>
+                <mxCell id="n12" value="&lt;b&gt;この機能で作るかどうか&lt;/b&gt;を示す。見積もりで数える対象を見分けるための印である。&lt;br&gt;&lt;b&gt;（新規）&lt;/b&gt;　この機能で新しく作る。&lt;b&gt;作業量に数える&lt;/b&gt;&lt;br&gt;&lt;b&gt;（既存）&lt;/b&gt;　他の機能で作成済み。そのまま使う。数えない&lt;br&gt;無印　　　　すでに在るものを、そのまま使う&lt;br&gt;&lt;b&gt;どの機能・どのチームが作るのかは書かない。&lt;/b&gt;この図は役割分担を割り当てる図ではない。" style="text;html=1;align=left;verticalAlign=top;fontSize=11;fontColor=#37474F;" vertex="1" parent="1">
+                    <mxGeometry x="340" y="300" width="520" height="88" as="geometry" />
+                </mxCell>
+                <mxCell id="n13" value="線の色" style="text;html=1;align=left;verticalAlign=top;fontSize=12;fontStyle=1;fontColor=#37474F;" vertex="1" parent="1">
+                    <mxGeometry x="900" y="80" width="300" height="20" as="geometry" />
+                </mxCell>
+                <mxCell id="n14" value="灰色　　　：画面と処理のつながり&lt;br&gt;青　　　　：テーブルの読み取り&lt;br&gt;緑　　　　：テーブルへの書き込み（追加・更新）&lt;br&gt;赤　　　　：テーブルからの削除&lt;br&gt;茶（点線）：処理から画面への戻り&lt;br&gt;赤（点線）：外部キーによる連鎖削除" style="text;html=1;align=left;verticalAlign=top;fontSize=11;fontColor=#37474F;" vertex="1" parent="1">
+                    <mxGeometry x="900" y="110" width="420" height="130" as="geometry" />
+                </mxCell>
+                <mxCell id="n15" value="スキーマの和名" style="text;html=1;align=left;verticalAlign=top;fontSize=12;fontStyle=1;fontColor=#37474F;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="400" width="300" height="20" as="geometry" />
+                </mxCell>
+                <mxCell id="n16" value="お知らせスキーマ　＝　notice&lt;br&gt;共通データ基盤スキーマ　＝　common" style="text;html=1;align=left;verticalAlign=top;fontSize=11;fontColor=#37474F;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="425" width="420" height="50" as="geometry" />
+                </mxCell>
+                <mxCell id="n17" value="テーブルの和名と物理名" style="text;html=1;align=left;verticalAlign=top;fontSize=12;fontStyle=1;fontColor=#37474F;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="490" width="300" height="20" as="geometry" />
+                </mxCell>
+                <mxCell id="n18" value="和名（図で使う名前）" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#B0BEC5;fontSize=11;align=left;spacingLeft=8;fontColor=#37474F;fontStyle=1;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="515" width="250" height="30" as="geometry" />
+                </mxCell>
+                <mxCell id="n19" value="物理名（DB上の名前）" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#B0BEC5;fontSize=11;align=left;spacingLeft=8;fontColor=#37474F;fontStyle=1;" vertex="1" parent="1">
+                    <mxGeometry x="290" y="515" width="330" height="30" as="geometry" />
+                </mxCell>
+                <mxCell id="n20" value="お知らせ" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#B0BEC5;fontSize=11;align=left;spacingLeft=8;fontColor=#37474F;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="545" width="250" height="30" as="geometry" />
+                </mxCell>
+                <mxCell id="n21" value="notice.notice" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#B0BEC5;fontSize=11;align=left;spacingLeft=8;fontColor=#37474F;" vertex="1" parent="1">
+                    <mxGeometry x="290" y="545" width="330" height="30" as="geometry" />
+                </mxCell>
+                <mxCell id="n22" value="お知らせ添付ファイル" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#B0BEC5;fontSize=11;align=left;spacingLeft=8;fontColor=#37474F;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="575" width="250" height="30" as="geometry" />
+                </mxCell>
+                <mxCell id="n23" value="notice.notice_attachment" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#B0BEC5;fontSize=11;align=left;spacingLeft=8;fontColor=#37474F;" vertex="1" parent="1">
+                    <mxGeometry x="290" y="575" width="330" height="30" as="geometry" />
+                </mxCell>
+                <mxCell id="n24" value="公開履歴" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#B0BEC5;fontSize=11;align=left;spacingLeft=8;fontColor=#37474F;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="605" width="250" height="30" as="geometry" />
+                </mxCell>
+                <mxCell id="n25" value="notice.publish_history" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#B0BEC5;fontSize=11;align=left;spacingLeft=8;fontColor=#37474F;" vertex="1" parent="1">
+                    <mxGeometry x="290" y="605" width="330" height="30" as="geometry" />
+                </mxCell>
+                <mxCell id="n26" value="利用者マスタ" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#B0BEC5;fontSize=11;align=left;spacingLeft=8;fontColor=#37474F;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="635" width="250" height="30" as="geometry" />
+                </mxCell>
+                <mxCell id="n27" value="common.user_master" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#B0BEC5;fontSize=11;align=left;spacingLeft=8;fontColor=#37474F;" vertex="1" parent="1">
+                    <mxGeometry x="290" y="635" width="330" height="30" as="geometry" />
+                </mxCell>
+                <mxCell id="n28" value="この図の範囲" style="text;html=1;align=left;verticalAlign=top;fontSize=12;fontStyle=1;fontColor=#37474F;" vertex="1" parent="1">
+                    <mxGeometry x="1060" y="400" width="300" height="20" as="geometry" />
+                </mxCell>
+                <mxCell id="n29" value="・「お知らせ管理」を対象とする。&lt;br&gt;・公開後の通知メール送信は、この操作より後の工程のため含めない（「通知機能」の図）。&lt;br&gt;・現行の実装（As-Is）をそのまま図にしている。" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFDE7;strokeColor=#FBC02D;fontColor=#5D4037;fontSize=11;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
+                    <mxGeometry x="1060" y="425" width="620" height="145" as="geometry" />
+                </mxCell>
+                <mxCell id="n30" value="確認が必要な事項の書きかた" style="text;html=1;align=left;verticalAlign=top;fontSize=12;fontStyle=1;fontColor=#37474F;" vertex="1" parent="1">
+                    <mxGeometry x="700" y="600" width="300" height="20" as="geometry" />
+                </mxCell>
+                <mxCell id="n31" value="&lt;b&gt;T.B.D　実装者に確認&lt;/b&gt;&lt;br&gt;仕様が未確定な箇所、実装が要件を満たしていない箇所は、この赤い破線の枠で示す。冒頭に「T.B.D　実装者に確認」と書き、続けて&lt;b&gt;何を確認したいのか&lt;/b&gt;を箇条書きにする。&lt;br&gt;AIが書いたものは、&lt;b&gt;末尾に自動生成である旨を必ず添える&lt;/b&gt;（下記の定型文）。&lt;br&gt;他の処理フロー図でも同じ書式を使う。&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;&quot;&gt;※ この T.B.D はAIの自動生成です。内容は必ずしも正しいとは限りません。重要な情報は確認するようにしてください。&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;strokeWidth=2;dashed=1;fontColor=#B71C1C;fontSize=11;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
+                    <mxGeometry x="700" y="625" width="620" height="168" as="geometry" />
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
