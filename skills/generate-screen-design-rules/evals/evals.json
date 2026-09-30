@@ -1,0 +1,34 @@
+{
+  "skill_name": "generate-screen-design-rules",
+  "evals": [
+    {
+      "id": 0,
+      "name": "bootstrap-fresh-project",
+      "prompt": "新規のNext.jsプロジェクトの画面設計規約を作りたいです。docs/rules/screen-design-rules/ に生成してください。対応端末はPCとスマートフォン、Headerは使うがSide Navigationは使わない予定です。それ以外は特に指定はないのでおまかせします。",
+      "expected_output": "docs/rules/screen-design-rules/ 配下に、テンプレート(foundations.md, layout.md, navigation.md, components.md, page-patterns.md, accessibility.md, sources.md, README.md)が生成される。DADS/Carbonの内容が具体値まで落とし込まれており、「DADSを参照」等の抽象的な記述だけで終わっている項目がない。色はtokens.jsonから実HEX値が入っている。対応端末(PC+スマホ)とHeader使用/Side Navigation不使用というユーザー回答が該当項目に反映され、確定または要確認として扱われている。ユーザーが答えていないプロジェクト固有項目(ブランドカラー等)は要確認のまま残っている。",
+      "files": [],
+      "expectations": [
+        "docs/rules/screen-design-rules/ 配下にMarkdownファイル一式が生成されている",
+        "foundations.mdの色の項目に実HEX値(#で始まる値)が入っている",
+        "「DADSを参照する」「Carbonに準拠する」のような、出典名だけで終わる抽象的な記述が残っていない",
+        "layout.mdまたはnavigation.mdのSide Navigation関連項目が「使わない」という回答を反映した内容になっている",
+        "foundations.mdのブレークポイント項目に、PCとスマートフォン対応を反映した記述がある",
+        "ユーザーが回答していない項目(例: ブランドカラーの色相選定)は要確認のまま残っている"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "preserve-confirmed-values",
+      "prompt": "画面設計規約を最新化してください。ただし、すでに確定している値は変更しないでください。",
+      "expected_output": "既存のlayout.mdでHeader高さが「56px・確定」となっている値がそのまま保持され、Carbonの暫定値(48px)へ上書きされない。それ以外の暫定・要確認項目は通常どおり具体化が進む。",
+      "files": ["evals/files/eval1-existing-layout.md"],
+      "expectations": [
+        "更新後のlayout.mdでHeaderの高さが56pxのままである",
+        "更新後のlayout.mdでHeaderの状態が確定のままである(暫定や48pxに書き換えられていない)",
+        "Header以外の項目(基本グリッド、Side Navigation、Main Content、レスポンシブ等)は具体化が進んでいる",
+        "既存の確定理由(プロジェクト内の複数システムでヘッダー高さを統一するため 等)の記載が失われていない",
+        "components.mdのTable(Standard/Dense選択)・Dialog(使い分け)・Button(配置)など、プロジェクト固有の判断が必要な項目を、ユーザーに確認せず一方的に「確定」にしていない(暫定または確認事項のまま残っている)"
+      ]
+    }
+  ]
+}

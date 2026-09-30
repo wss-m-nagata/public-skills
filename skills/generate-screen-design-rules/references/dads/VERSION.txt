@@ -1,0 +1,15 @@
+source: https://design.digital.go.jp/dads/
+archive_url: https://design.digital.go.jp/dads/dads-markdown-20260909.zip
+archive_file: dads-markdown-20260909.zip
+retrieved_at: 2026-09-15
+notes: 上記アーカイブから、README.md記載の範囲のみ未編集で抜粋。
+
+[design-tokens/tokens.json]
+source: https://github.com/digital-go-jp/design-tokens
+path: figma/tokens.json
+ref: main
+commit: 298ea8c349721db463dd3feb804e5b8197061e5c
+commit_date: 2026-05-28
+retrieved_at: 2026-09-15
+license: MIT
+notes: Color/Typography/Sizeのデザイントークン定義（実HEX値含む）。未編集のまま全体を収録。

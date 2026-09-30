@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 apply_mapping.py / verify_layout.py / extract_structure.py / duplicate_sheet.py /
-extend_table_rows.py で共有するExcel構造解析・操作の共通処理。
+extend_table_rows.py / build_external_if_json.py / mark_changed_cells.py で共有する
+Excel構造解析・操作の共通処理。
 
 解析系の関数(color_str, resolve_list_values, get_validations_map,
 get_bordered_bbox, snapshot_sheet_structure)はファイルを書き換えない。
@@ -19,6 +20,7 @@ import tempfile
 from pathlib import Path
 
 import openpyxl
+from openpyxl.styles import Font
 from openpyxl.utils import get_column_letter, column_index_from_string
 from openpyxl.utils.cell import coordinate_from_string
 from openpyxl.worksheet.datavalidation import DataValidation
@@ -139,6 +141,36 @@ def get_merge_anchor(ws, coordinate):
         ):
             return f"{get_column_letter(merged_range.min_col)}{merged_range.min_row}"
     return coordinate
+
+
+def mark_font_red(ws, coordinate):
+    """
+    指定セル(結合セルの場合は書き込み可能な左上アンカー)の文字色だけを赤(FFFF0000)にする。
+    フォント色以外(フォント名・サイズ・太字・イタリック等)は元のまま維持する。
+
+    レビュー時に変更箇所を一目で分かるようにするためのマーキング用途であり、
+    電文・テーブル定義の意味には影響しない(build_external_if_json.pyの"changed"フラグ、
+    mark_changed_cells.pyの共通処理)。
+
+    値が空欄のセルは対象にしない(色を付けても見えず、意味が無いため)。
+    マークした場合はアンカー座標を返し、空欄でスキップした場合はNoneを返す。
+    """
+    anchor = get_merge_anchor(ws, coordinate)
+    cell = ws[anchor]
+    if cell.value in (None, ""):
+        return None
+    f = cell.font
+    cell.font = Font(
+        name=f.name,
+        size=f.size,
+        bold=f.bold,
+        italic=f.italic,
+        vertAlign=f.vertAlign,
+        underline=f.underline,
+        strike=f.strike,
+        color="FFFF0000",
+    )
+    return anchor
 
 
 def get_bordered_bbox(ws, max_scan_row=300, max_scan_col=60):

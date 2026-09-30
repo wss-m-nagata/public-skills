@@ -1,0 +1,7 @@
+source: https://carbondesignsystem.com/
+repo: https://github.com/carbon-design-system/carbon-website
+ref: main
+commit: ea81028857791c9bc5004ee9ae6e82e3e654dfc3
+commit_date: 2026-09-09
+retrieved_at: 2026-09-15
+notes: 上記コミット時点のsrc/pages/components/配下から、README.md記載の範囲のみ未編集で抜粋。

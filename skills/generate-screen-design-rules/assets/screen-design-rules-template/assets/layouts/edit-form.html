@@ -1,0 +1,23 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Edit Form</title><!--
+このHTMLは画面構成・レイアウトを示すための参考資料です。
+DOM構造、CSS、クラス名そのものを実装規約として指定するものではありません。
+実装時は docs/rules/screen-design-rules/ のMarkdown規約を優先してください。
+-->
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f5f5f5;color:#222}
+header{height:48px;background:#fff;border-bottom:1px solid #ccc;display:flex;align-items:center;padding:0 16px}
+.app{display:grid;grid-template-columns:256px 1fr;min-height:calc(100vh - 48px)}
+aside{background:#fff;border-right:1px solid #ccc;padding:16px}
+main{padding:24px}.card{background:#fff;border:1px solid #ccc;padding:16px;margin-bottom:16px}
+.row{display:flex;gap:16px;flex-wrap:wrap;align-items:center}.actions{display:flex;justify-content:flex-end;gap:8px}
+table{width:100%;border-collapse:collapse;background:#fff}th,td{border:1px solid #ccc;padding:8px;text-align:left}
+input,select,button{min-height:36px;padding:6px 8px}
+@media(max-width:800px){.app{grid-template-columns:1fr}aside{display:none}}
+</style>
+</head><body>
+<header><strong>System Name</strong><span style="margin-left:auto">User / Utility</span></header>
+<div class="app"><aside><strong>Side Navigation</strong></aside><main>
+<div class="card"><small>Breadcrumb</small><h1>ユーザー編集</h1></div>
+<div class="card"><h2>基本情報</h2><div class="row"><label>氏名 <input></label><label>部署 <select><option>選択</option></select></label></div></div>
+<div class="actions"><button>キャンセル</button><button>更新</button></div>
+</main></div></body></html>

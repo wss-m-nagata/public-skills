@@ -73,7 +73,7 @@ from insert_rows import insert_rows_keep_layout  # noqa: E402
 from xlsx_common import (  # noqa: E402
     save_with_shapes,
     ensure_utf8_stdio,
-    get_merge_anchor,
+    mark_font_red,
 )
 
 TEMPLATE_RECORD_SHEET = "【レコード名】"
@@ -405,31 +405,16 @@ def collect_red_cells(d, sheet_name):
 
 def mark_changed_red(path, out_path, red_cells_by_sheet):
     """
-    指定セルの文字色だけを赤(FF0000)にする。
+    指定セルの文字色だけを赤(FF0000)にする(xlsx_common.mark_font_redを参照)。
     apply_mapping.pyは値のみを書き換える方針(フォント等の書式は一切変更しない)だが、
     レビュー時に変更箇所を一目で分かるようにするため、本スクリプトに限りこの用途の
-    赤字マーキングだけを例外的に許可する。文字色以外のフォント属性(フォント名・サイズ・
-    太字等)は元のまま維持する。
+    赤字マーキングだけを例外的に許可する。
     """
     wb = openpyxl.load_workbook(path)
     for sheet_name, coords in red_cells_by_sheet.items():
         ws = wb[sheet_name]
         for coordinate in coords:
-            anchor = get_merge_anchor(ws, coordinate)
-            cell = ws[anchor]
-            if cell.value in (None, ""):
-                continue
-            f = cell.font
-            cell.font = openpyxl.styles.Font(
-                name=f.name,
-                size=f.size,
-                bold=f.bold,
-                italic=f.italic,
-                vertAlign=f.vertAlign,
-                underline=f.underline,
-                strike=f.strike,
-                color="FFFF0000",
-            )
+            mark_font_red(ws, coordinate)
     save_with_shapes(wb, path, out_path)
 
 
