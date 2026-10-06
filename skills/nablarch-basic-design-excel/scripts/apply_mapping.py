@@ -145,6 +145,14 @@ def apply_mapping(
                         f"指定値 '{value}' は選択肢に含まれていません。"
                     )
 
+            # セル内の改行はLFにそろえる。CRが残ると、保存したXMLを読み直したときに改行が2つに増えるため
+            # (Excelのセル内改行(Alt+Enter)はLFである)
+            if isinstance(value, str) and "\r" in value:
+                value = value.replace("\r\n", "\n").replace("\r", "\n")
+                report["warnings"].append(
+                    f"[{sheet_name}] {anchor} のセル内改行(CRLF・CR)を、LFにそろえて書き込みました。"
+                )
+
             coerced_value = _coerce_date_if_needed(value, anchor_cell)
             if coerced_value != value:
                 report["warnings"].append(
