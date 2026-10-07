@@ -14,12 +14,16 @@ apply_mapping.py / duplicate_sheet.py / extend_table_rows.py で処理した後�
 検知するため、このスクリプト側でも独立して図形の有無を確認する。
 
 使い方:
-    python verify_layout.py <反映前xlsxパス> <反映後xlsxパス> [--allow-history-row-heights] [--allow-font-colors]
+    python verify_layout.py <反映前xlsxパス> <反映後xlsxパス> [--allow-history-row-heights] [--allow-row-heights] [--allow-font-colors]
 
     --allow-history-row-heights:
         「変更履歴」シートの8行目以降(データの行)の行の高さの変化を許す。
         fit_change_history_rows.py で、セル内改行の行数に合わせて行の高さを変えた場合に付ける。
         他のシートや、変更履歴の見出しの行の高さが変わった場合は、これまでどおり差分として扱う。
+
+    --allow-row-heights:
+        すべてのシートで、行の高さが「広がった」変化を許す(狭まった行は、これまでどおり差分として扱う)。
+        fit_row_heights.py で、文字が隠れないように行の高さを広げた場合に付ける。
 
     --allow-font-colors:
         文字色の変化を許す(差分として扱わず、どのセルの色が変わったかだけを表示する)。
@@ -49,7 +53,7 @@ HISTORY_SHEET = "変更履歴"
 HISTORY_FIRST_DATA_ROW = 8
 
 
-def diff_sheet(name, before, after, allow_history_row_heights=False):
+def diff_sheet(name, before, after, allow_history_row_heights=False, allow_row_heights=False):
     diffs = []
 
     if before["dimensions"] != after["dimensions"]:
@@ -70,6 +74,14 @@ def diff_sheet(name, before, after, allow_history_row_heights=False):
         # 変更履歴のデータの行は、セル内改行の行数に合わせて高さを変えてよい
         before_heights = {r: h for r, h in before_heights.items() if r < HISTORY_FIRST_DATA_ROW}
         after_heights = {r: h for r, h in after_heights.items() if r < HISTORY_FIRST_DATA_ROW}
+    if allow_row_heights:
+        # 行の高さが広がった行だけを許す（狭まった行・既定の高さに戻った行は差分として残す）
+        grown = {
+            r for r, h in after_heights.items()
+            if h is not None and (before_heights.get(r) is None or h > before_heights[r])
+        }
+        before_heights = {r: h for r, h in before_heights.items() if r not in grown}
+        after_heights = {r: h for r, h in after_heights.items() if r not in grown}
     if before_heights != after_heights:
         diffs.append("行の高さが変化した箇所があります")
 
@@ -122,7 +134,7 @@ def diff_sheet(name, before, after, allow_history_row_heights=False):
     return diffs
 
 
-def verify(before_path, after_path, allow_history_row_heights=False):
+def verify(before_path, after_path, allow_history_row_heights=False, allow_row_heights=False):
     wb_before = openpyxl.load_workbook(before_path, data_only=False)
     wb_after = openpyxl.load_workbook(after_path, data_only=False)
 
@@ -138,7 +150,7 @@ def verify(before_path, after_path, allow_history_row_heights=False):
             continue
         before = snapshot_sheet_structure(wb_before, wb_before[name])
         after = snapshot_sheet_structure(wb_after, wb_after[name])
-        diffs = diff_sheet(name, before, after, allow_history_row_heights)
+        diffs = diff_sheet(name, before, after, allow_history_row_heights, allow_row_heights)
         if diffs:
             all_diffs[name] = diffs
 
@@ -180,14 +192,15 @@ def main():
     ensure_utf8_stdio()
     args = sys.argv[1:]
     allow_history_row_heights = "--allow-history-row-heights" in args
+    allow_row_heights = "--allow-row-heights" in args
     allow_font_colors = "--allow-font-colors" in args
-    args = [a for a in args if a not in ("--allow-history-row-heights", "--allow-font-colors")]
+    args = [a for a in args if a not in ("--allow-history-row-heights", "--allow-row-heights", "--allow-font-colors")]
     if len(args) != 2:
         print(__doc__)
         sys.exit(2)
 
     before_path, after_path = args
-    diffs = verify(before_path, after_path, allow_history_row_heights)
+    diffs = verify(before_path, after_path, allow_history_row_heights, allow_row_heights)
 
     # 文字色の変化を許す場合は、差分から外して、変わったセルだけを表示する
     if allow_font_colors:
