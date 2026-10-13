@@ -21,13 +21,18 @@ fit_change_history_rows.py は「変更履歴」シート専用のため、そ�
 
 使い方:
     python fit_row_heights.py <入力xlsxパス> <出力xlsxパス> --rows <開始行>-<終了行> [--rows ...]
-        (--sheet <シート名> [--sheet ...] | --body-sheets) [--line-height <高さ>]
+        (--sheet <シート名> [--sheet ...] | --sheet-prefix <前方一致> [...] | --body-sheets)
+        [--line-height <高さ>] [--only-merged] [--until-text <A列の文字>]
 
-    --sheet       : 対象のシート名。複数指定できる。
-    --body-sheets : 「表紙」「変更履歴」「目次」「データ」以外のすべてのシートを対象にする
-                    （テーブル定義書の各テーブルのシートなど）。
-    --rows        : 対象の行の範囲。複数指定できる。
-    --line-height : 1行の高さ（ポイント）。省略時は上の説明のとおり。
+    --sheet        : 対象のシート名。複数指定できる。
+    --sheet-prefix : 対象のシート名の前方一致。複数指定できる（例：「3.」で、「3.1. シグナルCSV行」など、レコードのシートすべて）。
+    --body-sheets  : 「表紙」「変更履歴」「目次」「データ」以外のすべてのシートを対象にする
+                     （テーブル定義書の各テーブルのシートなど）。
+    --rows         : 対象の行の範囲。複数指定できる。
+    --line-height  : 1行の高さ（ポイント）。省略時は上の説明のとおり。
+    --only-merged  : 結合されたセルだけを対象にする。結合されていないセル（あふれて表示する前提のセル）は数えない。
+    --until-text   : A列がこの文字で始まる最初の行の手前までに、対象を絞る。
+                     外部インタフェース設計書では「データ構成サンプル」を指定し、項目一覧の下のサンプル（JSONの行）を外す。
 
 テンプレートごとの指定例:
     # WebサービスAPI一覧（シート「1」の一覧の行）
@@ -35,6 +40,9 @@ fit_change_history_rows.py は「変更履歴」シート専用のため、そ�
 
     # テーブル定義書（各テーブルのシートの、テーブル説明の行とカラムの行）
     python fit_row_heights.py 入力.xlsx 出力.xlsx --body-sheets --rows 6-6 --rows 11-200
+
+    # 外部インタフェース設計書（レコードのシート「3.x」の、項目定義・項目一覧の備考など。1行は15ポイント）
+    python fit_row_heights.py 入力.xlsx 出力.xlsx --sheet-prefix 3. --rows 7-200         --only-merged --until-text データ構成サンプル --line-height 15
 
 実行後は、構造の検証で行の高さが広がったことを許す指定を付ける:
     python verify_layout.py <入力xlsxパス> <出力xlsxパス> --allow-row-heights
@@ -138,13 +146,48 @@ def _single_row_spans(ws):
     return spans, multi_row
 
 
-def fit_sheet(ws, row_ranges, line_height=None):
+def _limit_before_text(ws, row_ranges, until_text):
+    """行の範囲を、A列が until_text で始まる最初の行の手前までに絞る。
+
+    外部インタフェース設計書の項目一覧の下には、データ構成サンプル（1行につき1セルに書いたJSONの行）がある。
+    サンプルの行は、結合されていない細いセルに長い文字が入っているため、数えると行の高さが膨らんでしまう。
+    その手前までに絞って、サンプルの行を対象から外す。
+
+    Args:
+        ws: 対象のワークシート。
+        row_ranges (list[tuple[int, int]]): 対象の行の範囲。
+        until_text (str | None): 範囲の終わりを決める、A列の文字（前方一致）。None なら絞らない。
+
+    Returns:
+        list[tuple[int, int]]: 絞ったあとの行の範囲。
+    """
+    if not until_text:
+        return row_ranges
+    stop = next(
+        (
+            row
+            for row in range(1, ws.max_row + 1)
+            if isinstance(ws.cell(row=row, column=1).value, str)
+            and ws.cell(row=row, column=1).value.startswith(until_text)
+        ),
+        None,
+    )
+    if stop is None:
+        return row_ranges
+    return [
+        (first, min(last, stop - 1)) for first, last in row_ranges if first <= stop - 1
+    ]
+
+
+def fit_sheet(ws, row_ranges, line_height=None, only_merged=False, until_text=None):
     """シートの指定した行の高さを、表示される行数に合わせて広げる。
 
     Args:
         ws: 対象のワークシート。
         row_ranges (list[tuple[int, int]]): 対象の行の範囲。
         line_height (float | None): 1行の高さ。None なら行ごとに文字の大きさから求める。
+        only_merged (bool): True なら、結合されたセルだけを対象にする（結合されていないセルは、あふれて表示される前提のため）。
+        until_text (str | None): A列がこの文字で始まる最初の行の手前までに、対象を絞る。
 
     Returns:
         list[str]: 行の高さを変えた行の説明。
@@ -153,6 +196,7 @@ def fit_sheet(ws, row_ranges, line_height=None):
     spans, multi_row = _single_row_spans(ws)
     letter = openpyxl.utils.get_column_letter
     default_height = ws.sheet_format.defaultRowHeight or 15.0
+    row_ranges = _limit_before_text(ws, row_ranges, until_text)
 
     for first, last in row_ranges:
         for row in range(first, min(last, ws.max_row) + 1):
@@ -160,6 +204,8 @@ def fit_sheet(ws, row_ranges, line_height=None):
             font_size = 0
             for cell in ws[row]:
                 if not isinstance(cell.value, str) or (row, cell.column) in multi_row:
+                    continue
+                if only_merged and (row, cell.column) not in spans:
                     continue
                 # セル（結合範囲）の幅から、1行に入る表示幅を求める
                 low, high = spans.get((row, cell.column), (cell.column, cell.column))
@@ -207,9 +253,12 @@ def main():
     parser.add_argument("--body-sheets", action="store_true")
     parser.add_argument("--rows", action="append", required=True)
     parser.add_argument("--line-height", type=float)
+    parser.add_argument("--sheet-prefix", action="append", default=[])
+    parser.add_argument("--only-merged", action="store_true")
+    parser.add_argument("--until-text")
     args = parser.parse_args()
-    if not args.sheet and not args.body_sheets:
-        parser.error("--sheet か --body-sheets のどちらかを指定してください")
+    if not args.sheet and not args.body_sheets and not args.sheet_prefix:
+        parser.error("--sheet・--sheet-prefix・--body-sheets のどれかを指定してください")
 
     wb = openpyxl.load_workbook(args.input)
     sheets = list(args.sheet)
@@ -217,6 +266,8 @@ def main():
         sheets += [
             s for s in wb.sheetnames if s not in COMMON_SHEETS and s not in sheets
         ]
+    for prefix in args.sheet_prefix:
+        sheets += [s for s in wb.sheetnames if s.startswith(prefix) and s not in sheets]
     missing = [s for s in sheets if s not in wb.sheetnames]
     if missing:
         print(f"NG: シートがありません: {missing}")
@@ -226,7 +277,7 @@ def main():
     total = 0
     report = []
     for name in sheets:
-        changed = fit_sheet(wb[name], row_ranges, args.line_height)
+        changed = fit_sheet(wb[name], row_ranges, args.line_height, args.only_merged, args.until_text)
         total += len(changed)
         report += [f"[{name}] {line}" for line in changed]
     save_with_shapes(wb, args.input, args.output)

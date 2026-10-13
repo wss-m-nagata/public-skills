@@ -181,6 +181,12 @@ python scripts/track_sources.py check <作業フォルダ> [<ファイル> ...]
    ```
    数式セルへの書き込みや罫線範囲外への書き込みは自動的に拒否される。拒否された場合は、記入要領・構造メモに立ち返って原因（セルの取り違え、行数不足等）を確認する。安易に`--force-formula-overwrite`や`--allow-outside-border`で押し切らない。
    `変更履歴`シートにE1（PJ名）・E3（サブシステム名）を書けば、表紙のJ23・J25セル（数式）にも自動反映される。
+   **`変更履歴`シートに行を足すときは、先に`scripts/normalize_change_history.py`で、9〜33行目の結合を8行目に、10〜33行目の書式を9行目にそろえる。**
+   古いテンプレートは、8〜13行目だけ結合されていて、14行目以降は結合が外れているため、そのまま行を足すと表示が崩れる。
+   すでにそろっているシートでは、何も変えずに終わる。流したあとのファイルを、`apply_mapping.py`の入力と、構造を比べる基準にする。
+   ```bash
+   python scripts/normalize_change_history.py <元xlsxパス> <出力パス>
+   ```
    `変更履歴`シートのD列（変更日）に日付を書き込む際は`YYYY-MM-DD`形式の文字列で渡せばよい（`apply_mapping.py`が自動でExcelの日付型に変換する。日付型にしないとI21の最終更新日の数式が正しく計算できない）。
    `変更履歴`シートの変更箇所（J列）・変更内容（Q列）は、`記入要領_共通シート.md`の書き方に従い、セル内改行（LF）で1行ずつ書く。書き込んだあとは、必ず`scripts/fit_change_history_rows.py`で行の高さを合わせる（次の8のverifyでは`--allow-history-row-heights`を付ける）。
    ```bash
@@ -195,7 +201,14 @@ python scripts/track_sources.py check <作業フォルダ> [<ファイル> ...]
 
    # テーブル定義書（各テーブルのシートの、テーブル説明の行とカラムの行）
    python scripts/fit_row_heights.py <入力パス> <出力パス> --body-sheets --rows 6-6 --rows 11-200
+
+   # 外部インタフェース設計書（レコードのシート「3.x」の、項目定義・項目一覧の備考など。1行は15ポイントにそろえる）
+   python scripts/fit_row_heights.py <入力パス> <出力パス> --sheet-prefix 3. --rows 7-300 --only-merged --until-text データ構成サンプル --line-height 15
    ```
+   外部インタフェース設計書(JSON)は、備考の欄が狭く、結合セルのため、そのままでは長い備考が見切れる（折り返しもオフ）。
+   上の指定で流すと、2行以上になる備考は、折り返して全体を表示し、行の高さを「15×行数」に広げる。
+   `--only-merged`は結合セルだけを対象にし、`--until-text`は項目一覧の下のデータ構成サンプル（細いセルに1行ずつ書いたJSON）を外す。
+   `build_external_if_json.py`で作るときは、この調整を自動で行う。xlsxを直接直したときは、上の指定で流す。
    ほかのテンプレートでも、`--sheet`と`--rows`で対象を指定すれば使える。見積もりは目安のため、長文が多いときは9の`export_sheet_preview.py`で隠れていないかを確かめる。
 
    **既存の設計書の版を上げるときは、今回の版で変えたセルだけを赤字にする**（`記入要領_共通シート.md`の「版を上げたときの変更箇所の示し方（赤字）」）。
@@ -228,6 +241,13 @@ python scripts/track_sources.py check <作業フォルダ> [<ファイル> ...]
    ```
    定義JSONの書式は`scripts/build_unit_test_spec.py`冒頭のdocstring、記入内容の決まりは`記入要領_単体テスト仕様書.md`を参照。構造が変わるため`verify_layout.py`での比較はせず、`export_sheet_preview.py`で見た目を確かめる。
 
+   **外部インタフェース設計書の特記事項（E28〜E31の4行）に収まらないときは、`scripts/extend_remarks_rows.py`で行を増やす。** 4行は、テンプレートの罫線が引かれている範囲であり、上限ではない。
+   行を増やすと、増やした行の下線・印刷範囲・縦のページ数が合わなくなるため、このスクリプトが、あわせて整える（途中の行の下線を消し、印刷範囲を広げ、縦も1ページに収める）。
+   ```bash
+   python scripts/extend_remarks_rows.py <入力パス> <出力パス> --count <増やす行数>
+   ```
+   増やしたあと、E32〜に`apply_mapping.py`で書く。構造の検証は、このスクリプトの出力を基準にする。特記事項の1行は、全角70文字ほどに収める。
+
    **外部インタフェース設計書(JSON)テンプレートに限り、ここまでの構造ステップを`apply_mapping.py`で直接行わず、専用スクリプト`scripts/build_external_if_json.py`を使う。** このテンプレートは『【レコード名】』シートが3ブロック構成（1ブロック7行）になっており、項目数が7を超えるたびに行挿入とブロック間のずれ調整が必要になるため、マッピングJSONを手で組み立てると座標を間違えやすい。電文の定義（電文ID・入出力項目・サンプル値等）をJSON1ファイルにまとめ、シート複製・行挿入・値反映・チェック欄の切り替えまで一括で行う。
    ```bash
    python scripts/build_external_if_json.py "assets/templates/フォーマット/外部インタフェース設計書_(電文ID)_(電文名)_(JSON).xlsx" <電文定義json> <出力パス>
@@ -251,7 +271,7 @@ python scripts/track_sources.py check <作業フォルダ> [<ファイル> ...]
    ```bash
    python scripts/export_sheet_preview.py <出力パスC> <シート名> <出力PDFパス> [印刷範囲]
    ```
-   出力したPDFはReadツールで直接開いて視覚的に確認できる。特に`insert_flow_diagram.py`で`overlap_warning`が出た場合は、必ずこのスクリプトで実際に重なっていないか確認すること。Windows＋Excelが無い環境（Claude for Microsoft 365等）では使用できないため、その場合はユーザーに目視確認を依頼する。
+   出力したPDFはReadツールで直接開いて視覚的に確認できる。ReadツールでPDFを開くには`pdftoppm`（poppler）が要る。`pdftoppm`がインストールされていないときは、確認をあきらめずに、PyMuPDF（`python -c "import fitz"`）がインストールされていないかを確かめる。PyMuPDFがあれば、PDFのページをPNGにして（`fitz.open(<PDF>)[<ページ>].get_pixmap(dpi=110).save(<PNG>)`。細かい所は`clip`で切り出して`dpi`を上げる）、そのPNGをReadツールで開く。どちらも無いときだけ、ユーザーに目視確認を依頼する。特に`insert_flow_diagram.py`で`overlap_warning`が出た場合は、必ずこのスクリプトで実際に重なっていないか確認すること。Windows＋Excelが無い環境（Claude for Microsoft 365等）では使用できないため、その場合はユーザーに目視確認を依頼する。
 10. **ユーザーに報告する**：反映したセル一覧、警告、`verify_layout.py`の結果を要約して伝える。目次シートの手動更新が必要な場合（シート複製・リネーム時）はその旨も伝える。
 
 マッピングJSONの形式や各スクリプトのオプションの詳細は、各スクリプトの`--help`、またはファイル冒頭のdocstringを参照。
@@ -295,6 +315,8 @@ python scripts/track_sources.py check <作業フォルダ> [<ファイル> ...]
 | ローカル実行スクリプト | `scripts/track_sources.py` | 作業の元にした設計書を記録し（`record`）、書き出す前・上げる前に、人に直されていないかを比べる（`check`）。Excelはセルの値・数式・書式、draw.ioは図形で比べ、開いて保存しただけの変化は無視する |
 | ローカル実行スクリプト | `scripts/cleanup_state.py` | 作業用の出力先（`.agents/state/nablarch-basic-design-excel/`）の直下のファイルと、古い作業フォルダを一覧にする。`--delete`を付けたときだけ消す |
 | ローカル実行スクリプト | `scripts/fit_row_heights.py` | 指定したシート・行で、結合セルの長い文が隠れないように行の高さを広げる（WebサービスAPI一覧の処理概要、テーブル定義書の項目定義・備考など） |
+| ローカル実行スクリプト | `scripts/normalize_change_history.py` | 変更履歴シートの9〜33行目の結合を8行目に、10〜33行目の書式を9行目にそろえる。古いテンプレートは14行目以降の結合が外れていて、行を足すと表示が崩れるため、行を足す前に流す |
+| ローカル実行スクリプト | `scripts/extend_remarks_rows.py` | 外部インタフェース設計書の特記事項（E28〜E31の4行）が足りないときに、行を増やす。印刷範囲・縦1ページ・途中の行の下線もあわせて整える |
 | ローカル実行スクリプト | `scripts/verify_layout.py` | 反映前後の構造差分の検証。`--allow-history-row-heights` で変更履歴の行の高さの変化だけを、`--allow-row-heights` で行の高さが広がった変化だけを、`--allow-font-colors` で文字色の変化だけを許す |
 | ローカル実行スクリプト | `scripts/export_sheet_preview.py` | シートをPDF化し、見た目（図形の重なり・長文セルの折り返し等）を目視確認する。**Windows＋Excelインストール済み環境限定** |
 | ローカル実行スクリプト | `scripts/restore_shapes.py` | 図形（テキストボックス等）が存在するファイルを扱う場合の復元処理 |

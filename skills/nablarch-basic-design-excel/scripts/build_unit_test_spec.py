@@ -73,7 +73,8 @@
 
 シートの組み合わせは、単体テスト標準(機能テストの分類と処理方式の組み合わせ)に合わせる。合わない場合はエラーにする。
 - リクエスト単体(画面・バッチ単位)は、例外なく作る。
-- クラス単体(モジュール単位)は、Webサービスだけ。ロジックが複雑なものに限って作る。バッチでは作らない。
+- クラス単体(モジュール単位)は、ロジックが複雑なものに限って作る(Webサービス・バッチとも)。
+  バッチのクラス単体は、サンプルプロジェクトの単体テスト標準では作らないが、テストのコードと仕様書のケースを対応づけるため、このスキルでは作ってよいとする。
 - 取引単体(ユースケース単位)は、バッチで、複数のリクエストから成る取引のときだけ作る。
 
 記入の決まりは `記入要領_単体テスト仕様書.md` を参照する。
@@ -423,14 +424,22 @@ def _relabel_categories(ws, row, layout, path, previous_path):
         changed = previous_path is None or path[: i + 1] != previous_path[: i + 1]
         if changed and path[i]:
             cell.value = path[i]
-            # 続きの行のセルは、文字色が背景と同じ色(見えない色)になっているため、標準の色に戻す
-            font = cell.font
-            cell.font = Font(name=font.name, size=font.sz, bold=font.b, italic=font.i, vertAlign=font.vertAlign, underline=font.u, strike=font.strike)
+            _reset_font_color(cell)
             style = border.left.style or border.right.style or "thin"
             cell.border = Border(left=copy(border.left), right=copy(border.right), top=Side(style=style), bottom=copy(border.bottom))
         else:
             cell.value = None
             cell.border = Border(left=copy(border.left), right=copy(border.right), top=Side(), bottom=copy(border.bottom))
+
+
+def _reset_font_color(cell):
+    """文字色を標準の色に戻す。
+
+    テンプレートの分類の列は、続きの行のセルの文字色が背景と同じ色(見えない色)になっている。
+    そのセルの書式を写した行に分類の名前を書くと、名前が見えなくなるため、標準の色に戻す。
+    """
+    font = cell.font
+    cell.font = Font(name=font.name, size=font.sz, bold=font.b, italic=font.i, vertAlign=font.vertAlign, underline=font.u, strike=font.strike)
 
 
 def _without_top(border, columns_without_top, col):
@@ -504,6 +513,9 @@ def build_sheet(ws, sheet_def, allow_unaddressed):
                 # 追加観点：観点は書き、分類は書いた階層だけ上の罫線を残す
                 if col not in values:
                     cell.border = _without_top(cell.border, columns_without_top, col)
+                elif col in layout.categories:
+                    # 写した行が続きの行だと、分類の名前が見えない色になるため
+                    _reset_font_color(cell)
         if kind == "catalog":
             _relabel_categories(ws, out, layout, paths[src], previous_path)
             previous_path = paths[src]
@@ -696,9 +708,6 @@ def build(template, definition_path, output, allow_unaddressed=False, cases_json
     # 1. 定義のシートを、テンプレートのシートから複製して作る
     # 単体テスト標準(機能テストの分類と処理方式の組み合わせ)に合わないシートを止める
     kinds = [d["template"] for d in definition["sheets"]]
-    is_batch = TEMPLATE_SHEETS["取引単体"] in wb.sheetnames
-    if is_batch and "クラス単体" in kinds:
-        raise ValueError("バッチでは、モジュール単位(クラス単体)のテストは行わない（単体テスト標準）")
     if "取引単体" in kinds and kinds.count("リクエスト単体") < 2:
         raise ValueError(
             "取引単体(ユースケース単位)は、複数のリクエストから成る取引のときだけ作る（単体テスト標準）"

@@ -69,6 +69,7 @@ import openpyxl
 
 sys.path.insert(0, str(Path(__file__).parent))
 from apply_mapping import apply_mapping  # noqa: E402
+from fit_row_heights import fit_sheet  # noqa: E402
 from insert_rows import insert_rows_keep_layout  # noqa: E402
 from xlsx_common import (  # noqa: E402
     save_with_shapes,
@@ -457,6 +458,46 @@ def _split_mapping_by_bbox_exception(mapping):
     return {"sheets": strict_sheets}, {"sheets": loose_sheets}
 
 
+# レコードのシートの、行の高さを合わせる範囲。1行の高さは15ポイント（テンプレートの行の高さ）とする
+RECORD_SHEET_PREFIX = "3."
+RECORD_FIRST_ROW = 7
+RECORD_LAST_ROW = 300
+RECORD_LINE_HEIGHT = 15
+SAMPLE_LABEL_TEXT = "データ構成サンプル"
+
+
+def fit_record_sheets(path):
+    """レコードのシート（3.x）の、備考などが見切れないよう、折り返しと行の高さを合わせる。
+
+    項目定義の備考・項目一覧の備考などは、結合されたセルに長い文が入る。
+    結合セルは、Excelが行の高さを自動で広げず、折り返しもオフのため、2行目以降が見切れる。
+    そこで、2行以上になるセルは「折り返して全体を表示」をオンにし、行の高さを「15×行数」に広げる。
+    データ構成サンプル（結合されていない細いセルに1行ずつ書いたJSON）は、対象から外す。
+
+    Returns:
+        list[str]: 行の高さを変えた行の説明。
+    """
+    wb = openpyxl.load_workbook(path)
+    changed = []
+    for name in wb.sheetnames:
+        if name.startswith(RECORD_SHEET_PREFIX):
+            changed += [
+                f"[{name}] {line}"
+                for line in fit_sheet(
+                    wb[name],
+                    [(RECORD_FIRST_ROW, RECORD_LAST_ROW)],
+                    line_height=RECORD_LINE_HEIGHT,
+                    only_merged=True,
+                    until_text=SAMPLE_LABEL_TEXT,
+                )
+            ]
+    if changed:
+        tmp = path + ".fit.xlsx"
+        save_with_shapes(wb, path, tmp)
+        os.replace(tmp, path)
+    return changed
+
+
 def build(template, definition_path, output):
     d = json.load(open(definition_path, encoding="utf-8"))
     records = d["records"]
@@ -499,6 +540,10 @@ def build(template, definition_path, output):
     for p in (work, tmp1, tmp):
         if os.path.exists(p):
             os.remove(p)
+
+    # 備考などが見切れないよう、折り返しと行の高さを合わせる
+    for line in fit_record_sheets(output):
+        print("fit:", line)
     return output
 
 
