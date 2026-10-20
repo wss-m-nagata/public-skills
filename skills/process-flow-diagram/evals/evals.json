@@ -4,7 +4,7 @@
     {
       "id": 1,
       "name": "user-management-flow",
-      "prompt": "ユーザー管理まわりの処理フローを作ってほしい。infra/cdk/lambda/userapi/index.py と nuxt/app/pages/admin/users/ のあたりと、db/migrations の common.staff_master を見てもらえれば分かると思う。WBSの見積もりに使うので、どの画面からどの処理が呼ばれて、どのテーブルを読み書きするのかが一目で分かるようにしたい。出力は tmp/ に置いて。",
+      "prompt": "ユーザー管理まわりの処理フローを作ってほしい。backend/common-service/functions/userapi/index.py と nuxt/app/pages/admin/users/ のあたりと、db/migrations の common.staff_master を見てもらえれば分かると思う。WBSの見積もりに使うので、どの画面からどの処理が呼ばれて、どのテーブルを読み書きするのかが一目で分かるようにしたい。出力は tmp/ に置いて。",
       "expected_output": ".agents/state/process-flow-diagram/rules/ の2ファイルを読んだうえで、画面・処理・テーブルを洗い出し、左から右へ読む3段構成の .drawio を tmp/ に生成する。凡例ページを含む。validate_drawio.py で問題が出ない。テーブルは和名で書かれ、物理名は凡例の対応表にある。",
       "files": [],
       "assertions": [
