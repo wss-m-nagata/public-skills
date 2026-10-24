@@ -4,11 +4,6 @@ description: |
     プロジェクトの画面設計規約を作成・更新する。 Markdownテンプレートをもとに、 DADSを主、IBM Carbon Design Systemを補完として具体的な規約を埋め、 プロジェクト固有の判断が必要な項目をユーザーに確認して確定する。
     画面設計の基本原則（設計原則）についての問い合わせにも、同梱の参照資料で答える。
 license: MIT
-metadata:
-    github-path: skills/generate-screen-design-rules
-    github-ref: refs/tags/v1.0.11
-    github-repo: https://github.com/wss-m-nagata/public-skills
-    github-tree-sha: e3450b7931f3b6c4daddbd74b38156871cf80df9
 name: generate-screen-design-rules
 ---
 # Generate Screen Design Rules
