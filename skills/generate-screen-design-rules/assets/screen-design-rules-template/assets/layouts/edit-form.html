@@ -1,7 +1,7 @@
 <!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Edit Form</title><!--
 このHTMLは画面構成・レイアウトを示すための参考資料です。
 DOM構造、CSS、クラス名そのものを実装規約として指定するものではありません。
-実装時は docs/rules/screen-design-rules/ のMarkdown規約を優先してください。
+実装時は、規約のMarkdownを優先してください。
 -->
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f5f5f5;color:#222}
@@ -12,7 +12,7 @@ main{padding:24px}.card{background:#fff;border:1px solid #ccc;padding:16px;margi
 .row{display:flex;gap:16px;flex-wrap:wrap;align-items:center}.actions{display:flex;justify-content:flex-end;gap:8px}
 table{width:100%;border-collapse:collapse;background:#fff}th,td{border:1px solid #ccc;padding:8px;text-align:left}
 input,select,button{min-height:36px;padding:6px 8px}
-@media(max-width:800px){.app{grid-template-columns:1fr}aside{display:none}}
+/* 幅は例。規約（foundations.md）のブレークポイントに合わせる */@media(max-width:767px){.app{grid-template-columns:1fr}aside{display:none}}
 </style>
 </head><body>
 <header><strong>System Name</strong><span style="margin-left:auto">User / Utility</span></header>

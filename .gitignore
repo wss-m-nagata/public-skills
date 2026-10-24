@@ -4,3 +4,5 @@
 /.clinerules-code
 /.clinerules-debug
 /.clinerules-test
+tmp/
+

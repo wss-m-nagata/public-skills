@@ -6,6 +6,14 @@
 
 このREADME.md自体はSkill側で作成した索引であり、DADS本体のコンテンツではありません。
 
+次の3ファイルも、Skill側で作成したものであり、DADS本体のコンテンツではありません。**元の資料が正**であり、迷ったときは原文を読みます。
+
+| ファイル | 内容 |
+|---|---|
+| `quick-values.md` | トークンにない値（文字、角の形状、ボタン、入力欄、レイアウト、色の要件など）を、原文から確かめて書いた早見表。出典を併記している |
+| `quick-values-tokens.md` | `design-tokens/tokens.json` から `scripts/gen_quick_values.py` で生成した、色・文字・角丸・影の早見表（手で書き換えない） |
+| `not-defined-and-stances.md` | DADSが値を定めていない項目の一覧と、DADSの方針が部品ライブラリの標準と食い違いやすい項目の一覧 |
+
 ## 出典・取得情報（Markdownアーカイブ）
 
 - 配布元: https://design.digital.go.jp/dads/resources/

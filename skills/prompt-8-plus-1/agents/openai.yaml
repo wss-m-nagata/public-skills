@@ -1,0 +1,4 @@
+interface:
+  display_name: "Prompt 8+1"
+  short_description: "8+1の公式を使い高品質なプロンプトを設計改善する"
+  default_prompt: "8+1の公式に沿って、この依頼のプロンプトを設計してください。"

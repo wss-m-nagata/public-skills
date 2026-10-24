@@ -73,19 +73,7 @@ AIが参照する必要があるルールは、必要に応じて以下の形式
 
 ## ファイル構成
 
-```text
-docs/rules/screen-design-rules/
-├── README.md                        # 規約全体の説明・使い方
-├── デザインシステム確認事項.md          # 現在確認が必要な項目の一覧（毎回書き直される）
-├── foundations.md                   # 色・余白・文字などの基本ルール
-├── layout.md                        # 画面全体の配置ルール
-├── navigation.md                    # メニュー・パンくず・タブなどのナビゲーションルール
-├── components.md                    # UI部品のルール
-├── page-patterns.md                 # 標準画面構成
-├── accessibility.md                 # アクセシビリティに関する基本ルール
-├── sources.md                       # DADS・Carbonなどの参照元
-└── assets/                          # 規約説明用の画像
-```
+このディレクトリに、次のファイルを置きます。
 
 | ファイル               | 内容                                    |
 | ------------------ | ------------------------------------- |
@@ -142,8 +130,8 @@ assets/
 > **参考例**
 ```
 
-```tsx
-<PageHeader title="ユーザー一覧" />
+```html
+<page-header title="ユーザー一覧"></page-header>
 ```
 
 ### 必須実装
@@ -156,10 +144,10 @@ assets/
 > **必須実装**
 ```
 
-```tsx
-<PrimaryButton>
+```html
+<primary-button>
   登録
-</PrimaryButton>
+</primary-button>
 ```
 
 例えば、以下のような内容を必須実装として指定できます。

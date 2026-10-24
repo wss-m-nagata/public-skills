@@ -1,21 +1,21 @@
 ---
-name: generate-screen-design-rules
-description: >
-  プロジェクトの画面設計規約を作成・更新する。
-  docs/rules/screen-design-rules/ のMarkdownテンプレートをもとに、
-  DADSを主、IBM Carbon Design Systemを補完として具体的な規約を埋め、
-  プロジェクト固有の判断が必要な項目をユーザーに確認して確定する。
+compatibility: '`design-standards` Skillがインストールされていると、DADS / Carbonのいずれにも定義がない項目の補完に利用できる（任意、必須ではない。無い場合はその旨をユーザーへ確認する運用にフォールバックする）。 規約の出力先（既定は `docs/rules/screen-design-rules/`）への読み書き権限が必要。初回生成時は `${CLAUDE_SKILL_DIR}/assets/screen-design-rules-template/` からのファイルコピーを行う。'
+description: |
+    プロジェクトの画面設計規約を作成・更新する。 Markdownテンプレートをもとに、 DADSを主、IBM Carbon Design Systemを補完として具体的な規約を埋め、 プロジェクト固有の判断が必要な項目をユーザーに確認して確定する。
+    画面設計の基本原則（設計原則）についての問い合わせにも、同梱の参照資料で答える。
 license: MIT
-compatibility: >
-  `design-standards` Skillがインストールされていると、DADS / Carbonのいずれにも定義がない項目の補完に利用できる（任意、必須ではない。無い場合はその旨をユーザーへ確認する運用にフォールバックする）。
-  `docs/rules/screen-design-rules/` への読み書き権限が必要。初回生成時は `${CLAUDE_SKILL_DIR}/assets/screen-design-rules-template/` からのファイルコピーを行う。
+metadata:
+    github-path: skills/generate-screen-design-rules
+    github-ref: refs/tags/v1.0.11
+    github-repo: https://github.com/wss-m-nagata/public-skills
+    github-tree-sha: e3450b7931f3b6c4daddbd74b38156871cf80df9
+name: generate-screen-design-rules
 ---
-
 # Generate Screen Design Rules
 
 ## 目的
 
-`docs/rules/screen-design-rules/` に、画面生成時に単独で参照できるプロジェクト固有の画面設計規約を作成・更新する。
+出力先（下の「前提」を参照）に、画面生成時に単独で参照できるプロジェクト固有の画面設計規約を作成・更新する。
 
 このSkillは、規約テンプレートを自由に作り替えるのではなく、既存のMarkdownテンプレートを埋めて具体化する。
 
@@ -23,7 +23,7 @@ compatibility: >
 
 ## 前提
 
-- 画面規約の正式な保存先は `docs/rules/screen-design-rules/`
+- 画面規約の保存先（以下「出力先」）の既定は `docs/rules/screen-design-rules/`。プロジェクトに資料の置き場所の決まりがある場合は、手順0で確認した場所を出力先にする
 - 規約はユーザーが直接読んで修正できるMarkdownで管理する
 - 規約テンプレートには `確定` / `暫定` / `要確認` の状態がある
 - DADSを主たる規約とする
@@ -48,6 +48,10 @@ compatibility: >
 | 情報源 | 主に確認できること | できないこと・限界 |
 |---|---|---|
 | `${CLAUDE_SKILL_DIR}/references/dads/`<br>（DADS公式Markdownの抜粋） | 余白・色の分類・タイポグラフィ・角の形状・エレベーション・レイアウト・アクセシビリティ方針、主要コンポーネント21種の説明 | 色の実HEX値は載っていない（下の`design-tokens`を使う）。テンプレートの`ローカル参照`が指していない項目はカバー対象外 |
+| `${CLAUDE_SKILL_DIR}/references/dads/quick-values.md`<br>`${CLAUDE_SKILL_DIR}/references/dads/quick-values-tokens.md`<br>（値の早見表） | 文字・角の形状・ボタン・入力欄・レイアウトなどの値（`quick-values.md`。原文から確かめた値で、出典を併記している）と、色・文字・角丸・影のトークンの解決後の値（`quick-values-tokens.md`。トークンから生成） | 早見表は索引であり、**元の資料が正**。値が必要なときは、まず早見表を見て、迷ったら原文を読む |
+| `${CLAUDE_SKILL_DIR}/references/dads/not-defined-and-stances.md`<br>（DADSに値がない項目と、DADSの方針） | DADSが値を定めていない項目の一覧と、DADSの方針が部品ライブラリの標準と食い違いやすい項目の一覧 | 決めた値と理由を残す場所は、出力先の `sources.md` の「プロジェクト独自ルール」 |
+| `${CLAUDE_SKILL_DIR}/scripts/contrast.py` | 色の組み合わせのコントラスト比（テキスト4.5:1、テキスト以外3:1の判定つき） | — |
+| `${CLAUDE_SKILL_DIR}/scripts/gen_quick_values.py` | `tokens.json` から `quick-values-tokens.md` を生成する（`tokens.json` を再取得したときに再実行する） | — |
 | `${CLAUDE_SKILL_DIR}/references/dads/design-tokens/tokens.json`<br>（DADS Design Token） | 色・タイポグラフィ・サイズの実HEX値／実数値。`Semantic`や`Key`は`Primitive`へのエイリアスとして辿れば解決できる | どの色相をプロジェクトのPrimaryにするか等、ブランド固有の判断はできない（後述「色のHEX値」参照） |
 | `${CLAUDE_SKILL_DIR}/references/carbon/`<br>（Carbon公式ソースの抜粋） | Header／Side Navigation／Right Panelの構造・数値、Modal・Tabs・Data Tableの使い分け基準 | 色・Typography・Button等の見た目をDADSより優先して採用してはならない |
 | DADS公式サイト https://design.digital.go.jp/dads/ | ローカル参照に該当が無い項目、最新版の確認 | 大きいページはAI要約で情報が欠落・途中で切れることがある |
@@ -67,6 +71,7 @@ compatibility: >
 DADSの色ページ（公式サイト・ローカル参照とも同じ内容）には、分類（キー／共通／機能／セマンティックカラー）とコントラスト比の要件はあるが、実HEX値は載っていない。実HEX値は`design-tokens/tokens.json`から解決する。
 
 1. `foundations/color/index.md` で、用途（Primary/Secondary/Tertiary/Background/Text/Border/Error/Warning等）ごとのコントラスト比要件（テキスト4.5:1以上、非テキスト3:1以上 等）を確認する。
+   値は `references/dads/quick-values-tokens.md`（解決後のHEX値の一覧）で確認できる。選んだ色の組み合わせは `scripts/contrast.py` で確かめる。
 2. Error / Warning / Success 等のセマンティックカラーは、`tokens.json` の `Color.Semantic.*` を解決し、そのまま暫定値として採用する（ブランドに依存しないDADS固有の値のため）。
 3. Primary / Secondary / Tertiary / Background / Text / Border は、`Color.Key.*`（既定色相）と `Color.Neutral.*`（グレースケール）から、手順1の要件を満たす段階を選び暫定値にする。`Color.Key.*` の既定色相（同梱データはBlue）はDADS参考実装の例であり、プロジェクトのブランドカラーに応じて色相だけを差し替えてよい。差し替える場合も同じ選定ロジック（コントラスト比を満たす段階を選ぶ）を使う。
 4. 色相の選定やWarningの色系統（Yellow / Orange）選択など、DADSだけでは一意に決まらない部分だけを `確認事項` としてユーザーに聞く。
@@ -83,15 +88,21 @@ DADSの色ページ（公式サイト・ローカル参照とも同じ内容）�
 
 ## 実行手順
 
-### 0. 初回生成の場合はひな形をコピーする
+### 0. 出力先と前提を確認し、初回生成ならひな形をコピーする
 
-`docs/rules/screen-design-rules/` がまだ存在しない場合は、`${CLAUDE_SKILL_DIR}/assets/screen-design-rules-template/` の内容をそのままコピーして初期状態を作る。
+**初回生成の場合は、コピーの前に、次の2点をユーザーに確認する**（既存の規約を更新する場合は、手順1へ進む）。
 
-既に `docs/rules/screen-design-rules/` が存在する場合は、コピーはせず、手順1（現在の規約を確認する）から進める。
+1. **出力先**: プロジェクトの資料の置き場所の決まり（ディレクトリの分け方、番号の付け方など）と、資料の書き方の決まり（規約に未決定の事項を書いてよいか、など）を確認し、出力先を決める。決まりがない場合は、既定の `docs/rules/screen-design-rules/` を使う。
+   - 規約に未決定の事項を書いてはいけない決まりがある場合は、「暫定」「要確認」の状態を、規約の本文ではなく `デザインシステム確認事項.md` に集める運用に変える。
+2. **使う部品ライブラリ**: 画面の部品のライブラリ（例: UIフレームワークの部品集）の有無と名前を確認し、`components.md` の「部品ライブラリとの対応」の表に反映する。
+
+出力先がまだ存在しない場合は、`${CLAUDE_SKILL_DIR}/assets/screen-design-rules-template/` の内容をそのままコピーして初期状態を作る。
+
+既に出力先が存在する場合は、コピーはせず、手順1（現在の規約を確認する）から進める。
 
 ### 1. 現在の規約を確認する
 
-`docs/rules/screen-design-rules/` を読み、以下を確認する。
+出力先を読み、以下を確認する。
 
 - `確定`
 - `暫定`
@@ -116,6 +127,10 @@ NG:
 
 具体的な値・条件・使い分けを原典から取り込み、プロジェクト規約として読める形にする。
 
+- 値は、まず `references/dads/quick-values.md` と `references/dads/quick-values-tokens.md` で探す。
+- 値が見つからない項目は、`references/dads/not-defined-and-stances.md` の「値が定められていない項目」に当たるかを確認する。当たる場合は、プロジェクトの値を決めて規約に書き、**決めた理由**を出力先の `sources.md` の「プロジェクト独自ルール」の表に書く。
+- DADSの方針と部品ライブラリの標準が食い違う項目（同ファイルの「DADSの方針」）は、採用する・しないを決めて、規約と「プロジェクト独自ルール」の表に書く。
+
 ### 3. 出典情報を残す
 
 外部規約から取り込んだ項目には、少なくとも以下を残す。
@@ -132,8 +147,9 @@ NG:
 以下は勝手に確定せず、ユーザーへ確認する。
 
 - ブランドカラー
-- 対応端末
+- 対応端末と、想定する画面の幅（PCの場合）
 - Header / Side Navigationを利用するか
+- Side Navigationを既定で開くか閉じるか、開くときの表示方式（本文を押し出す／重ねる）
 - Header高さやSide Navigation幅を暫定値から変更するか
 - Standard / Denseの選択
 - ボタン配置
@@ -172,10 +188,12 @@ NG:
 - プロジェクト固有規約と外部規約が衝突していないか
 - DADSとCarbonの両方に規約がある場合、DADSを優先しているか
 - 画面生成時に外部検索しなくても実装判断できる程度に具体化されているか
+- 色の「文字 × 背景」の組み合わせを、`scripts/contrast.py` で確かめたか（テキスト4.5:1、テキスト以外3:1。背景に別の色（区別する領域など）がある場合は、その上の文字色も確かめる）
+- DADSに値がない項目と、DADSの方針から外れた項目に、決めた理由が `sources.md` の「プロジェクト独自ルール」に書かれているか
 
 ### 8. `デザインシステム確認事項.md` を更新する
 
-`docs/rules/screen-design-rules/` 配下の全Markdownファイル（`デザインシステム確認事項.md` 自身と `README.md` を除く）を走査し、`- **状態:** 暫定` および `- **状態:** 要確認`（`確定（〜）／値は暫定` のような複合表記を含む）の項目を洗い出す。
+出力先の全Markdownファイル（`デザインシステム確認事項.md` 自身と `README.md` を除く）を走査し、`- **状態:** 暫定` および `- **状態:** 要確認`（`確定（〜）／値は暫定` のような複合表記を含む）の項目を洗い出す。
 
 `デザインシステム確認事項.md` の一覧を、以下の形式で書き直す。
 
@@ -192,6 +210,11 @@ NG:
 テンプレートの構造を独自判断で大きく変更しない。
 
 テンプレート自体に不足がある場合は、規約値を埋める作業とは分けて、改善案としてユーザーへ提示する。
+
+## 設計原則の問い合わせ
+
+画面設計の基本原則について質問されたときは、上の実行手順とは別に、`${CLAUDE_SKILL_DIR}/references/design-principles/README.md` を見て答える。
+原則を導入したいと言われたときは、同ディレクトリの `operations/導入手順.md` に従う。
 
 ## スコープ外
 
@@ -219,5 +242,11 @@ NG:
 - ローカルリファレンス（DADS/Carbon公式原文の未編集抜粋、取得日・出典・対応表つき）
   - `${CLAUDE_SKILL_DIR}/references/dads/README.md`（取得情報は同ディレクトリの`VERSION.txt`）
   - `${CLAUDE_SKILL_DIR}/references/carbon/README.md`（取得情報は同ディレクトリの`VERSION.txt`）
+- Skillが作成した早見表・一覧（原文ではなく、**原文が正**）
+  - `${CLAUDE_SKILL_DIR}/references/dads/quick-values.md`（原文から確かめた値）
+  - `${CLAUDE_SKILL_DIR}/references/dads/quick-values-tokens.md`（`tokens.json`から生成）
+  - `${CLAUDE_SKILL_DIR}/references/dads/not-defined-and-stances.md`（DADSに値がない項目と、DADSの方針）
+- 画面設計の基本原則（問い合わせ対応用）: `${CLAUDE_SKILL_DIR}/references/design-principles/README.md`
+- スクリプト: `${CLAUDE_SKILL_DIR}/scripts/contrast.py`、`${CLAUDE_SKILL_DIR}/scripts/gen_quick_values.py`
 - 規約ひな形: `${CLAUDE_SKILL_DIR}/assets/screen-design-rules-template/`
 - 補完的に利用するSkill: `design-standards`（DADS / Carbon / プロジェクト固有規約のいずれにも定義がない場合のみ）

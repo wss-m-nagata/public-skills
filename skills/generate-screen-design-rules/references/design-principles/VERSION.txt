@@ -1,0 +1,6 @@
+版: 第1.1版
+変更日: 2026-10-24
+原則: 41件
+比較例: 102件
+作成元: tmp/screen-principles（principles.json は data/principles.json から、画像の項目を除いて作成）
+更新手順: screen-principles で build.py を実行したあと、scripts/export_skill.py を実行する
