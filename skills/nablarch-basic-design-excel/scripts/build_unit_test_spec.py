@@ -27,7 +27,7 @@
     "PJ名": "サンプルプロジェクト", "システム名": "サンプルシステム", "サブシステム名": "顧客管理システム",
     "会社名": "…", "部門名": "…",
     "変更履歴": [                             # 1要素=1行(8行目から)。表紙の版数は最後の要素の版数になる
-      {"版数": "第1.0版", "変更日": "2026-10-06", "区分": "新規",
+      {"版数": "第1.0版", "変更日": "2026-01-06", "区分": "新規",
        "変更箇所": ["-"], "変更内容": ["新規作成"],   # 1要素=1行(セル内改行で並べる)
        "担当者": "TIS"}
     ]
@@ -60,6 +60,11 @@
                                               # ほかに書ける列はテンプレートの見出しと同じ名前(テストデータシート名・データNo・実施者 など)
         ]},
         {"No": "3-5", "対象外理由": "サロゲートペア文字を許容しない設計のため対象外"}
+                                              # 版を上げるとき、その版で変えたケース・観点には "changed" を付ける（赤字になる）。
+                                              #   ケースに付ける：true なら、ケースの列（対応設計書・対応箇所・テスト内容・想定結果・テストコード）の全部、
+                                              #     列名のリスト（例: ["想定結果", "テストコード"]）なら、その列だけが赤字になる。
+                                              #   追加観点・対象外理由の記入に付ける：true なら分類・観点（対象外理由の記入は対象外理由）の全部、列名のリストならその列だけ。
+                                              #   1つでも付いていれば、表紙の版数も赤字になる。前の版の "changed" は消す（作り直すので、赤字は今の版の分だけになる）
       ],
       "追加観点": [                           # テンプレートに無い、プロジェクト独自の観点。省略可
         {"after": "12-1",                     # この観点(空のテンプレートでの「詳細-観点」)の直後に足す
@@ -103,6 +108,7 @@ from fit_change_history_rows import (
 from xlsx_common import (  # noqa: E402
     copy_data_validations,
     ensure_utf8_stdio,
+    mark_font_red,
     save_with_shapes,
 )
 
@@ -150,7 +156,7 @@ HISTORY_LAST_ROW = 33
 CATEGORY_HEADERS = ("大項目", "中項目", "小項目", "詳細", "区分", "確認観点1")
 
 # 1行あたりの高さ(9ptのフォント)と、列幅1あたりに入る表示幅(半角1・全角2)の目安。
-# 2026-10-06、このテンプレート(9pt)をExcelでPDFにして測ったところ、列幅1あたり表示幅1程度が入った。
+# このテンプレート(9pt)をExcelでPDFにして測ったところ、列幅1あたり表示幅1程度が入った。
 # 単語の区切りで早めに折り返すことがあるため、少し控えめに見積もる
 LINE_HEIGHT = 12.0
 DISPLAY_PER_WIDTH = 0.95
@@ -246,7 +252,7 @@ def _case_values(case, layout):
     """テストケース1件を、列番号 → 値 の辞書にする。"""
     values = {}
     for key, value in case.items():
-        if key == "前提":
+        if key in ("前提", "changed"):
             continue
         if key not in layout.columns:
             raise ValueError(
@@ -262,11 +268,30 @@ def _case_values(case, layout):
     return values
 
 
+def _changed_columns(flag, values, layout):
+    """"changed" の指定（True または列名のリスト）から、赤字にする列番号のリストを返す。
+
+    values は、その行（またはその部分）に書く 列番号 → 値 の辞書。True のときは、値のある列の全部にする。
+    """
+    if not flag:
+        return []
+    if flag is True:
+        return list(values)
+    columns = []
+    for name in flag:
+        if name not in layout.columns:
+            raise ValueError(f"changed に、テンプレートに無い列名があります: {name}")
+        columns.append(layout.columns[name])
+    return columns
+
+
 def _plan_rows(sheet_def, ws, layout, last_row, allow_unaddressed):
     """出力する行の並びを組み立てる。
 
-    戻り値は、出力する行ごとの (書式の元にするテンプレートの行, 値の辞書, 行の種類) のリスト。
+    戻り値は、行の並び plan、記入の無い観点 missing、赤字にする位置 changed の3つ。
+    plan は、出力する行ごとの (書式の元にするテンプレートの行, 値の辞書, 行の種類) のリスト。
     行の種類は catalog(テンプレートの観点の行) / extra(同じ観点の2件目以降のケース) / added(追加観点の行)。
+    changed は、(plan の何番目の行か, 赤字にする列番号のリスト) のリスト。
     """
     ids = _catalog_ids(ws, layout, last_row)
     paths = _catalog_paths(ws, layout, last_row)
@@ -351,6 +376,7 @@ def _plan_rows(sheet_def, ws, layout, last_row, allow_unaddressed):
             groups.append((ids[row], [row]))
 
     plan = []
+    changed = []
     for cid, rows in groups:
         entry = entries.get(cid) or {}
         cases = entry.get("cases") or [{}]
@@ -359,8 +385,10 @@ def _plan_rows(sheet_def, ws, layout, last_row, allow_unaddressed):
         values = {}
         if entry.get("対象外理由"):
             values[layout.reason] = entry["対象外理由"]
+            changed.append((len(plan), _changed_columns(entry.get("changed"), values, layout)))
         else:
             values.update(_case_values(cases[0], layout))
+            changed.append((len(plan), _changed_columns(cases[0].get("changed"), values, layout)))
         plan.append((rows[0], values, "catalog"))
 
         # 2. 同じ番号の続きの行(テンプレートで分類の注記を下の行に持つもの)は、そのまま写す
@@ -369,7 +397,9 @@ def _plan_rows(sheet_def, ws, layout, last_row, allow_unaddressed):
 
         # 3. 2件目以降のケース
         for case in cases[1:]:
-            plan.append((rows[0], _case_values(case, layout), "extra"))
+            case_values = _case_values(case, layout)
+            changed.append((len(plan), _changed_columns(case.get("changed"), case_values, layout)))
+            plan.append((rows[0], case_values, "extra"))
 
         # 4. この観点の後ろに足す追加観点
         for item in added.get(cid, []):
@@ -379,15 +409,22 @@ def _plan_rows(sheet_def, ws, layout, last_row, allow_unaddressed):
                     base[layout.columns[header]] = item[header]
             if item.get("対象外理由"):
                 base[layout.reason] = item["対象外理由"]
+                changed.append((len(plan), _changed_columns(item.get("changed"), base, layout)))
                 plan.append((rows[0], base, "added"))
                 continue
             first = dict(base)
-            first.update(_case_values(item["cases"][0], layout))
+            first_case = _case_values(item["cases"][0], layout)
+            first.update(first_case)
+            columns = _changed_columns(item.get("changed"), base, layout)
+            columns += _changed_columns(item["cases"][0].get("changed"), first_case, layout)
+            changed.append((len(plan), columns))
             plan.append((rows[0], first, "added"))
             for case in item["cases"][1:]:
-                plan.append((rows[0], _case_values(case, layout), "extra"))
+                case_values = _case_values(case, layout)
+                changed.append((len(plan), _changed_columns(case.get("changed"), case_values, layout)))
+                plan.append((rows[0], case_values, "extra"))
 
-    return plan, missing
+    return plan, missing, changed
 
 
 def _estimate_height(ws, values, base_height):
@@ -478,7 +515,7 @@ def build_sheet(ws, sheet_def, allow_unaddressed):
 
     # 2. 出力する行の並びを決める
     paths = _catalog_paths(ws, layout, last_row)
-    plan, missing = _plan_rows(sheet_def, ws, layout, last_row, allow_unaddressed)
+    plan, missing, changed = _plan_rows(sheet_def, ws, layout, last_row, allow_unaddressed)
 
     # 3. 表の部分を消す
     for rng in region_merges:
@@ -540,6 +577,13 @@ def build_sheet(ws, sheet_def, allow_unaddressed):
 
     new_last = FIRST_ROW + len(plan) - 1
 
+    # 変更した箇所（"changed"）を赤字にする。値の無いセルは、色が見えないので対象にならない
+    marked = 0
+    for offset, columns in changed:
+        for col in columns:
+            if mark_font_red(ws, f"{openpyxl.utils.get_column_letter(col)}{FIRST_ROW + offset}"):
+                marked += 1
+
     # 表の最終行には、下の罫線を引く(分類の列は、まとまりの最後の行にしか下の罫線が無く、
     # その行を消した場合に表の下が開くため)
     for col in range(1, layout.last_col + 1):
@@ -591,7 +635,7 @@ def build_sheet(ws, sheet_def, allow_unaddressed):
     if ws.auto_filter.ref:
         ws.auto_filter.ref = f"A{HEADER_ROW}:{last_letter}{HEADER_ROW}"
 
-    return layout, new_last, missing
+    return layout, new_last, missing, marked
 
 
 def _write_document(wb, document):
@@ -761,11 +805,13 @@ def build(template, definition_path, output, allow_unaddressed=False, cases_json
     # 3. シートごとに中身を組み立てる
     summary = []
     all_cases = {}
+    marked_total = 0
     for ws, sheet_def in built:
         header = dict(definition.get("header", {}))
         header.update(sheet_def.get("header", {}))
         _fill_header(ws, header)
-        layout, last_row, missing = build_sheet(ws, sheet_def, allow_unaddressed)
+        layout, last_row, missing, marked = build_sheet(ws, sheet_def, allow_unaddressed)
+        marked_total += marked
         cases = compute_case_numbers(ws, layout, last_row)
         all_cases[ws.title] = cases
         written = [c for c in cases if c.get("テスト内容")]
@@ -773,6 +819,11 @@ def build(template, definition_path, output, allow_unaddressed=False, cases_json
         summary.append((ws.title, len(written), len(excluded), missing))
 
     _write_document(wb, definition["document"])
+
+    # 変更した箇所があるときは、表紙の版数も赤字にする
+    if marked_total > 0:
+        mark_font_red(wb["表紙"], "J19")
+
     save_with_shapes(wb, template, output)
 
     if cases_json:

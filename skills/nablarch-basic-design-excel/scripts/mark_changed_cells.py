@@ -29,8 +29,8 @@ apply_mapping.pyは値のみを書き換える方針(フォント等の書式は
     # 前の版の赤字を、すべてのシートで黒(自動の色)に戻す
     python mark_changed_cells.py <対象xlsx> --reset-all [--output <出力先>]
 
-例(テーブル定義書のスタッフマスタシート、入社日・退職日の項目定義2セルをマーク):
-    python mark_changed_cells.py テーブル定義書_CM_共通基盤.xlsx スタッフマスタ AE19 AE20
+例(テーブル定義書の顧客マスタシート、登録日・更新日の項目定義2セルをマーク):
+    python mark_changed_cells.py テーブル定義書_顧客管理.xlsx 顧客マスタ AE19 AE20
 
 --output を省略すると同じパスへ上書きする(呼び出し側で控えを取っている前提)。
 

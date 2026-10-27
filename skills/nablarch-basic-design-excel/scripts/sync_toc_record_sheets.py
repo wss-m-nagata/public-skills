@@ -8,7 +8,7 @@ duplicate_sheet.py・rename_sheet.pyでレコード詳細シート（「3.1. [�
 作成・改名しても、『目次』シート（C12, C13, ...）への反映は自動化されておらず、
 両スクリプトの実行後メッセージでも「目次シートは自動更新されません。手動で追記してください」
 と案内されるのみだった。この手動フォローが漏れると、目次だけがテンプレートの
-プレースホルダー（「3.1. 【レコード名】」）のまま取り残される（2026-09-20に4ファイルで発生）。
+プレースホルダー（「3.1. 【レコード名】」）のまま取り残される。
 このスクリプトはその同期を機械的に行い、手動での更新漏れを防ぐ。
 
 【前提】
@@ -26,7 +26,7 @@ duplicate_sheet.py・rename_sheet.pyでレコード詳細シート（「3.1. [�
     python sync_toc_record_sheets.py <元xlsxパス> <出力xlsxパス> [--max-records N]
 
 例:
-    python sync_toc_record_sheets.py 外部インタフェース設計書_EV0109_CSV出力ダウンロード応答_(CSV).xlsx 出力.xlsx
+    python sync_toc_record_sheets.py 外部インタフェース設計書_ORD002_注文一覧応答_(CSV).xlsx 出力.xlsx
 """
 
 import sys

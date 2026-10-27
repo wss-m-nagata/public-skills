@@ -6,9 +6,11 @@
 - 『【レコード名】』シートはテンプレート原本の状態では3ブロック構成で、1ブロックのデータ行は
   7行しかない。項目数が7を超えると行の挿入が要り、挿入すると下のブロックとデータ構成サンプルの
   行がずれる。4ブロック目以降(records4件目以降)が必要な場合は、ブロック3(ヘッダ行を持たない
-  中間ブロック)のパターンをBLOCK_SPACING間隔で複製し、ブロックそのものを新設する
+  中間ブロック)と同じ形(空き行・レコード名・レコードID・データ行)を、ブロック3の下へ続けて
+  差し込み、ブロックそのものを新設する
   (3ブロックという数はテンプレート原本がそう配布されているだけで、記入要領等に上限の明記は
   無いため)。
+- データ構成サンプルの枠は32行しかない。サンプルがそれより長いときは、枠の行を増やす。
 - 選択欄はチェックボックスではなくセル文字列(□/☑)であり、書き換える位置が決まっている。
 
 これらを毎回マッピングJSONへ手で起こすと間違えるため、本スクリプトへ寄せる。
@@ -18,16 +20,16 @@
 
 電文定義JSONの形式:
 {
-  "msg_id": "EV0101R",                         # 電文ID。ファイル名・U8に入る
-  "msg_name": "評価依頼受付（回答評価）要求",   # 電文名。表紙・目次・変更履歴に入る
+  "msg_id": "ORD001R",                         # 電文ID。ファイル名・U8に入る
+  "msg_name": "注文受付要求",   # 電文名。表紙・目次・変更履歴に入る
   "io": "入力",                                 # 入力 / 出力
-  "peer": "アンケート実施サブシステム",          # 相手先
-  "tx": "EV0101／評価依頼受付（回答評価）",      # 入出力取引ID/名称
+  "peer": "受注システム",          # 相手先
+  "tx": "ORD001／注文受付",      # 入出力取引ID/名称
   "purpose": "…",                              # 目的・概要
   "condition": "…",                            # 作成条件
   "cycle": "随時",                              # 日次/週次/月次/年次/随時/その他
-  "cycle_detail": "回答が確定した都度",
-  "transfer": "Lambda Invoke（同期）",          # 授受方式
+  "cycle_detail": "注文が確定した都度",
+  "transfer": "HTTPS（同期）",          # 授受方式
   "charset": "UTF-8",
   "encrypted": "無し",                          # 無し / 有り
   "remarks": ["なし。"],                        # 特記事項。1要素=1行(E28から連番セルへ)。
@@ -36,9 +38,9 @@
   "header": {"pj": "…", "system": "…", "author": "…", "date": 46279,
              "company": "…", "dept": "…"},      # date はExcelのシリアル値
   "records": [                                  # 先頭がルートレコード。4件目以降は新設ブロックとして対応
-    {"name": "評価依頼", "rec_id": "-", "rec_type": "単一",
+    {"name": "注文", "rec_id": "-", "rec_type": "単一",
      "items": [
-       {"name": "スタッフ識別子", "id": "staffNo", "type": "半角英数字",
+       {"name": "顧客ID", "id": "customerId", "type": "半角英数字",
         "size": "7", "required": "○", "multi": "1",
         "note": "", "sample": "\\"1000123\\"",
         "changed": true}                        # 省略可(既定false)。trueにすると
@@ -54,8 +56,8 @@
 - 構成イメージはレコードが2件以上のときだけ書く。書く場所はレコードを定義する『3.1.〜』シート。
 - 該当しない欄は空欄にせず「-」を書く。まだ決まっていない欄は「T.B.D（後ほど記載）」と書き分ける。
 
-例(空テンプレートに、電文定義ファイルEV0101R.jsonの内容を反映する場合):
-    python build_external_if_json.py "外部インタフェース設計書_(電文ID)_(電文名)_(JSON).xlsx" EV0101R.json 出力.xlsx
+例(空テンプレートに、電文定義ファイルORD001R.jsonの内容を反映する場合):
+    python build_external_if_json.py "外部インタフェース設計書_(電文ID)_(電文名)_(JSON).xlsx" ORD001R.json 出力.xlsx
 """
 
 import argparse
@@ -66,6 +68,8 @@ import sys
 from pathlib import Path
 
 import openpyxl
+from openpyxl.utils import get_column_letter
+from openpyxl.worksheet.cell_range import CellRange, MultiCellRange
 
 sys.path.insert(0, str(Path(__file__).parent))
 from apply_mapping import apply_mapping  # noqa: E402
@@ -90,20 +94,29 @@ STRUCT_SHEET = "2. レコード構成"
 # のパターンを複製して新設できるようにした(block_base参照)。
 BLOCKS_BASE = [(7, 8, 10), (18, 19, 20), (28, 29, 30)]
 BLOCK_ROWS = 7
-# 新設ブロック1つが実際に消費する行数(レコード名行+レコードID行+データ7行。間隔行は挿入しない)。
-# prepare()が新設時に挿入する行数(1+1+BLOCK_ROWS)と必ず一致させること。ここがズレると
+# 新設ブロック1つが実際に消費する行数(空き行+レコード名行+レコードID行+データ7行)。
+# テンプレートのブロック2→3の間隔(18→28)と同じである。
+# prepare()が新設時に挿入する行数(1+1+1+BLOCK_ROWS)と必ず一致させること。ここがズレると
 # データ構成サンプル欄の位置が、新設ブロックの実際の物理シフト量とスクリプト内部の計算上の
-# シフト量とで食い違う(実際に1ブロック分ズレて検証した際に発覚した不具合)。
-BLOCK_SPACING = 2 + BLOCK_ROWS
+# シフト量とで食い違う。
+BLOCK_SPACING = 3 + BLOCK_ROWS
+# ブロックの間の空き行の書式見本(ブロック2と3の間の行)
+SPACER_ROW = 27
+# 新設ブロックを差し込む位置(元のシートの、ブロック3の下の空き行)。
+# 新設ブロックはすべてこの行の直前へ差し込む。下のブロックから処理し、同じ位置へ差し込むと、
+# 先に差し込んだ下のブロックが押し下げられて、ブロック3の下に順に並ぶ。
+NEW_BLOCK_AT = BLOCKS_BASE[-1][2] + BLOCK_ROWS
 
 
 def block_base(i):
-    """i番目(0始まり)のブロックの、そのブロック自身のneeds(7行超の追加分)を考慮しない
-    基準位置(name_row, id_row, data_row)を返す。
+    """i番目(0始まり)のブロックの、すべてのブロックのneeds(7行超の追加分)を0としたときの
+    基準位置(name_row, id_row, data_row)を返す。前のブロックのneeds分は、layout()が足す。
 
     テンプレートに実在するのはBLOCKS_BASEの3ブロックのみ。4ブロック目以降は、
     ヘッダ行を持たない中間ブロック(ブロック2・3のパターン)をBLOCK_SPACING間隔で
-    外挿して新設する(prepareで実際に行・書式を複製する)。
+    ブロック3の下へ続けて新設する(prepareで実際に行・書式を複製する)。
+    4ブロック目以降の位置は、新設したあとのシートでの位置であり、元のシートには無い行である。
+    そのため、prepare()で行を差し込む位置には使わない(NEW_BLOCK_ATを使う)。
     """
     if i < len(BLOCKS_BASE):
         return BLOCKS_BASE[i]
@@ -116,6 +129,11 @@ def block_base(i):
 REMARKS_MAX_LINES = 4
 SAMPLE_LABEL_ROW = 39  # データ構成サンプル／データ構成イメージの見出し行
 IMAGE_COL = "Y"  # データ構成イメージ欄の左端の列
+# データ構成サンプルの枠の、中ほどの行(左右の罫線だけの行。枠を広げるときの書式見本)と、最後の行(下の罫線の行)
+SAMPLE_BOX_MIDDLE_ROW = 41
+SAMPLE_BOX_LAST_ROW = 71
+# データ構成サンプルの枠に書ける行数(見出しの次の行から、枠の最後の行まで)
+SAMPLE_BOX_LINES = SAMPLE_BOX_LAST_ROW - SAMPLE_LABEL_ROW
 
 STRUCT_FIRST_ROW = 9
 # 『2. レコード構成』の列（結合セルの左上）
@@ -175,6 +193,17 @@ def layout(records):
     extra_blocks = max(0, len(records) - len(BLOCKS_BASE))
     total = offset + extra_blocks * BLOCK_SPACING
     return blocks, needs, total
+
+
+def sample_extra_rows(records):
+    """データ構成サンプルの枠に足りない行数を返す(収まるときは0)。
+
+    サンプル(JSON)と構成イメージは、どちらも見出しの次の行から1行ずつ書くため、長い方に合わせる。
+    """
+    lines = len(json_sample(records))
+    if len(records) > 1:
+        lines = max(lines, len(record_tree(records)))
+    return max(0, lines - SAMPLE_BOX_LINES)
 
 
 def record_tree(records):
@@ -240,36 +269,71 @@ def prepare(template, out_path, sheet_name, records):
     wb[TEMPLATE_RECORD_SHEET].title = sheet_name
     ws = wb[sheet_name]
 
-    _, needs, total = layout(records)
+    blocks, needs, total = layout(records)
+    sample_extra = sample_extra_rows(records)
     n_physical = len(BLOCKS_BASE)
     # テンプレートに実在しない4ブロック目以降を新設する際の書式見本。
     # ヘッダ行を持たない中間ブロック(ブロック3。BLOCKS_BASEの最後)のパターンを複製する。
     tmpl_name_row, tmpl_id_row, tmpl_data_row = BLOCKS_BASE[-1]
 
-    # 下のブロックから処理する。先に上のブロックを広げる/新設すると下の行位置がずれるため。
+    # 下の行から処理する。先に上を広げる/新設すると下の行位置がずれるため。
     # ここで使う行番号は、まだ何も挿入していない「元の(拡張前の)」位置であることに注意。
+
+    # 1) データ構成サンプルの枠が足りなければ、枠の最後の行(下の罫線)の前に行を足す
+    insert_rows_keep_layout(ws, SAMPLE_BOX_LAST_ROW, sample_extra, SAMPLE_BOX_MIDDLE_ROW)
+
+    # 2) ブロックを、下のブロックから新設する/広げる。
     # 下から処理するため、i番目を処理する時点で i より上は誰も触っていない。
     for i in range(len(records) - 1, -1, -1):
-        name_row, id_row, data_row = block_base(i)
         if i >= n_physical:
-            # 4ブロック目以降はテンプレートに物理的に存在しないため、ブロックそのものを新設する
-            # (レコード名行→レコードID行→データ行の順に、隣接する行番号へ1件ずつ挿入する)。
+            # 4ブロック目以降はテンプレートに物理的に存在しないため、ブロックそのものを新設する。
+            # すべてNEW_BLOCK_ATの直前へ、データ行→レコードID行→レコード名行→空き行の順に差し込む。
+            # 同じ位置へ差し込むたびに先の行が押し下げられ、空き行・レコード名・レコードID・データ行の
+            # 順に並ぶ。先に新設した下のブロックも、同じく押し下げられて後ろに並ぶ。
             # insert_rows_keep_layoutは書式(_style)だけを複製し、A列の見出し文字列
             # 「レコード名」「レコードID」はテンプレート実在ブロックの静的な値なので複製されない。
-            # そのため見出し文字列は別途明示的に書き込む。
-            insert_rows_keep_layout(ws, name_row, 1, tmpl_name_row)
-            ws.cell(row=name_row, column=1).value = "レコード名"
-            insert_rows_keep_layout(ws, id_row, 1, tmpl_id_row)
-            ws.cell(row=id_row, column=1).value = "レコードID"
-            insert_rows_keep_layout(ws, data_row, BLOCK_ROWS + needs[i], tmpl_data_row)
+            # そのため見出し文字列は別途明示的に書き込む(後の差し込みで、値ごと押し下げられる)。
+            insert_rows_keep_layout(ws, NEW_BLOCK_AT, BLOCK_ROWS + needs[i], tmpl_data_row)
+            insert_rows_keep_layout(ws, NEW_BLOCK_AT, 1, tmpl_id_row)
+            ws.cell(row=NEW_BLOCK_AT, column=1).value = "レコードID"
+            insert_rows_keep_layout(ws, NEW_BLOCK_AT, 1, tmpl_name_row)
+            ws.cell(row=NEW_BLOCK_AT, column=1).value = "レコード名"
+            insert_rows_keep_layout(ws, NEW_BLOCK_AT, 1, SPACER_ROW)
         elif needs[i] > 0:
-            # 既存ブロックの項目数が7件を超える場合、データ行を広げる
+            # 既存ブロックの項目数が7件を超える場合、データ行を広げる。
+            # テンプレートに実在するブロックなので、block_base は元のシートの行を返す
+            data_row = block_base(i)[2]
             insert_rows_keep_layout(ws, data_row + BLOCK_ROWS, needs[i], data_row)
 
     if len(records) < n_physical:
         start = BLOCKS_BASE[len(records)][0] + total
         end = BLOCKS_BASE[-1][2] + BLOCK_ROWS - 1 + total
         clear_rows(ws, range(start, end + 1))
+
+    # 3) 入力規則(必須・データ型のプルダウン)を、使うブロックのデータ行にかけ直す。
+    # テンプレートの入力規則は3ブロック分しか無く、行を差し込んでも広がらないため。
+    # 列はテンプレートの入力規則の列をそのまま使う
+    for dv in ws.data_validations.dataValidation:
+        first = min(dv.sqref.ranges, key=lambda rng: rng.min_row)
+        cols = (get_column_letter(first.min_col), get_column_letter(first.max_col))
+        dv.sqref = MultiCellRange(
+            " ".join(
+                "%s%d:%s%d" % (cols[0], data_row, cols[1], data_row + BLOCK_ROWS + needs[i] - 1)
+                for i, (_, _, data_row) in enumerate(blocks)
+            )
+        )
+
+    # 4) 差し込んだ行の分だけ、印刷範囲の最後の行と、データ構成サンプルの前の改ページを下げる。
+    # どちらも openpyxl の行の挿入では動かないため。
+    # 印刷範囲は、差し込んだ行すべての分だけ広げる。
+    # 改ページ(ブロック3の下の空き行のあと)より上に差し込んだのはブロックの行(total)だけで、
+    # サンプルの枠の行は改ページより下のため、改ページはブロックの行の分だけ下げる
+    area = CellRange(ws.print_area.split("!")[-1].replace("$", ""))
+    area.expand(down=total + sample_extra)
+    ws.print_area = area.coord
+    for brk in ws.row_breaks.brk:
+        if brk.id >= NEW_BLOCK_AT:
+            brk.id += total
 
     save_with_shapes(wb, template, out_path)
 
