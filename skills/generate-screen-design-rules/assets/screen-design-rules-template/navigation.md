@@ -6,11 +6,17 @@
 
 ## 1. ナビゲーションの役割
 
+<!-- template-only:start -->
 - **状態:** 暫定
 - **基本:** DADS
 - **補完:** Carbon
 - **参照ヒント:** コンポーネント > パンくずナビゲーション／タブ／ページナビゲーション（DADS）／UI Shell（Header + Left panel + Right panel）全体（Carbon）
 - **ローカル参照:** `references/dads/components/breadcrumb/index.md`、`references/dads/components/tab/index.md`、`references/carbon/UI-shell-header/usage.mdx`、`references/carbon/UI-shell-left-panel/usage.mdx`
+<!-- template-only:end -->
+
+### 説明
+
+画面内や画面間を移動するための案内を用途に応じて使い分けます。
 
 ### 規約
 
@@ -26,10 +32,16 @@
 
 ## 2. Side Navigationを使う条件
 
+<!-- template-only:start -->
 - **状態:** 暫定
 - **補完元:** Carbon
 - **参照ヒント:** UI shell left panel > Usage > Behavior
 - **ローカル参照:** `references/carbon/UI-shell-left-panel/usage.mdx`
+<!-- template-only:end -->
+
+### 説明
+
+画面の横に業務メニューを設ける条件を定めます。
 
 ### 規約
 
@@ -38,20 +50,28 @@
 - **5項目を超える場合**を利用判断の目安とする
 - Side Navigationだけで深い階層を表現しない
 
+<!-- template-only:start -->
 ### 確認事項
 
 - [ ] Side Navigationを全業務画面で利用する
 - [ ] 利用する画面を限定する
+<!-- template-only:end -->
 
 ---
 
 ## 3. メニュー階層
 
+<!-- template-only:start -->
 - **状態:** 暫定
 - **補完元:** Carbon
 - **参照ヒント:** UI shell left panel > Usage
 - **検索キーワード:** nested list, sub-menu
 - **ローカル参照:** `references/carbon/UI-shell-left-panel/usage.mdx`
+<!-- template-only:end -->
+
+### 説明
+
+メニューの分類と階層の深さを定めます。
 
 ### 規約
 
@@ -84,10 +104,16 @@ Side Navigation内は、原則として **2階層まで** とします。
 
 ## 4. 現在位置
 
+<!-- template-only:start -->
 - **状態:** 暫定
 - **基本:** DADS
 - **参照ヒント:** コンポーネント > タブ／パンくずナビゲーション（選択状態の表現）
 - **ローカル参照:** `references/dads/components/tab/index.md`、`references/dads/components/breadcrumb/index.md`
+<!-- template-only:end -->
+
+### 説明
+
+現在開いている画面や選択中の項目の示し方を定めます。
 
 ### 規約
 
@@ -97,31 +123,45 @@ Side Navigation内は、原則として **2階層まで** とします。
 
 ## 5. パンくず
 
+<!-- template-only:start -->
 - **状態:** 暫定
 - **出典:** DADS
 - **参照ヒント:** コンポーネント > パンくずナビゲーション
 - **ローカル参照:** `references/dads/components/breadcrumb/index.md`
+<!-- template-only:end -->
+
+### 説明
+
+画面の階層と上位画面への移動を示すパンくずの使い方を定めます。
 
 ### 規約
 
 ページ階層をユーザーに伝える必要がある場合は、パンくずを利用します。
 
+<!-- template-only:start -->
 ### 確認事項
 
 - [ ] 原則すべての下位画面に表示する
 - [ ] 階層が深い画面のみ表示する
 - [ ] Side Navigationで現在位置が十分に分かる場合の扱いを決める
+<!-- template-only:end -->
 
 ---
 
 ## 6. タブ
 
+<!-- template-only:start -->
 - **状態:** 暫定
 - **出典:** DADS
 - **補完:** Carbon
 - **参照ヒント:** コンポーネント > タブ（DADS）／Tabs > Usage（Carbon）
 - **検索キーワード:** number of tabs, when to use
 - **ローカル参照:** `references/dads/components/tab/index.md`、`references/carbon/tabs/usage.mdx`
+<!-- template-only:end -->
+
+### 説明
+
+関連する情報を切り替えるタブの使い方を定めます。
 
 ### 規約
 
@@ -137,10 +177,16 @@ Side Navigation内は、原則として **2階層まで** とします。
 
 ## 7. 狭い画面でのナビゲーション
 
+<!-- template-only:start -->
 - **状態:** 暫定
 - **補完元:** Carbon
 - **参照ヒント:** UI shell header > Style > Responsive behavior、UI shell left panel > Usage（Responsive behavior）
 - **ローカル参照:** `references/carbon/UI-shell-header/style.mdx`、`references/carbon/UI-shell-left-panel/usage.mdx`
+<!-- template-only:end -->
+
+### 説明
+
+画面幅が狭い場合のナビゲーションの表示方法を定めます。
 
 ### 規約
 

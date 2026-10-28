@@ -6,8 +6,14 @@ Button、Form、Table、Dialogなど、画面で共通利用するUI部品の見
 
 ## 1. 基本方針
 
+<!-- template-only:start -->
 - **状態:** 暫定
 - **基本:** DADS
+<!-- template-only:end -->
+
+### 説明
+
+画面で使う共通部品の見た目と操作をそろえる方針を定めます。
 
 ### 規約
 
@@ -15,35 +21,22 @@ DADSに該当するUI部品がある場合は、DADSの見た目・状態・ア�
 
 同じ役割の部品を、画面ごとに別の見た目で作り分けません。
 
-### コンポーネント利用の優先順位
-
-1. プロジェクト既存の共通コンポーネント
-2. 採用した部品ライブラリの部品（既定の見た目は、テーマと既定値でDADSに合わせる）
-3. DADSに不足する挙動を、別のライブラリで補完
-4. それでも不足する場合のみ新規コンポーネントを検討
-
-> 手順0で確認した部品ライブラリに合わせて、2と3の書き方を直します。
-> 使う部品ライブラリがない場合は、2を「DADSの公式コードをもとにした共通コンポーネント」に直します。
-
-### 部品ライブラリとの対応
-
-使う部品ライブラリがある場合は、規約の項目を、そのライブラリの部品と指定方法に対応づけます。
-
-| 規約の項目 | ライブラリの部品 | 既定値の指定場所 |
-|---|---|---|
-| `[例: ボタン]` | `[部品名]` | `[テーマ、既定値の設定ファイルなど]` |
-
-> [AI]
-> - 既存の共通コンポーネントがある場合は、同じ用途のコンポーネントを新規作成しないこと。
+部品ライブラリや共通コンポーネントとの対応は、[デザインシステム実現方式.md](./デザインシステム実現方式.md)に記載します。
 
 ---
 
 ## 2. Button
 
+<!-- template-only:start -->
 - **状態:** 暫定
 - **出典:** DADS
 - **参照ヒント:** コンポーネント > ボタン
 - **ローカル参照:** `references/dads/components/button/index.md`
+<!-- template-only:end -->
+
+### 説明
+
+操作の重要度に応じたボタンの種類と配置を定めます。
 
 ### 規約
 
@@ -53,23 +46,27 @@ DADSに該当するUI部品がある場合は、DADSの見た目・状態・ア�
 - ボタンのサイズはDADSの定義から選ぶ
 - hover / focus / disabled等の状態を統一する
 
+<!-- template-only:start -->
 ### 確認事項
 
 - [ ] 主要操作ボタンの標準配置を決める
 - [ ] 戻る / キャンセル / 保存の順序を決める
-
-### 必須実装
-
-`[共通Buttonコンポーネントを指定する場合はここに記載]`
+<!-- template-only:end -->
 
 ---
 
 ## 3. Form
 
+<!-- template-only:start -->
 - **状態:** 暫定
 - **出典:** DADS
 - **参照ヒント:** コンポーネント > インプットテキスト／テキストエリア／セレクトボックス／チェックボックス／ラジオボタン／日付ピッカー・カレンダー
 - **ローカル参照:** `references/dads/components/input-text/index.md`、`references/dads/components/textarea/index.md`、`references/dads/components/select/index.md`、`references/dads/components/checkbox/index.md`、`references/dads/components/radio/index.md`、`references/dads/components/date-picker/index.md`
+<!-- template-only:end -->
+
+### 説明
+
+入力欄とラベル、必須項目、エラーの示し方を定めます。
 
 ### 対象
 
@@ -88,26 +85,30 @@ DADSに該当するUI部品がある場合は、DADSの見た目・状態・ア�
 - placeholderだけをラベル代わりにしない
 - 同じ種類の入力欄は高さ・余白を統一する
 
+<!-- template-only:start -->
 ### 確認事項
 
 - [ ] ラベルの標準位置を決める
 - [ ] フォームを1列中心にするか決める
 - [ ] 横並びを許可する条件を決める
 - [ ] 必須表示の形式を決める
-
-### 必須実装
-
-`[共通Formコンポーネントを指定する場合はここに記載]`
+<!-- template-only:end -->
 
 ---
 
 ## 4. Table / Data Table
 
+<!-- template-only:start -->
 - **状態:** 暫定
 - **基本:** DADS
 - **高度な操作の補完:** Carbon
 - **参照ヒント:** コンポーネント > テーブル／データテーブル、テーブルコントロール（DADS）／Data table > Usage > Table toolbar / Batch actions（Carbon）
 - **ローカル参照:** `references/dads/components/table/index.md`、`references/dads/components/table-control/index.md`、`references/carbon/data-table/usage.mdx`
+<!-- template-only:end -->
+
+### 説明
+
+表の表示と検索、並べ替えなどの操作の使い方を定めます。
 
 ### 規約
 
@@ -126,27 +127,31 @@ DADSに該当するUI部品がある場合は、DADSの見た目・状態・ア�
 
 一覧全体に対する操作と、行単位の操作は区別して配置します。
 
+<!-- template-only:start -->
 ### 確認事項
 
 - [ ] Default / Denseのどちらを標準にするか
 - [ ] 行クリックで詳細画面へ移動するか
 - [ ] 操作列を設けるか
 - [ ] 一括操作を利用するか
-
-### 必須実装
-
-`[共通Tableコンポーネントを指定する場合はここに記載]`
+<!-- template-only:end -->
 
 ---
 
 ## 5. Dialog / Modal
 
+<!-- template-only:start -->
 - **状態:** 暫定
 - **基本:** DADS
 - **使い分けの補完:** Carbon
 - **参照ヒント:** コンポーネント > モーダルダイアログ（DADS）／Modal > Usage（Modalとサイドパネルの使い分け）、UI shell right panel > Usage（Carbon）
 - **検索キーワード:** modal vs side panel, editable fields, scrolling
 - **ローカル参照:** `references/dads/components/modal-dialog/index.md`、`references/carbon/modal/usage.mdx`、`references/carbon/UI-shell-right-panel/usage.mdx`
+<!-- template-only:end -->
+
+### 説明
+
+元の画面の上に開く確認・入力画面を使う条件を定めます。
 
 ### 規約
 
@@ -154,19 +159,27 @@ Dialogは、元画面の文脈を保ったまま短時間で完了する操作�
 
 複雑な入力や大量の情報を扱う処理はDialogに詰め込まず、別画面やSide Panelを検討します。
 
+<!-- template-only:start -->
 ### 確認事項
 
 - [ ] Side Panel / Drawerを利用するか
 - [ ] Dialogで扱う操作の目安を決める
+<!-- template-only:end -->
 
 ---
 
 ## 6. Card
 
+<!-- template-only:start -->
 - **状態:** 暫定
 - **出典:** DADS
 - **参照ヒント:** コンポーネント > カード
 - **ローカル参照:** `references/dads/components/card/index.md`
+<!-- template-only:end -->
+
+### 説明
+
+関連する情報を枠にまとめて表示する部品の使い方を定めます。
 
 ### 規約
 
@@ -178,10 +191,16 @@ Dialogは、元画面の文脈を保ったまま短時間で完了する操作�
 
 ## 7. 状態表示
 
+<!-- template-only:start -->
 - **状態:** 暫定
 - **出典:** DADS
 - **参照ヒント:** コンポーネント > ノティフィケーションバナー
 - **ローカル参照:** `references/dads/components/notification-banner/index.md`
+<!-- template-only:end -->
+
+### 説明
+
+エラー、警告、完了などの状態を利用者に伝える方法を定めます。
 
 ### 規約
 
@@ -191,10 +210,19 @@ Dialogは、元画面の文脈を保ったまま短時間で完了する操作�
 
 ## 8. 追加コンポーネント
 
+### 説明
+
+既存の部品では満たせない用途の部品を追加する場合の考え方を定めます。
+
+
 DADSや既存共通部品にないコンポーネントが必要になった場合に記載します。
 
-| コンポーネント | 必要な理由 | 採用元 | 状態 |
-|---|---|---|---|
-| `[例: Tree]` | `[理由]` | `[Radix / TanStack / 独自等]` | 要確認 |
+<!-- template-only:start -->
+- **状態:** 要確認
+<!-- template-only:end -->
+
+| コンポーネント | 必要な理由 | 採用元 |
+|---|---|---|
+| `[例: Tree]` | `[理由]` | `[Radix / TanStack / 独自等]` |
 
 追加する場合は、既存部品で代替できないかを確認してから採用します。

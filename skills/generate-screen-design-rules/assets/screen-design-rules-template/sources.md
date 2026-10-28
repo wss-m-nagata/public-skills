@@ -66,28 +66,13 @@
 - 高機能Data Tableの操作パターン
 - Dialog / Side Panel / 別画面の使い分け
 
-### 暫定値として利用している例
-
-| 項目 | 暫定値 | 出典 |
-|---|---:|---|
-| Header高さ | 48px | Carbon UI Shell Header |
-| Side Navigation幅 | 256px | Carbon UI Shell Left Panel |
-| Side Navigation項目高さ | 32px | Carbon UI Shell Left Panel |
-| Side Navigation左右padding | 16px | Carbon UI Shell Left Panel |
-| Side Navigationアイコン | 16px | Carbon UI Shell Left Panel |
-
-これらは確定値ではありません。
-プロジェクトの規約として採用するか、変更するかを確認して確定します。
+項目別の出典と確認が必要な候補値は、[デザインシステム管理台帳.md](./デザインシステム管理台帳.md)に記載します。
 
 ---
 
 ## 3. プロジェクト独自ルール
 
-DADS / Carbonにないルールや、プロジェクトとして変更したルールは理由とともに記録します。
-
-| 対象 | 採用ルール | DADS / Carbonからの変更理由 |
-|---|---|---|
-| `[記載]` | `[記載]` | `[記載]` |
+DADS / Carbonにないルールや、プロジェクトとして変更したルールの理由は規約本文に記載し、出典との対応を管理台帳に記録します。
 
 ---
 

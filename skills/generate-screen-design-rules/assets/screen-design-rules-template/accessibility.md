@@ -8,10 +8,16 @@
 
 ## 1. 基本方針
 
+<!-- template-only:start -->
 - **状態:** 暫定
 - **主な出典:** DADS
 - **参照ヒント:** ガイダンス > アクセシビリティ
 - **ローカル参照:** `references/dads/guidance/accessibility/index.md`
+<!-- template-only:end -->
+
+### 説明
+
+利用環境や操作方法が異なっても情報を利用できるようにする基本方針を定めます。
 
 ### 規約
 
@@ -23,11 +29,17 @@ DADSのアクセシビリティガイドラインを基本とします。
 
 ## 2. 色・コントラスト
 
+<!-- template-only:start -->
 - **状態:** 暫定
 - **出典:** DADS
 - **参照ヒント:** ガイダンス > アクセシビリティ（色の組み合わせとコントラスト比）
 - **検索キーワード:** コントラスト比
 - **ローカル参照:** `references/dads/guidance/accessibility/index.md`
+<!-- template-only:end -->
+
+### 説明
+
+文字や部品を背景から見分けられる明暗差と、色による情報の伝え方を定めます。
 
 ### 規約
 
@@ -40,10 +52,16 @@ DADSのアクセシビリティガイドラインを基本とします。
 
 ## 3. キーボード操作
 
+<!-- template-only:start -->
 - **状態:** 暫定
 - **出典:** DADS / Carbon
 - **参照ヒント:** ガイダンス > アクセシビリティ（キーボード操作、フォーカスインジケーター）
 - **ローカル参照:** `references/dads/guidance/accessibility/index.md`
+<!-- template-only:end -->
+
+### 説明
+
+キーボードによる操作と操作位置の示し方を定めます。
 
 ### 規約
 
@@ -56,8 +74,14 @@ DADSのアクセシビリティガイドラインを基本とします。
 
 ## 4. DOM順序と表示順
 
+<!-- template-only:start -->
 - **状態:** 暫定
 - **出典:** DADS
+<!-- template-only:end -->
+
+### 説明
+
+画面上の表示順と読み上げ順の関係を定めます。
 
 ### 規約
 
@@ -67,11 +91,17 @@ DADSのアクセシビリティガイドラインを基本とします。
 
 ## 5. レスポンシブ・拡大
 
+<!-- template-only:start -->
 - **状態:** 暫定
 - **出典:** DADS
 - **参照ヒント:** ガイダンス > アクセシビリティ（フォントサイズ、大きさの可変や内容量の増減を踏まえた外観構造）
 - **検索キーワード:** 文字拡大
 - **ローカル参照:** `references/dads/guidance/accessibility/index.md`
+<!-- template-only:end -->
+
+### 説明
+
+表示幅や文字の大きさが変わっても情報と操作を利用できるようにします。
 
 ### 規約
 
@@ -83,10 +113,16 @@ DADSのアクセシビリティガイドラインを基本とします。
 
 ## 6. Form
 
+<!-- template-only:start -->
 - **状態:** 暫定
 - **出典:** DADS
 - **参照ヒント:** コンポーネント > インプットテキスト／テキストエリア等、各入力コンポーネントの「アクセシビリティ」タブ
 - **ローカル参照:** `references/dads/components/input-text/index.md`、`references/dads/components/textarea/index.md`（各ファイル内の「アクセシビリティ」節）
+<!-- template-only:end -->
+
+### 説明
+
+入力欄の意味やエラーを利用者に伝える方法を定めます。
 
 ### 規約
 
@@ -100,10 +136,16 @@ DADSのアクセシビリティガイドラインを基本とします。
 
 ## 7. Navigation
 
+<!-- template-only:start -->
 - **状態:** 暫定
 - **出典:** DADS / Carbon
 - **参照ヒント:** コンポーネント > パンくずナビゲーション／タブの「アクセシビリティ」タブ（DADS）／UI shell left panel > Usage（Carbon）
 - **ローカル参照:** `references/dads/components/breadcrumb/index.md`、`references/dads/components/tab/index.md`、`references/carbon/UI-shell-left-panel/usage.mdx`
+<!-- template-only:end -->
+
+### 説明
+
+現在位置やメニューの状態を利用者に伝える方法を定めます。
 
 ### 規約
 
@@ -115,9 +157,15 @@ DADSのアクセシビリティガイドラインを基本とします。
 
 ## 8. 見出し構造
 
+<!-- template-only:start -->
 - **状態:** 暫定
 - **参照ヒント:** コンポーネント > 見出し
 - **ローカル参照:** `references/dads/components/heading/index.md`
+<!-- template-only:end -->
+
+### 説明
+
+見出しの意味上の階層を保ち、内容の構造を伝える方法を定めます。
 
 ### 規約
 

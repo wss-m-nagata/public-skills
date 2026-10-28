@@ -37,6 +37,27 @@ gh skill install wss-m-nagata/public-skills --all
 gh skill install wss-m-nagata/public-skills ai-development-assessment --agent claude-code --scope project
 ```
 
+## スキルの更新方法
+
+`gh skill update` でインストール済みのスキルを更新できます。
+
+```bash
+# 更新可能なスキルを確認（更新はしない）
+gh skill update --dry-run
+
+# 対話式で更新するスキルを確認して更新
+gh skill update
+
+# スキルを指定して更新（例: ai-development-assessment）
+gh skill update ai-development-assessment
+
+# インストール済みのすべてのスキルを更新（確認なし）
+gh skill update --all
+```
+
+※ `--pin` でバージョンを固定したスキルは通常の更新対象から除外されます。
+
+
 ## 構成
 
 ```
