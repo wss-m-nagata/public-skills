@@ -1,0 +1,228 @@
+# -*- coding: utf-8 -*-
+"""
+2つのExcelファイル(反映前・反映後)を比較し、値以外の構造(結合セル・背景色・
+フォント色・行高・列幅・罫線・数式・入力規則・シート保護・図形)が変化していないかを検証する。
+
+数式セルの内容(data_type=='f')も比較する。ただしこれは数式の「文字列」が変化したかを
+見ているだけで、セル内部に保存された計算結果のキャッシュ値までは比較できない
+(openpyxlで保存すると通常キャッシュは失われるが、テンプレート側でfullCalcOnLoad=Trueが
+設定されていれば、Excelで開いた際に自動再計算されるため実害は小さい)。
+
+apply_mapping.py / duplicate_sheet.py / extend_table_rows.py で処理した後、
+必ずこのスクリプトで検証すること。これらのスクリプトはsave_with_shapes()を通じて
+図形の復元を自動で行うが、復元に失敗するケース(元にしたファイルの指定間違い等)を
+検知するため、このスクリプト側でも独立して図形の有無を確認する。
+
+使い方:
+    python verify_layout.py <反映前xlsxパス> <反映後xlsxパス> [--allow-history-row-heights] [--allow-row-heights] [--allow-font-colors]
+
+    --allow-history-row-heights:
+        「変更履歴」シートの8行目以降(データの行)の行の高さの変化を許す。
+        fit_change_history_rows.py で、セル内改行の行数に合わせて行の高さを変えた場合に付ける。
+        他のシートや、変更履歴の見出しの行の高さが変わった場合は、これまでどおり差分として扱う。
+
+    --allow-row-heights:
+        すべてのシートで、行の高さが「広がった」変化を許す(狭まった行は、これまでどおり差分として扱う)。
+        fit_row_heights.py で、文字が隠れないように行の高さを広げた場合に付ける。
+
+    --allow-font-colors:
+        文字色の変化を許す(差分として扱わず、どのセルの色が変わったかだけを表示する)。
+        mark_changed_cells.py で、前の版の赤字を黒に戻したり、今回変えたセルを赤字にしたりした場合に付ける。
+        値の反映(apply_mapping.py)の前後の検証には付けない(値の反映で文字色が変わるのは誤りのため)。
+
+例(apply_mapping.pyで書き込む前後のファイルを比較する場合):
+    python verify_layout.py テーブル一覧.xlsx 出力.xlsx
+
+終了コード:
+    0 = 構造の差分なし(合格)
+    1 = 構造に差分あり(不合格。詳細を標準出力に表示)
+"""
+
+import sys
+from pathlib import Path
+
+import openpyxl
+
+sys.path.insert(0, str(Path(__file__).parent))
+from xlsx_common import snapshot_sheet_structure, ensure_utf8_stdio
+from restore_shapes import sheets_with_drawings, shape_anchor_counts
+
+
+# 行の高さの変化を許すことがあるシートと、その対象の先頭行(fit_change_history_rows.pyの対象)
+HISTORY_SHEET = "変更履歴"
+HISTORY_FIRST_DATA_ROW = 8
+
+
+def diff_sheet(name, before, after, allow_history_row_heights=False, allow_row_heights=False):
+    diffs = []
+
+    if before["dimensions"] != after["dimensions"]:
+        diffs.append(
+            f"シート範囲(行数×列数)が変化: {before['dimensions']} -> {after['dimensions']}"
+        )
+
+    if before["merged_cells"] != after["merged_cells"]:
+        added = sorted(set(after["merged_cells"]) - set(before["merged_cells"]))
+        removed = sorted(set(before["merged_cells"]) - set(after["merged_cells"]))
+        if added:
+            diffs.append(f"結合セルが追加された: {added}")
+        if removed:
+            diffs.append(f"結合セルが解除された: {removed}")
+
+    before_heights, after_heights = before["row_heights"], after["row_heights"]
+    if allow_history_row_heights and name == HISTORY_SHEET:
+        # 変更履歴のデータの行は、セル内改行の行数に合わせて高さを変えてよい
+        before_heights = {r: h for r, h in before_heights.items() if r < HISTORY_FIRST_DATA_ROW}
+        after_heights = {r: h for r, h in after_heights.items() if r < HISTORY_FIRST_DATA_ROW}
+    if allow_row_heights:
+        # 行の高さが広がった行だけを許す（狭まった行・既定の高さに戻った行は差分として残す）
+        grown = {
+            r for r, h in after_heights.items()
+            if h is not None and (before_heights.get(r) is None or h > before_heights[r])
+        }
+        before_heights = {r: h for r, h in before_heights.items() if r not in grown}
+        after_heights = {r: h for r, h in after_heights.items() if r not in grown}
+    if before_heights != after_heights:
+        diffs.append("行の高さが変化した箇所があります")
+
+    if before["col_widths"] != after["col_widths"]:
+        diffs.append("列の幅が変化した箇所があります")
+
+    fill_diff = {
+        k: (before["fills"].get(k), after["fills"].get(k))
+        for k in set(before["fills"]) | set(after["fills"])
+        if before["fills"].get(k) != after["fills"].get(k)
+    }
+    if fill_diff:
+        diffs.append(f"背景色が変化したセル: {fill_diff}")
+
+    font_diff = {
+        k: (before["fonts"].get(k), after["fonts"].get(k))
+        for k in set(before["fonts"]) | set(after["fonts"])
+        if before["fonts"].get(k) != after["fonts"].get(k)
+    }
+    if font_diff:
+        diffs.append(f"フォント色が変化したセル: {font_diff}")
+
+    removed_borders = before["borders"] - after["borders"]
+    if removed_borders:
+        diffs.append(f"罫線が消えたセル: {sorted(removed_borders)}")
+
+    added_borders = after["borders"] - before["borders"]
+    if added_borders:
+        diffs.append(f"罫線が新たに追加されたセル: {sorted(added_borders)}")
+
+    formula_diff = {
+        k: (before["formulas"].get(k), after["formulas"].get(k))
+        for k in set(before["formulas"]) | set(after["formulas"])
+        if before["formulas"].get(k) != after["formulas"].get(k)
+    }
+    if formula_diff:
+        diffs.append(
+            f"数式が変化・消失したセル: {formula_diff}"
+            f"（意図的に--force-formula-overwriteで上書きした場合を除き、想定外の数式破壊の可能性があります）"
+        )
+
+    if before["validations"] != after["validations"]:
+        diffs.append(
+            f"入力規則(プルダウン)が変化: {before['validations']} -> {after['validations']}"
+        )
+
+    if before["sheet_protection"] != after["sheet_protection"]:
+        diffs.append("シート保護の設定が変化しました")
+
+    return diffs
+
+
+def verify(before_path, after_path, allow_history_row_heights=False, allow_row_heights=False):
+    wb_before = openpyxl.load_workbook(before_path, data_only=False)
+    wb_after = openpyxl.load_workbook(after_path, data_only=False)
+
+    all_diffs = {}
+
+    if wb_before.sheetnames != wb_after.sheetnames:
+        all_diffs["__workbook__"] = [
+            f"シート構成が変化: {wb_before.sheetnames} -> {wb_after.sheetnames}"
+        ]
+
+    for name in wb_before.sheetnames:
+        if name not in wb_after.sheetnames:
+            continue
+        before = snapshot_sheet_structure(wb_before, wb_before[name])
+        after = snapshot_sheet_structure(wb_after, wb_after[name])
+        diffs = diff_sheet(name, before, after, allow_history_row_heights, allow_row_heights)
+        if diffs:
+            all_diffs[name] = diffs
+
+    # 図形(テキストボックス等)が失われていないか・不自然に増えていないかを確認
+    # openpyxlはこれをセル単位の構造としては扱わないため、上のsnapshot_sheet_structureでは検出できない
+    before_shapes = sheets_with_drawings(before_path)
+    after_shapes = sheets_with_drawings(after_path)
+    lost_shapes = before_shapes - after_shapes
+    if lost_shapes:
+        all_diffs.setdefault("__workbook__", []).append(
+            f"図形(テキストボックス等)が失われたシート: {sorted(lost_shapes)}"
+            f"（restore_shapes.pyによる復元に失敗した可能性。表紙の「関係者外秘」等の表示が"
+            f"消えていないか目視でも確認すること）"
+        )
+
+    # 図形の個数(シートごと)が変化していないかを確認。
+    # 有無だけでなく個数を見るのは、「元ファイル」に誤ってサンプル/実例ファイルを指定した場合、
+    # 図形自体は失われないが、古い図形が新しい図形に上乗せされて増える(表紙の二重表示)事故を
+    # 検知するため(実際にこの事故が発生したことを確認済み)。
+    before_counts = shape_anchor_counts(before_path)
+    after_counts = shape_anchor_counts(after_path)
+    increased = {
+        name: (before_counts.get(name, 0), after_counts[name])
+        for name in after_counts
+        if after_counts[name] > before_counts.get(name, 0)
+    }
+    if increased:
+        all_diffs.setdefault("__workbook__", []).append(
+            f"図形の個数が増えたシート: {increased}"
+            f"（「元ファイル」にsample/実例ファイルを誤って指定すると、古い図形ベースの表紙が"
+            f"新しいセルベースの表紙に重なって二重表示される事故が起きる。restore_shapes.py・"
+            f"duplicate_sheet.py・apply_mapping.py等の「元xlsxパス」引数を確認すること）"
+        )
+
+    return all_diffs
+
+
+def main():
+    ensure_utf8_stdio()
+    args = sys.argv[1:]
+    allow_history_row_heights = "--allow-history-row-heights" in args
+    allow_row_heights = "--allow-row-heights" in args
+    allow_font_colors = "--allow-font-colors" in args
+    args = [a for a in args if a not in ("--allow-history-row-heights", "--allow-row-heights", "--allow-font-colors")]
+    if len(args) != 2:
+        print(__doc__)
+        sys.exit(2)
+
+    before_path, after_path = args
+    diffs = verify(before_path, after_path, allow_history_row_heights, allow_row_heights)
+
+    # 文字色の変化を許す場合は、差分から外して、変わったセルだけを表示する
+    if allow_font_colors:
+        for sheet in list(diffs):
+            colors = [d for d in diffs[sheet] if d.startswith("フォント色が変化したセル")]
+            for d in colors:
+                print(f"(参考)[{sheet}] {d}")
+            diffs[sheet] = [d for d in diffs[sheet] if not d.startswith("フォント色が変化したセル")]
+            if not diffs[sheet]:
+                del diffs[sheet]
+
+    if not diffs:
+        print("OK: 構造(レイアウト)の差分はありません。値のみが反映されています。")
+        sys.exit(0)
+
+    print("NG: 構造に差分が見つかりました。")
+    for sheet, sheet_diffs in diffs.items():
+        print(f"\n[{sheet}]")
+        for d in sheet_diffs:
+            print(f"  - {d}")
+    sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

@@ -1,4 +1,5 @@
 # 修正履歴
+# 2026/11/10: 非対応の管理形式を未確認と明示する。
 # 2026/10/28: 管理台帳から確認待ちを一覧表示する処理を追加。
 #   - 対応形式を検証し、外部管理形式を空の一覧として扱わない。
 
@@ -18,7 +19,7 @@ def main() -> int:
     rows = []
     lines = args.ledger.read_text(encoding='utf-8').splitlines()
     if not any(line.startswith('|') and '状態' in line and ('規約ファイル' in line or line.startswith('| 規約 |')) for line in lines):
-        print('管理台帳の状態欄を読み取れません。確認事項の管理先を確認してください。', file=sys.stderr)
+        print('管理台帳の状態欄を読み取れません。確認待ちの有無は未確認です。台帳のリンク先やプロジェクトの課題管理先を確認してください。', file=sys.stderr)
         return 2
     for line in lines:
         if not line.startswith('|'):
