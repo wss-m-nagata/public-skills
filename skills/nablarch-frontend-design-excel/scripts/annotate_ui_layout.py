@@ -30,6 +30,10 @@ def _validate_region(element, ids):
     x, y, width, height = values
     if x < 0 or y < 0 or width <= 0 or height <= 0 or x + width > 1 or y + height > 1:
         raise ValueError(f'{element_id}: 相対座標が画像の範囲外です')
+    for key in ('label_x', 'label_y'):
+        value = element.get(key)
+        if value is not None and (type(value) not in (int, float) or not 0 <= value <= 1):
+            raise ValueError(f'{element_id}: {key}は0〜1で指定してください')
 
 
 def _validate_definition(definition, base):
@@ -48,8 +52,8 @@ def _validate_definition(definition, base):
         with Image.open(path) as image:
             width, height = image.size
         elements = layout.get('elements')
-        if not isinstance(elements, list) or not elements:
-            raise ValueError(f'{cell}: 要素IDと矩形を指定してください')
+        if not isinstance(elements, list):
+            raise ValueError(f'{cell}: elementsは配列で指定してください')
         min_scale = layout.get('min_scale', 0.8)
         if type(min_scale) not in (float, int) or not 0 < min_scale <= 1:
             raise ValueError(f'{cell}: min_scaleは0より大きく1以下にしてください')
@@ -57,7 +61,7 @@ def _validate_definition(definition, base):
     return result
 
 
-def annotate(source, definition_path, output):
+def annotate(source, definition_path, output, excel=None):
     """Excel自身で画像と図形を追加し、元ファイルと他の図形を保つ。"""
     source, output = Path(source).resolve(), Path(output).resolve()
     if source == output or output.exists():
@@ -72,13 +76,16 @@ def annotate(source, definition_path, output):
     fd, temp_name = tempfile.mkstemp(suffix='.xlsx', dir=output.parent)
     os.close(fd)
     shutil.copy2(source, temp_name)
-    excel = workbook = None
-    pythoncom.CoInitialize()
+    owns_excel = excel is None
+    workbook = None
+    if owns_excel:
+        pythoncom.CoInitialize()
     try:
-        excel = win32com.client.DispatchEx('Excel.Application')
-        excel.Visible = False
-        excel.DisplayAlerts = False
-        excel.AutomationSecurity = 3
+        if owns_excel:
+            excel = win32com.client.DispatchEx('Excel.Application')
+            excel.Visible = False
+            excel.DisplayAlerts = False
+            excel.AutomationSecurity = 3
         workbook = excel.Workbooks.Open(temp_name, UpdateLinks=0)
         sheet = workbook.Worksheets('2. 画面レイアウト')
         ids = set()
@@ -119,7 +126,9 @@ def annotate(source, definition_path, output):
                 rectangle.Fill.Visible = False
                 rectangle.Line.ForeColor.RGB = 255
                 rectangle.Line.Weight = 1.5
-                label = sheet.Shapes.AddTextbox(1, x, max(top, y - 15), 50, 15)
+                label_x = left + element['label_x'] * width if 'label_x' in element else x
+                label_y = top + element['label_y'] * height if 'label_y' in element else max(top, y - 15)
+                label = sheet.Shapes.AddTextbox(1, label_x, label_y, 50, 15)
                 label.TextFrame.Characters().Text = element['id']
                 label.TextFrame.Characters().Font.Color = 255
                 label.Fill.Visible = False
@@ -127,15 +136,17 @@ def annotate(source, definition_path, output):
         workbook.Save()
         workbook.Close(SaveChanges=False)
         workbook = None
-        excel.Quit()
-        excel = None
+        if owns_excel:
+            excel.Quit()
+            excel = None
         os.replace(temp_name, output)
     finally:
         if workbook is not None:
             workbook.Close(SaveChanges=False)
-        if excel is not None:
+        if owns_excel and excel is not None:
             excel.Quit()
-        pythoncom.CoUninitialize()
+        if owns_excel:
+            pythoncom.CoUninitialize()
         if os.path.exists(temp_name):
             os.unlink(temp_name)
 

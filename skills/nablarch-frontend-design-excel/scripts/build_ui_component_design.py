@@ -9,12 +9,12 @@
 Nablarch の「共通コンポーネント設計書」は、バックエンドのクラス（メソッド、CRUD、エラー）向けの様式で、
 画面の共通部品（表示の例、状態、公開する関数）を書くには合わない。
 そこで、表紙・変更履歴・ヘッダー帯・フォント・罫線・配色・ページ設定は、Nablarch の共通コンポーネント設計書から引き継ぎ、
-本体のシートだけを、次の5シートに差し替える。
+本体のシートだけを、次の7シートに差し替える。
 
-    1. 概要 / 2. 画面レイアウト / 3. 状態 / 4. 関数一覧 / 5. 関数詳細
+    1. 概要 / 2. 画面レイアウト / 3. 状態 / 4. 入力属性 / 5. オブジェクト定義 / 6. 関数定義 / 7. 関数詳細
 
 「目次」シートは作らない（Nablarch の単体テスト仕様書にも、目次シートが無いため）。
-1ファイルが1つの共通部品で、本体が5シートだけのため、目次は不要である。
+1ファイルが1つの共通部品であるため、目次は不要である。
 
 【使い方】
     python -X utf8 build_ui_component_design.py <出力xlsx> [--example | --content <定義json>]
@@ -45,6 +45,7 @@ from openpyxl.worksheet.properties import PageSetupProperties
 
 sys.path.insert(0, str(Path(__file__).parent))
 from xlsx_common import ensure_utf8_stdio, save_with_shapes  # noqa: E402
+from fit_change_history_rows import fit_rows as fit_history_rows  # noqa: E402
 
 SKILL_DIR = Path(__file__).resolve().parent.parent
 # 書式の土台にする、Nablarch の共通コンポーネント設計書（このスキルのフォーマット）
@@ -61,7 +62,7 @@ DELIVERABLE_NAME = "画面共通部品設計書"
 BASE_BODY_SHEET = "1.  コンポーネント名 "
 BASE_TOC_SHEET = "目次"
 # 本体のシート（左から順）
-SHEET_NAMES = ["1. 概要", "2. 画面レイアウト", "3. 状態", "4. 関数一覧", "5. 関数詳細"]
+SHEET_NAMES = ["1. 概要", "2. 画面レイアウト", "3. 状態", "4. 入力属性", "5. オブジェクト定義", "6. 関数定義", "7. 関数詳細"]
 
 # 方眼紙の範囲。A列は余白。
 # 各シートの表の列は、B（2列目）から AH（34列目）の座標で定義し、書くときに、1列右（C から AI）へずらす。
@@ -91,12 +92,12 @@ COMMENTS = {
         "機能ID": "F-01 の形式で、この部品の中で重複しないように採番する。",
         "機能名": "使う人から見た機能の名前を書く。",
         "内容": "その機能で何ができるかを、1〜2文で書く。",
-        "利用する関数": "この機能を使うときに指定する、引数（props）、イベント、関数の名前を書く。『4. 関数一覧』の関数名と対応させる。",
+        "利用する関数": "この機能に関係する入力属性、イベント、公開関数の名前を書く。",
         "備考": "使う人への補足があるときだけ書く。",
         "No.": "通し番号を書く。",
         "対象": "注意が当てはまる状態や条件を書く。",
         "理由・補足": "そうなる理由を書き、使う人が納得して使えるようにする。",
-        "関連する状態・関数": "『3. 状態』の属性ID、『4. 関数一覧』の関数IDを書く。複数のときは「、」で区切る。",
+        "関連する状態・関数": "状態属性IDや関連する公開関数名を書く。",
         "提供機能*": "この部品で使える機能を、使う人から見た単位で、一覧にする。",
         "特記事項*": "この部品を使うときの注意（制約、例外）だけを書く。未決定の事項や課題は書かない。",
     },
@@ -109,7 +110,7 @@ COMMENTS = {
         "表示条件": "その要素が表示される条件を書く。常に表示するときは「常に表示」と書く。",
         "操作・イベント": "利用者の操作と、それで起きることを書く。操作がないときは「なし」と書く。",
         "関連状態": "『3. 状態』の属性IDを書く。",
-        "関連関数": "『4. 関数一覧』の関数IDを書く。",
+        "関連関数": "関連する入力属性、イベントまたは公開関数の名前を書く。",
         "備考": "使う人への補足があるときだけ書く。",
     },
     "3. 状態": {
@@ -132,17 +133,28 @@ COMMENTS = {
         "代表的な組合せ*": "状態属性の値の組合せのうち、表示や動作が異なる代表的なものだけを書く。",
         "状態遷移*": "操作の結果が誤解されやすい箇所だけを書く。",
     },
-    "4. 関数一覧": {
-        "関数ID": "M-01 の形式で、この部品の中で重複しないように採番する。",
-        "関数名": "引数つきの呼び出しの形で書く（例：setRows(rows)）。",
-        "概要・仕様": "何をするかと、特別な動作（0件のときなど）を書く。",
-        "引数（型・意味）": "「名前: 型 / 意味」の形式で書く。ないときは「なし」と書く。",
-        "戻り値": "戻り値の型を書く。ないときは void と書く。",
-        "関連状態": "この関数が変える、または読む状態の属性IDを書く。",
-        "詳細": "『5. 関数詳細』に説明があるときは「あり」、ないときは「―」と書く。",
-        "公開関数*": "この部品を使う人が呼び出す、引数（props）、イベント、関数を書く。",
+    "4. 入力属性": {
+        "属性名": "部品が受け取る入力属性の名前を書く。",
+        "型": "属性が受け取る値の型を書く。",
+        "必須": "省略できない属性は必須、できる属性は任意と書く。",
+        "既定値": "省略時の値を書く。",
+        "説明": "属性の意味や使用方法を書く。",
+        "イベント名": "画面側に通知するイベントの名前を書く。",
     },
-    "5. 関数詳細": {
+    "5. オブジェクト定義": {
+        "属性名": "オブジェクトに含まれる属性の名前を書く。",
+        "データ型": "属性の値の型を書く。",
+        "必須": "省略できない属性は必須と書く。",
+        "既定値": "省略時の値を書く。",
+        "説明": "属性の意味や制約を書く。",
+    },
+    "6. 関数定義": {
+        "関数名": "画面側が呼び出す公開関数の名前を書く。",
+        "引数": "関数に渡す値の型と意味を書く。",
+        "戻り値": "関数の戻り値の型と意味を書く。",
+        "説明": "関数の目的と動作を書く。",
+    },
+    "7. 関数詳細": {
         "概要": "関数の目的を、1文で書く。",
         "引数": "各引数の型、意味、制約を書く。",
         "戻り値": "戻り値の内容を書く。",
@@ -150,7 +162,7 @@ COMMENTS = {
         "処理仕様": "処理の順序を、①②③の形で書く。",
         "状態への影響": "変わる状態の属性IDと値を書く。ないときは「なし」と書く。",
         "エラー・例外": "起きるエラーと、その扱いを書く。ないときは「なし」と書く。",
-        "M-*": "見出しは、「関数ID　関数名」の形式で書く。『4. 関数一覧』の「詳細」が「あり」の関数だけを書く。",
+        "M-*": "見出しは、「関数ID　関数名」の形式で書く。詳細が必要な公開関数だけを書く。",
     },
 }
 
@@ -235,7 +247,7 @@ class SheetWriter:
 
     def set_height(self, row, lines):
         """行の高さを、行数に合わせて決める。"""
-        self.ws.row_dimensions[row].height = LINE_HEIGHT * max(1, lines)
+        self.ws.row_dimensions[row].height = min(409, LINE_HEIGHT * max(1, lines))
 
     def section(self, title):
         """節の見出し（枠なし、結合なし）を、B列に1行書く。"""
@@ -311,7 +323,7 @@ class SheetWriter:
 
 def _prepare_sheets(wb):
     """
-    土台のテンプレートの本体シートから、ヘッダー帯（1〜3行目）だけを持つ空のシートを5つ作り、
+    土台のテンプレートの本体シートから、ヘッダー帯（1〜3行目）だけを持つ空のシートを作り、
     目次と土台の本体シートを取り除く。作ったシートの名前の一覧を返す。
     """
     base = wb[BASE_BODY_SHEET]
@@ -331,7 +343,7 @@ def _prepare_sheets(wb):
     # 目次と、土台の本体シートを取り除く
     del wb[BASE_TOC_SHEET]
     del wb[BASE_BODY_SHEET]
-    # 並び順を、表紙、変更履歴、本体の5シートにする
+    # 並び順を、表紙、変更履歴、本体シートにする
     wb._sheets = [wb["表紙"], wb["変更履歴"]] + created
     return created
 
@@ -388,6 +400,15 @@ def _fill_overview(ws, content):
     w.section("4. 設計上の留意事項")
     w.note(ex["remarks"] if ex else
            "使う人が知っておくべき、この部品に固有の留意事項を書く。必要な内容は、他の資料への参照で済ませず、ここに書く。")
+    w.blank()
+    usage = ex.get("usage", "") if ex else ""
+    # 利用例の枠が次ページへ送られる際、見出しだけが前ページに残らないようにする。
+    if usage:
+        ws.row_breaks.append(Break(id=w.row - 1))
+    w.section("5. ページでの利用例")
+    lines = w.put(w.row, COL_FIRST + CONTENT_SHIFT, COL_LAST + CONTENT_SHIFT, usage)
+    w.set_height(w.row, lines)
+    w.row += 1
     _finish_sheet(ws, w.row)
 
 
@@ -463,38 +484,17 @@ def _fill_state(ws, content):
     _finish_sheet(ws, w.row)
 
 
-def _fill_function_list(ws, content):
-    """シート『4. 関数一覧』。公開する関数を一覧にする。"""
-    w = SheetWriter(ws)
-    ex = content["functions"] if content else None
-
-    w.note("このシートだけで仕様が理解できる関数は、『5. 関数詳細』を作らない。")
-    w.blank()
-    w.section("1. 公開関数")
-    w.table(
-        [("関数ID", 2, 3), ("関数名", 4, 10), ("概要・仕様", 11, 19), ("引数（型・意味）", 20, 26),
-         ("戻り値", 27, 29), ("関連状態", 30, 31), ("詳細", 32, 34)],
-        ex["functions"] if ex else [],
-        blank_rows=0 if ex else 6,
-    )
-    w.blank()
-    w.section("2. 記載ルール")
-    w.note("原則として、関数一覧に、引数の型と意味、戻り値、処理の概要を書き、ここで完結させる。")
-    w.note("「詳細」が「あり」のときは、『5. 関数詳細』に、同じ関数IDの説明がある。"
-           "「あり」にするのは、複雑な判定、状態の相互作用、独自のエラー仕様、処理順序の制約がある場合に限る。")
-    w.note("『5. 関数詳細』には、「あり」の関数だけを書く。関数ごとにシートを増やさない。")
-    _finish_sheet(ws, w.row)
-
-
 def _fill_function_detail(ws, content):
-    """シート『5. 関数詳細』。詳細が必要な関数ごとに、見出しと項目のブロックを書く。"""
+    """シート『7. 関数詳細』。詳細が必要な関数ごとに説明を書く。"""
     w = SheetWriter(ws)
     ex = content["details"] if content else None
     items = ["概要", "引数", "戻り値", "事前条件", "処理仕様", "状態への影響", "エラー・例外"]
 
-    w.note("関数一覧だけでは説明が足りない関数だけを書く。ブロックを複製して追加する。")
+    w.note("関数定義だけでは説明が足りない関数だけを書く。")
     w.blank()
-    blocks = ex if ex else [{"title": "", "values": {}}, {"title": "", "values": {}}]
+    blocks = ex if ex else []
+    if not blocks:
+        w.note("該当なし。")
     for block in blocks:
         # ブロックの見出し（関数IDと関数名）。他のシートの節の見出しと同じ書式にする
         w.section(block["title"])
@@ -505,7 +505,50 @@ def _fill_function_detail(ws, content):
     _finish_sheet(ws, w.row)
 
 
-def _example():
+def _fill_inputs(ws, content):
+    """部品に渡す入力属性とイベントを分類して記載する。"""
+    w = SheetWriter(ws)
+    interface = content.get('interface', {}) if content else {}
+    w.section('1. 部品の入力属性')
+    w.table([('属性名', 2, 8), ('型', 9, 15), ('必須', 16, 19), ('既定値', 20, 24), ('説明', 25, 34)], interface.get('props', []))
+    w.blank()
+    w.section('2. イベント')
+    w.table([('イベント名', 2, 8), ('引数', 9, 17), ('説明', 18, 34)], interface.get('events', []))
+    _finish_sheet(ws, w.row)
+
+
+def _fill_objects(ws, content):
+    """入力属性のオブジェクトを種類ごとに一枚のシートで定義する。"""
+    w = SheetWriter(ws)
+    objects = content.get('objects', []) if content else []
+    if not objects:
+        w.section('1. オブジェクト定義')
+        w.note('該当なし。')
+    for index, obj in enumerate(objects, 1):
+        w.section(f"{index}. {obj['name']}（入力属性：{obj['prop']}）")
+        w.table([('属性名', 2, 8), ('データ型', 9, 15), ('必須', 16, 19), ('既定値', 20, 24), ('説明', 25, 34)], obj['fields'])
+        w.blank()
+    _finish_sheet(ws, w.row)
+
+
+def _fill_public_functions(ws, content):
+    """公開関数がない場合もシートを残す。"""
+    w = SheetWriter(ws)
+    entries = content.get('public_functions', []) if content else []
+    w.section('1. 公開関数')
+    if entries:
+        w.table([('関数名', 2, 8), ('引数', 9, 15), ('戻り値', 16, 20), ('説明', 21, 34)], entries)
+    else:
+        w.note('該当なし。')
+    related = content.get('related_functions', []) if content else []
+    if related:
+        w.blank()
+        w.section('2. 利用する関連関数')
+        w.table([('関数名', 2, 8), ('引数', 9, 15), ('戻り値', 16, 20), ('説明', 21, 34)], related)
+    _finish_sheet(ws, w.row)
+
+
+def _legacy_example():
     """架空の記入例。対象システムの仕様ではなくJSONの形の見本。"""
     return {
         # 表紙と変更履歴に入れる値。省略した項目は、書かない（会社名・部門名は、材料が無ければ空にする）
@@ -580,6 +623,17 @@ def _example():
     }
 
 
+def _example():
+    """新しい入力形式の記入例を返す。"""
+    content = _legacy_example()
+    content.pop('functions', None)
+    content['interface'] = {'props': [['shortcut', 'string', '任意', 'なし', '割り当てるキー。']], 'events': [['click', 'MouseEvent', 'ボタン押下時に通知する。']]}
+    content['objects'] = []
+    content['public_functions'] = []
+    content['details'] = []
+    return content
+
+
 def _fill_cover_and_history(wb, meta):
     """表紙と変更履歴を書く（初版）。座標は、記入要領_共通シート.md の表のとおり。"""
     history = wb["変更履歴"]
@@ -587,14 +641,25 @@ def _fill_cover_and_history(wb, meta):
     history["E1"].value = meta.get("project", "")
     history["E2"].value = meta.get("system", "")
     history["E3"].value = meta.get("subsystem", "")
-    # 初版の行（8行目）
-    history["A8"].value = 1
-    history["B8"].value = meta.get("version", "第1.0版")
-    history["D8"].value = datetime.date.fromisoformat(meta["date"]) if meta.get("date") else None
-    history["G8"].value = "新規"
-    history["J8"].value = "-"
-    history["Q8"].value = "新規作成"
-    history["AF8"].value = meta.get("author", "")
+    # 変更履歴をJSONに持たせると、再生成時にも既存の履歴を引き継げる。
+    revisions = meta.get('history', [{
+        'version': meta.get('version', '第1.0版'), 'date': meta.get('date', ''),
+        'kind': '新規', 'sections': '-', 'description': '新規作成', 'author': meta.get('author', ''),
+    }])
+    if not isinstance(revisions, list) or not 1 <= len(revisions) <= 26:
+        raise ValueError('変更履歴は1〜26件の配列で指定してください。')
+    if revisions[-1]['version'] != meta.get('version', '第1.0版'):
+        raise ValueError('表紙の版数と最後の変更履歴の版数を一致させてください。')
+    for number, revision in enumerate(revisions, 1):
+        row = number + 7
+        history[f'A{row}'] = number
+        history[f'B{row}'] = revision['version']
+        history[f'D{row}'] = datetime.date.fromisoformat(revision['date']) if revision.get('date') else None
+        history[f'G{row}'] = revision['kind']
+        history[f'J{row}'] = revision.get('sections', '')
+        history[f'Q{row}'] = revision.get('description', '')
+        history[f'AF{row}'] = revision.get('author', '')
+    fit_history_rows(history)
     cover = wb["表紙"]
     cover["J12"].value = meta.get("project", "")
     cover["J16"].value = meta.get("subsystem", "")
@@ -604,13 +669,13 @@ def _fill_cover_and_history(wb, meta):
     cover["J30"].value = meta.get("department", "")
 
 
-REQUIRED_KEYS = ["overview", "layout", "state", "functions", "details"]
+REQUIRED_KEYS = ["overview", "layout", "state", "interface", "objects", "public_functions", "details"]
 
 
 def build(output, content=None):
     """
     土台のテンプレートから、画面共通部品設計書を作って保存する。
-    content: 内容の辞書（`_example()` と同じ形）。None のときは、見出しだけの空のテンプレートを作る。
+    content: 定義JSONの辞書。None のときは、見出しだけの空のテンプレートを作る。
     """
     if content is not None:
         missing = [key for key in REQUIRED_KEYS if key not in content]
@@ -618,7 +683,7 @@ def build(output, content=None):
             raise ValueError(f"定義 JSON に、次のキーがありません: {', '.join(missing)}")
     wb = openpyxl.load_workbook(BASE_TEMPLATE)
     sheets = _prepare_sheets(wb)
-    fillers = [_fill_overview, _fill_layout, _fill_state, _fill_function_list, _fill_function_detail]
+    fillers = [_fill_overview, _fill_layout, _fill_state, _fill_inputs, _fill_objects, _fill_public_functions, _fill_function_detail]
     for ws, filler in zip(sheets, fillers):
         filler(ws, content)
     if content is not None and "meta" in content:
@@ -627,6 +692,14 @@ def build(output, content=None):
     wb["表紙"]["J14"].value = DELIVERABLE_NAME
     wb["変更履歴"]["S1"].value = DELIVERABLE_NAME
     wb.active = 0
+    # 全シートの目盛線を隠し、表紙のA1を開く状態で保存する。
+    for ws in wb.worksheets:
+        ws.sheet_view.showGridLines = False
+        ws.sheet_view.tabSelected = ws.title == '表紙'
+    cover_view = wb['表紙'].sheet_view
+    cover_view.topLeftCell = 'A1'
+    cover_view.selection[0].activeCell = 'A1'
+    cover_view.selection[0].sqref = 'A1'
     return save_with_shapes(wb, str(BASE_TEMPLATE), str(output))
 
 
