@@ -13,6 +13,7 @@ Nuxt・Vue・VuetifyのSPA、API GatewayとLambdaのバックエンド、AWS CDK
 | 公開スキル | 画面規約と設計書の作成に必要なスキルは[必須スキルの導入](skills.md)に従って公開元から取得する。 |
 
 必要に応じて`docs/40_spec/requirements/`、`table-definition/`、`detailed-design/`、`nuxt/docs/60_design/`、`backend/`、`e2e/`、`infra/`を資料配置の計画として扱う。
+サービス別のAPIとテーブルの正本および機能別の処理フロー・ER図は、[必須スキルの導入](skills.md)の配置に従う。
 Gitは空ディレクトリを管理しないため、実際の資料やファイルが必要になったときに作成する。
 `.claude/skills/`にも必要なスキルを選んで配置し、空のディレクトリだけを作らない。
 
