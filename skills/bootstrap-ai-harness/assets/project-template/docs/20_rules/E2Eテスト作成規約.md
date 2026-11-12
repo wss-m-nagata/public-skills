@@ -5,7 +5,7 @@
 
 # E2Eテスト作成規約（webapp）
 
-本ドキュメントは、``の画面のE2Eテストについて、ファイルの配置、要素の特定方法、待機処理、エビデンスの残し方を定める。  
+本ドキュメントは、Webアプリの画面のE2Eテストについて、ファイルの配置、要素の特定方法、待機処理、エビデンスの残し方を定める。  
 何を、どこまでテストするかは、[テスト規約.md](テスト規約.md)で定める。
 
 Playwrightの一般的な書き方は、[Playwright公式ドキュメント](https://playwright.dev/docs/best-practices)に従う。  
@@ -35,13 +35,13 @@ Playwrightの一般的な書き方は、[Playwright公式ドキュメント](htt
 ### テスト名
 
 - 日本語で書く。  
-  読み手は社内のメンバーであり、レポートをそのまま共有するためである。
+  チーム内でレポートをそのまま共有し、内容を確認しやすくするためである。
 - 「何をしたら、どうなるか」が分かる文にする。
 
 ```typescript
 test.describe("商品一覧画面", () => {
-  test("商品一覧がツリーで表示される", async ({ page }) => { /* ... */ });
-  test("管理会計拠点コードで検索すると集計対象が表示される", async ({ page }) => { /* ... */ });
+  test("商品一覧が表示される", async ({ page }) => { /* ... */ });
+  test("商品コードで検索すると該当する商品が表示される", async ({ page }) => { /* ... */ });
 });
 ```
 
@@ -83,10 +83,10 @@ await page.getByRole("link", { name: "商品一覧" }).click();
 
 | 優先度 | 対象 | 例 |
 | --- | --- | --- |
-| 1 | 意図的に付けた固定の識別子 | `page.getByTestId("org-tree")`、`page.locator("#main-nav")` |
-| 2 | フォーム部品の`name`属性 | `page.locator("input[name=costCenterCode]")` |
+| 1 | 意図的に付けた固定の識別子 | `page.getByTestId("product-list")`、`page.locator("#main-nav")` |
+| 2 | フォーム部品の`name`属性 | `page.locator("input[name=productCode]")` |
 | 3 | 役割と表示名 | `page.getByRole("button", { name: "検索" })` |
-| 4 | ラベル・プレースホルダ | `page.getByLabel("管理会計拠点コード")` |
+| 4 | ラベル・プレースホルダ | `page.getByLabel("商品コード")` |
 | 5 | 構造的に安定したCSSセレクタ | `page.locator("#products > tbody > tr")` |
 
 この順序は、Playwright公式ドキュメントの推奨と異なる。  
@@ -102,7 +102,7 @@ await page.getByRole("link", { name: "商品一覧" }).click();
 **理由**: webappの画面は本プロジェクトで実装するため、テストのための識別子を付けられる。  
 識別子があれば、文言やレイアウトを変えても、テストは失敗しない。
 
-- `data-testid`の値は、ケバブケースで、画面の中で一意にする（例: `org-tree`、`search-button`）。
+- `data-testid`の値は、ケバブケースで、画面の中で一意にする（例: `product-list`、`search-button`）。
 - 識別子を変更・削除する場合は、それを使っているテストも同時に直す。
 
 ### 使わないもの
@@ -146,8 +146,8 @@ await page.getByRole("link").first().click();
 件数や日付など、文言の一部が変わる場合は、正規表現を使う。
 
 ```typescript
-// 「集計対象（12件）」のように件数が変わる場合
-await page.getByRole("heading", { name: /^集計対象/ });
+// 「商品一覧（12件）」のように件数が変わる場合
+await page.getByRole("heading", { name: /^商品一覧/ });
 ```
 
 ### クラス名や属性そのものを確かめたい場合
@@ -226,11 +226,11 @@ import { expect, test } from "@playwright/test";
 
 test.describe("商品一覧画面", () => {
   test(
-    "管理会計拠点コードで検索すると集計対象が表示される",
+    "商品コードで検索すると該当する商品が表示される",
     {
       annotation: [
         { type: "前提", description: "テスト専用のユーザーでログインしていること" },
-        { type: "前提", description: "組織マスタにデータが登録されていること" },
+        { type: "前提", description: "商品データが登録されていること" },
       ],
     },
     async ({ page }) => {
@@ -242,8 +242,8 @@ test.describe("商品一覧画面", () => {
         });
       });
 
-      await test.step("操作2：管理会計拠点コードに「556」を入力して「検索」をクリックする", async (step) => {
-        await page.getByTestId("cost-center-code").fill("556");
+      await test.step("操作2：商品コードに「P001」を入力して「検索」をクリックする", async (step) => {
+        await page.getByTestId("product-code").fill("P001");
         await page.getByTestId("search-button").click();
         await step.attach(step.titlePath.at(-1)!, {
           body: await page.screenshot({ fullPage: true }),
@@ -251,8 +251,8 @@ test.describe("商品一覧画面", () => {
         });
       });
 
-      await test.step("期待結果：集計対象の一覧が表示される", async () => {
-        await expect(page.getByTestId("rollup-result")).toBeVisible();
+      await test.step("期待結果：該当する商品の一覧が表示される", async () => {
+        await expect(page.getByTestId("product-results")).toBeVisible();
       });
     },
   );
@@ -265,21 +265,21 @@ test.describe("商品一覧画面", () => {
 書いた内容は、パネルの中で次のように振り分けられる。
 
 ```text
-管理会計拠点コードで検索すると集計対象が表示される      ✓ 1.2s
+商品コードで検索すると該当する商品が表示される      ✓ 1.2s
 
   Annotations
-    前提: テスト専用のユーザーでログインしていること / 組織マスタにデータが登録されていること
+    前提: テスト専用のユーザーでログインしていること / 商品データが登録されていること
 
   Attachments
     操作1：商品一覧画面（/products）を開く
     ［画像］
-    操作2：管理会計拠点コードに「556」を入力して「検索」をクリックする
+    操作2：商品コードに「P001」を入力して「検索」をクリックする
     ［画像］
 
   Steps
     ▸ 操作1：商品一覧画面（/products）を開く                          0.3s
-    ▸ 操作2：管理会計拠点コードに「556」を入力して「検索」をクリックする      0.5s
-    ▸ 期待結果：集計対象の一覧が表示される                                  0.2s
+    ▸ 操作2：商品コードに「P001」を入力して「検索」をクリックする      0.5s
+    ▸ 期待結果：該当する商品の一覧が表示される                          0.2s
 ```
 
 成功したテストでもステップは残る。  
@@ -375,15 +375,16 @@ evidence/
 
 ### 取得のコマンド
 
-証跡は、テストファイルを1つ指定して、次のコマンドで取得する。
+証跡の取得手順を実装するときは、テストファイルを1つ指定して取得できるようにする。
+次は、対応するnpmスクリプトを設定した場合の例である。
 
 ```powershell
 npm run test:e2e:evidence -- tests/products.spec.ts
 ```
 
-- 出力先のディレクトリ名と日付は、指定したテストファイルと実行日から自動で決まる。
-- テストファイルを指定しなかった場合と、2つ以上指定した場合は、エラーになる。
-- 同じ日に再実行すると、その日の証跡は上書きされる。  
+- 出力先のディレクトリ名と日付は、指定したテストファイルと実行日から自動で決まるようにする。
+- テストファイルを指定しなかった場合と、2つ以上指定した場合は、エラーにする。
+- 同じ日の再実行で証跡を上書きする設定では、既存の証跡が消える。  
   残しておきたい証跡がある場合は、ディレクトリ名を変えて退避する。
 - 証跡は、`index.html`だけでは完結しない。  
   スクリーンショットは同じ階層の`attachments/`に出力され、相対パスで参照されるため、保管・共有するときはディレクトリごと扱う。
@@ -394,7 +395,8 @@ npm run test:e2e:evidence -- tests/products.spec.ts
 
 ## 実行方法
 
-コマンドは、`e2e/`で実行する。
+次は`e2e/`に対応するnpmスクリプトとテストファイルを用意した場合の例である。
+スクリプトを導入するまでは、利用可能なコマンドを確認し、未実施の検証を報告する。
 
 | 目的 | コマンド |
 | --- | --- |

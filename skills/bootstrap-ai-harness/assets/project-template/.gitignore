@@ -1,0 +1,17 @@
+# 作業用の確認結果と実行証跡。
+/.agents/state/
+/tmp/
+/e2e/evidence/
+/e2e/test-results/
+/e2e/monocart-report/
+/backend/*/evidence/
+/backend/*/tests/output/
+**/test-results/
+**/playwright-report/
+**/.auth/
+
+# 環境固有の設定と秘密情報。
+**/.env
+**/.env.*
+!**/.env.example
+/nuxt/public/config.json

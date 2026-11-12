@@ -1,5 +1,6 @@
 # 修正履歴
 # 2026/10/28: テンプレート処理と色見本の動作確認を追加。
+# 2026/11/12: 形式検査と確認待ちの一括確認を検証。
 
 """スキルの生成補助スクリプトを一時ディレクトリで検証する。"""
 
@@ -103,6 +104,39 @@ class ScreenScriptTest(unittest.TestCase):
         result = self._run('list_pending.py', ledger)
         self.assertEqual(result.returncode, 0)
         self.assertIn('暫定', result.stdout)
+
+    def test_readiness_distinguishes_pending_and_invalid_ledger(self):
+        """形式が正常でも未確定項目は未完了、非対応台帳は未確認とする。"""
+        ledger = self.root / LEDGER
+        (self.root / 'layout.md').write_text('## 1. 余白\n', encoding='utf-8')
+        ledger.write_text(HEADER + '| layout.md / 1. 余白 | 暫定 | 8px | DADS | URL |\n', encoding='utf-8')
+        result = self._run('check_readiness.py', self.root)
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn('要確認: 0件、暫定: 1件', result.stdout)
+        self.assertIn('形式検査と台帳の結果だけでは', result.stdout)
+
+        ledger.write_text(HEADER + '| layout.md / 1. 余白 | 確定 | 8px | DADS | URL |\n', encoding='utf-8')
+        result = self._run('check_readiness.py', self.root)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('要確認: 0件、暫定: 0件', result.stdout)
+
+        ledger.write_text('# 外部管理\n', encoding='utf-8')
+        result = self._run('check_readiness.py', self.root)
+        self.assertEqual(result.returncode, 2)
+        self.assertIn('確認できない', result.stderr)
+
+        ledger.unlink()
+        result = self._run('check_readiness.py', self.root)
+        self.assertEqual(result.returncode, 2)
+        self.assertIn('未確認', result.stderr)
+
+    def test_readiness_fails_on_structural_errors(self):
+        """台帳が確定済みでもリンク切れを検出する。"""
+        (self.root / 'layout.md').write_text('## 1. 余白\n[参照](missing.md)\n', encoding='utf-8')
+        (self.root / LEDGER).write_text(HEADER + '| layout.md / 1. 余白 | 確定 | 8px | DADS | URL |\n', encoding='utf-8')
+        result = self._run('check_readiness.py', self.root)
+        self.assertEqual(result.returncode, 1)
+        self.assertIn('参照先がありません', result.stderr)
 
     def test_directory_link_and_composite_swatch(self):
         """ディレクトリを認識し、複合色は人による確認として知らせる。"""
