@@ -188,7 +188,9 @@ python scripts/track_sources.py check <作業フォルダ> [<ファイル> ...]
    python scripts/normalize_change_history.py <元xlsxパス> <出力パス>
    ```
    `変更履歴`シートのD列（変更日）に日付を書き込む際は`YYYY-MM-DD`形式の文字列で渡せばよい（`apply_mapping.py`が自動でExcelの日付型に変換する。日付型にしないとI21の最終更新日の数式が正しく計算できない）。
-   `変更履歴`シートの変更箇所（J列）・変更内容（Q列）は、`記入要領_共通シート.md`の書き方に従い、セル内改行（LF）で1行ずつ書く。書き込んだあとは、必ず`scripts/fit_change_history_rows.py`で行の高さを合わせる（次の8のverifyでは`--allow-history-row-heights`を付ける）。
+   `変更履歴`シートの変更箇所（J列）・変更内容（Q列）は、`記入要領_共通シート.md`の書き方に従い、セル内改行（LF）で1行ずつ書く。
+   **設計書（単体テスト仕様書以外）の変更履歴は、`apply_mapping.py` でセルに書かず、`scripts/add_change_history.py` で書く。** 変更の一覧（シート・項番・変更の種類・変更前／後・赤字にしたセル）から、決まった形の文を組み立て、版数・変更日・表紙の版数も書き、行の高さも合わせる。さらに、赤字にしたセルと一覧のセルを突き合わせ、履歴の書き漏れ・赤字の付け漏れを警告する（`--strict` で止める）。先に、変えたセルを赤字にしてから流す（次の8のverifyでは`--allow-history-row-heights`を付ける）。
+   単体テスト仕様書の変更履歴は、`build_unit_test_spec.py` の定義（`document` の `変更履歴`）に、同じ書き方で書く（書き方が外れていれば警告が出る）。
    ```bash
    python scripts/fit_change_history_rows.py <apply_mapping.pyの出力パス> <出力パス>
    ```
@@ -317,6 +319,7 @@ python scripts/track_sources.py check <作業フォルダ> [<ファイル> ...]
 | ローカル実行スクリプト | `scripts/build_unit_test_spec.py` | 単体テスト仕様書(Webサービス／バッチ)を、テスト項目の定義ファイル(JSON)から組み立てる。観点ごとにテストケースか対象外理由が埋まっていなければエラーにし、`--cases-json`で全行（ケースNo等）を書き出す |
 | ローカル実行スクリプト | `scripts/mark_changed_cells.py` | 指定したセルの文字色だけを赤にし、変更箇所を示す。`--reset-all` で、前の版の赤字をすべてのシートで黒に戻す。版を上げるときは、赤字が今回の版で変えた箇所だけを指すように使う |
 | ローカル実行スクリプト | `scripts/merge_table_books.py` | 案件ごとに分かれたテーブル定義書を、中間データ（YAML。1テーブル=1ファイル）経由で1冊のテーブル定義書・テーブル一覧へ統合・再生成する。優先度の大きい冊の定義を採用し、生成後に読み戻して中間データとの一致を検証する |
+| ローカル実行スクリプト | `scripts/add_change_history.py` | 設計書の「変更履歴」に、新しい版の行を足す（同じ版は書き直す）。シート・項番・変更前／後の一覧から決まった形の文を組み立て、表紙の版数と行の高さも合わせ、赤字のセルとの突き合わせで書き漏れを検出する |
 | ローカル実行スクリプト | `scripts/fit_change_history_rows.py` | 「変更履歴」シートのセル内改行をLFにそろえ、行の高さを表示される行数に合わせる（15×行数）。変更履歴を書いたあとに必ず実行する |
 | ローカル実行スクリプト | `scripts/track_sources.py` | 作業の元にした設計書を記録し（`record`）、書き出す前・上げる前に、人に直されていないかを比べる（`check`）。Excelはセルの値・数式・書式、draw.ioは図形で比べ、開いて保存しただけの変化は無視する |
 | ローカル実行スクリプト | `scripts/cleanup_state.py` | 作業用の出力先（`.agents/state/nablarch-basic-design-excel/`）の直下のファイルと、古い作業フォルダを一覧にする。`--delete`を付けたときだけ消す |

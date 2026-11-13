@@ -29,6 +29,11 @@
     "変更履歴": [                             # 1要素=1行(8行目から)。表紙の版数は最後の要素の版数になる
       {"版数": "第1.0版", "変更日": "2026-01-06", "区分": "新規",
        "変更箇所": ["-"], "変更内容": ["新規作成"],   # 1要素=1行(セル内改行で並べる)
+       "担当者": "TIS"},
+      {"版数": "第1.1版", "変更日": "2026-02-10", "区分": "変更",   # 版を上げるとき。区分「変更」は、書き方を検査する
+       "変更箇所": ["顧客登録_クラス単体", "　3-1-1"],           # シート名と、全角スペースで字下げしたケースNo
+       "変更内容": ["対応内容（1行）", "顧客登録_クラス単体 3-1-1",
+                    "　変更　変更前：〇〇　変更後：△△"],      # 2行目以降は、シート名・ケースNo、字下げした変更の行
        "担当者": "TIS"}
     ]
   },
@@ -188,6 +193,30 @@ class SheetLayout:
         # 取引単体かどうか(ケースNoの数え方が少し違う)
         self.is_transaction = is_transaction
 
+
+
+def _warn_history_format(history_rows):
+    """区分が「変更」の変更履歴が、記入要領の書き方になっているかを検査し、外れていれば警告を出す。
+
+    「変更箇所」は、シート名と、全角スペースで字下げした項番の行から成る。
+    「変更内容」は、1行目が対応内容で、2行目以降に、シート名と項番の行、字下げした変更の行が続く。
+    警告は止めない（直すのは、書いた人）。
+
+    Args:
+        history_rows: 変更履歴の行（定義の document の変更履歴）。
+    """
+    for item in history_rows:
+        if item.get("区分") != "変更":
+            continue
+        places = item["変更箇所"]
+        contents = item["変更内容"]
+        problems = []
+        if not any(line.startswith("\u3000") for line in places):
+            problems.append("変更箇所に、全角スペースで字下げした項番の行が無い（シート名と項番を1行ずつ書く）")
+        if len(contents) < 3 or not any(line.startswith("\u3000") for line in contents):
+            problems.append("変更内容に、シート名と項番の行・字下げした変更の行が無い（対応内容の1行だけで済ませない）")
+        for problem in problems:
+            print(f"警告：変更履歴 {item['版数']}：{problem}。記入要領_共通シート.md の「シート『変更履歴』」を見る。", file=sys.stderr)
 
 def _last_template_row(ws):
     """表の最終行(ケースNoの数式がある最後の行)を返す。"""
@@ -671,6 +700,7 @@ def _write_document(wb, document):
         history[f"{HISTORY_COLUMNS['変更内容']}{row}"] = "\n".join(item["変更内容"])
         history[f"{HISTORY_COLUMNS['担当者']}{row}"] = item["担当者"]
     fit_rows(history)
+    _warn_history_format(history_rows)
 
     # 2. 表紙(J23・J25・I21 は数式なので書かない)
     cover = wb["表紙"]
