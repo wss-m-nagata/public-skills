@@ -10,7 +10,9 @@
 下のブロックの領域を上書きし、既存の結合セルと衝突して
 `MergedCell object attribute 'value' is read-only` で失敗する。
 
-openpyxl の `insert_rows` は結合セル・行高・入力規則を動かさないため、本スクリプトで補う。
+openpyxl の `insert_rows` は結合セル・行高・入力規則・印刷範囲を動かさないため、本スクリプトで補う。
+入力規則は、見本の行を含む範囲が挿入位置の直前で終わっているときは、挿入した行にも広げる。
+印刷範囲は、最終行が挿入位置以降にあるときは、挿入した行数だけ広げる。
 
 使い方（スクリプトとして）:
     python insert_rows.py <元xlsxパス> <シート名> <挿入位置の行番号> <追加する行数>         <書式の見本にする行番号> <出力xlsxパス>
@@ -61,15 +63,33 @@ def insert_rows_keep_layout(ws, at_row, count, style_row, max_col=40):
         ws.merge_cells(str(rng))
 
     # 5) 入力規則を戻す
+    #    - 挿入位置より下にある範囲は、挿入した行数だけずらす
+    #    - 挿入位置をまたぐ範囲は、挿入した行数だけ下へ広げる
+    #    - 見本の行（style_row）を含み、挿入位置の直前で終わる範囲は、挿入した行にも広げる
+    #      （挿入した行にも、見本の行と同じプルダウンが付く）
     for dv, ranges in validations:
         shifted = []
         for r in ranges:
             rng = CellRange(r)
             if rng.min_row >= at_row:
                 rng.shift(row_shift=count)
+            elif rng.min_row < at_row <= rng.max_row:
+                rng.expand(down=count)
+            elif rng.max_row == at_row - 1 and rng.min_row <= style_row <= rng.max_row:
+                rng.expand(down=count)
             shifted.append(str(rng))
         dv.sqref = " ".join(shifted)
         ws.add_data_validation(dv)
+
+    # 5.5) 印刷範囲の最終行が、挿入位置以降にあるときは、挿入した行数だけ広げる
+    if ws.print_area:
+        area = ws.print_area.split("!")[-1].replace("$", "")
+        if ":" in area and "," not in area:
+            first, last = area.split(":")
+            column = "".join(ch for ch in last if ch.isalpha())
+            last_row = int("".join(ch for ch in last if ch.isdigit()))
+            if last_row >= at_row:
+                ws.print_area = f"{first}:{column}{last_row + count}"
 
     # 6) 行高を戻す
     for r in sorted(heights, reverse=True):

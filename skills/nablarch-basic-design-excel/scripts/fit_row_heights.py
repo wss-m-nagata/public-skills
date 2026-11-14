@@ -15,14 +15,15 @@ fit_change_history_rows.py は「変更履歴」シート専用のため、そ�
     - その行で最も行数の多いセルに合わせて、行の高さを「1行の高さ×行数」にする。
       1行の高さは、--line-height の指定、無ければ「文字の大きさ×1.35」とシートの既定の行の高さの大きいほうを使う。
       （9ポイントの文字なら約12。シートの既定の行の高さ11.25では、4行目以降が少しずつ欠けることを、PDFで確かめた）
-    - 行の高さは広げるだけで、狭めない（1行に収まる行は変えない）。
+    - 行の高さは、既定では広げるだけで、狭めない（1行に収まる行は変えない）。
+      --shrink を付けると、文を短くしたあとのように、高さが余っている行も、必要な高さまで狭める。
     - 2行以上になるセルは、「折り返して全体を表示」をオンにする。
     - 複数の行にまたがる結合セル（見出しなど）は対象にしない。
 
 使い方:
     python fit_row_heights.py <入力xlsxパス> <出力xlsxパス> --rows <開始行>-<終了行> [--rows ...]
         (--sheet <シート名> [--sheet ...] | --sheet-prefix <前方一致> [...] | --body-sheets)
-        [--line-height <高さ>] [--only-merged] [--until-text <A列の文字>]
+        [--line-height <高さ>] [--only-merged] [--until-text <A列の文字>] [--shrink]
 
     --sheet        : 対象のシート名。複数指定できる。
     --sheet-prefix : 対象のシート名の前方一致。複数指定できる（例：「3.」で、「3.1. 注文明細行」など、レコードのシートすべて）。
@@ -33,6 +34,8 @@ fit_change_history_rows.py は「変更履歴」シート専用のため、そ�
     --only-merged  : 結合されたセルだけを対象にする。結合されていないセル（あふれて表示する前提のセル）は数えない。
     --until-text   : A列がこの文字で始まる最初の行の手前までに、対象を絞る。
                      外部インタフェース設計書では「データ構成サンプル」を指定し、項目一覧の下のサンプル（JSONの行）を外す。
+    --shrink       : 行の高さを、必要な高さにそろえる（余っている分は狭める）。既存の設計書で、備考などを短く書き換えたときに使う。
+                     結合されていない、あふれて表示する前提のセルがある行は、行数を過大に数えるため、--only-merged と一緒に使う。
 
 テンプレートごとの指定例:
     # WebサービスAPI一覧（シート「1」の一覧の行）
@@ -179,7 +182,9 @@ def _limit_before_text(ws, row_ranges, until_text):
     ]
 
 
-def fit_sheet(ws, row_ranges, line_height=None, only_merged=False, until_text=None):
+def fit_sheet(
+    ws, row_ranges, line_height=None, only_merged=False, until_text=None, shrink=False
+):
     """シートの指定した行の高さを、表示される行数に合わせて広げる。
 
     Args:
@@ -188,6 +193,7 @@ def fit_sheet(ws, row_ranges, line_height=None, only_merged=False, until_text=No
         line_height (float | None): 1行の高さ。None なら行ごとに文字の大きさから求める。
         only_merged (bool): True なら、結合されたセルだけを対象にする（結合されていないセルは、あふれて表示される前提のため）。
         until_text (str | None): A列がこの文字で始まる最初の行の手前までに、対象を絞る。
+        shrink (bool): True なら、高さが余っている行も、必要な高さまで狭める（1行に収まる行は、1行の高さにする）。
 
     Returns:
         list[str]: 行の高さを変えた行の説明。
@@ -202,6 +208,7 @@ def fit_sheet(ws, row_ranges, line_height=None, only_merged=False, until_text=No
         for row in range(first, min(last, ws.max_row) + 1):
             lines_needed = 1
             font_size = 0
+            has_text = False
             for cell in ws[row]:
                 if not isinstance(cell.value, str) or (row, cell.column) in multi_row:
                     continue
@@ -214,6 +221,8 @@ def fit_sheet(ws, row_ranges, line_height=None, only_merged=False, until_text=No
                 )
                 text = cell.value.replace("\r\n", "\n").replace("\r", "\n")
                 lines = _count_lines(text, capacity)
+                has_text = True
+                font_size = max(font_size, cell.font.sz or 11)
                 if lines < 2:
                     continue
                 # 折り返しをオンにする（既存の配置の他の設定は引き継ぐ）
@@ -230,15 +239,16 @@ def fit_sheet(ws, row_ranges, line_height=None, only_merged=False, until_text=No
                 lines_needed = max(lines_needed, lines)
                 font_size = max(font_size, cell.font.sz or 11)
 
-            if lines_needed < 2:
+            # 既定では、2行以上になる行だけを対象にする。--shrink では、文字のある行すべてを対象にする
+            if lines_needed < 2 and not (shrink and has_text):
                 continue
-            # 行の高さを「1行の高さ×行数」に広げる（狭めはしない）
+            # 行の高さを「1行の高さ×行数」にする（既定では広げるだけで、狭めはしない）
             current = ws.row_dimensions[row].height
             base = line_height or max(
                 default_height, round(font_size * LINE_HEIGHT_PER_FONT_SIZE, 2)
             )
             height = base * lines_needed
-            if current is None or height > current:
+            if current is None or height > current or (shrink and height != current):
                 ws.row_dimensions[row].height = height
                 changed.append(f"{row}行目: {current} -> {height}（{lines_needed}行）")
     return changed
@@ -256,6 +266,7 @@ def main():
     parser.add_argument("--sheet-prefix", action="append", default=[])
     parser.add_argument("--only-merged", action="store_true")
     parser.add_argument("--until-text")
+    parser.add_argument("--shrink", action="store_true")
     args = parser.parse_args()
     if not args.sheet and not args.body_sheets and not args.sheet_prefix:
         parser.error("--sheet・--sheet-prefix・--body-sheets のどれかを指定してください")
@@ -277,12 +288,19 @@ def main():
     total = 0
     report = []
     for name in sheets:
-        changed = fit_sheet(wb[name], row_ranges, args.line_height, args.only_merged, args.until_text)
+        changed = fit_sheet(
+            wb[name],
+            row_ranges,
+            args.line_height,
+            args.only_merged,
+            args.until_text,
+            args.shrink,
+        )
         total += len(changed)
         report += [f"[{name}] {line}" for line in changed]
     save_with_shapes(wb, args.input, args.output)
 
-    print(f"OK: 行の高さを広げた行 {total} 件")
+    print(f"OK: 行の高さを変えた行 {total} 件")
     for line in report:
         print(f"  - {line}")
 

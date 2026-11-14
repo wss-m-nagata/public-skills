@@ -1,0 +1,66 @@
+{
+  "source": "<元の設計書>.xlsx",
+  "output": "<出力先>/<設計書>.xlsx",
+  "work_dir": "<中間ファイルの置き場>",
+  "pre_steps": [
+    {
+      "op": "insert_rows",
+      "sheet": "<シート名>",
+      "at_row": 24,
+      "count": 3,
+      "style_row": 23
+    },
+    {
+      "op": "extend_remarks",
+      "count": 2
+    }
+  ],
+  "mapping": {
+    "sheets": {
+      "<シート名>": {
+        "E9": "<目的・概要の文>",
+        "E39": "<特記事項の文>"
+      }
+    }
+  },
+  "fit": [
+    {
+      "sheet_prefix": "3.",
+      "rows": [
+        "10-30"
+      ],
+      "only_merged": true,
+      "line_height": 15,
+      "shrink": true
+    }
+  ],
+  "history": {
+    "version": "第1.1版",
+    "date": "YYYY-MM-DD",
+    "kind": "変更",
+    "author": "<担当者>",
+    "summary": "<何をしたかを、1行で>"
+  },
+  "groups": [
+    {
+      "sheet": "<シート名>",
+      "place": "目的・概要（E9）",
+      "cells": [
+        "E9"
+      ],
+      "type": "変更",
+      "text": "変更前：<変更前の文>　変更後：<変更後の文>",
+      "confirm": "任意"
+    },
+    {
+      "sheet": "<シート名>",
+      "place": "特記事項（E39）",
+      "cells": [
+        "E39"
+      ],
+      "type": "追加",
+      "text": "<追加した内容>",
+      "confirm": "要確認"
+    }
+  ]
+}

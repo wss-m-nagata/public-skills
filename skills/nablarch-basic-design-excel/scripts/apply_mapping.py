@@ -22,7 +22,12 @@
   (誤って元ファイルを壊すと、記入要領を再確認しながらの再実行ができなくなるため)。
 
 使い方:
-    python apply_mapping.py <元xlsxパス> <マッピングJSONパス> <出力xlsxパス> [--allow-outside-border] [--force-formula-overwrite]
+    python apply_mapping.py <元xlsxパス> <マッピングJSONパス> <出力xlsxパス> [--allow-outside-border] [--force-formula-overwrite] [--emit-changed <JSON>]
+
+    --emit-changed : 値が変わったセルを、{"シート名": ["セル", ...]} の形で書き出す。
+                     既存の設計書の版を上げるとき、この一覧を、mark_changed_cells.py（赤字）と
+                     add_change_history.py（変更履歴JSONの cells）に使うと、赤字と履歴のセルがずれない。
+                     元と同じ値を書いたセルと、空欄にしたセルは含めない。
 
 マッピングJSONの形式:
 {
@@ -209,6 +214,7 @@ def main():
     parser.add_argument("output_path")
     parser.add_argument("--allow-outside-border", action="store_true")
     parser.add_argument("--force-formula-overwrite", action="store_true")
+    parser.add_argument("--emit-changed", metavar="JSON")
     args = parser.parse_args()
 
     with open(args.mapping_json_path, encoding="utf-8") as f:
@@ -249,6 +255,19 @@ def main():
         print(
             f"  {w['sheet']}!{w['cell']}{mark} : {w['old_value']!r} -> {w['new_value']!r}"
         )
+
+    if args.emit_changed and report["saved"]:
+        # 値が変わったセルを、シートごとに書き出す（赤字にするセル・変更履歴のセル一覧の元にする）。
+        # 空欄にしたセルと、元と同じ値を書いたセルは含めない。
+        changed = {}
+        for w in report["written"]:
+            old = "" if w["old_value"] is None else str(w["old_value"]).strip()
+            new = "" if w["new_value"] is None else str(w["new_value"]).strip()
+            if new and old != new:
+                changed.setdefault(w["sheet"], []).append(w["cell"])
+        with open(args.emit_changed, "w", encoding="utf-8") as f:
+            json.dump(changed, f, ensure_ascii=False, indent=1)
+        print(f"\n値が変わったセルの一覧を書き出しました: {args.emit_changed}")
 
     if report["warnings"]:
         print(f"\n=== 警告 {len(report['warnings'])}件 ===")

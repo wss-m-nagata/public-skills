@@ -14,7 +14,11 @@ apply_mapping.py / duplicate_sheet.py / extend_table_rows.py で処理した後�
 検知するため、このスクリプト側でも独立して図形の有無を確認する。
 
 使い方:
-    python verify_layout.py <反映前xlsxパス> <反映後xlsxパス> [--allow-history-row-heights] [--allow-row-heights] [--allow-font-colors]
+    python verify_layout.py <反映前xlsxパス> <反映後xlsxパス> [--allow-history-row-heights] [--allow-row-heights] [--allow-row-height-changes] [--allow-font-colors]
+
+    --allow-row-height-changes:
+        すべてのシートで、行の高さの変化を、広がった行も狭まった行も許す。
+        fit_row_heights.py --shrink で、文を短くした行の高さを狭めた場合に付ける。
 
     --allow-history-row-heights:
         「変更履歴」シートの8行目以降(データの行)の行の高さの変化を許す。
@@ -47,13 +51,14 @@ sys.path.insert(0, str(Path(__file__).parent))
 from xlsx_common import snapshot_sheet_structure, ensure_utf8_stdio
 from restore_shapes import sheets_with_drawings, shape_anchor_counts
 
-
 # 行の高さの変化を許すことがあるシートと、その対象の先頭行(fit_change_history_rows.pyの対象)
 HISTORY_SHEET = "変更履歴"
 HISTORY_FIRST_DATA_ROW = 8
 
 
-def diff_sheet(name, before, after, allow_history_row_heights=False, allow_row_heights=False):
+def diff_sheet(
+    name, before, after, allow_history_row_heights=False, allow_row_heights=False
+):
     diffs = []
 
     if before["dimensions"] != after["dimensions"]:
@@ -72,13 +77,22 @@ def diff_sheet(name, before, after, allow_history_row_heights=False, allow_row_h
     before_heights, after_heights = before["row_heights"], after["row_heights"]
     if allow_history_row_heights and name == HISTORY_SHEET:
         # 変更履歴のデータの行は、セル内改行の行数に合わせて高さを変えてよい
-        before_heights = {r: h for r, h in before_heights.items() if r < HISTORY_FIRST_DATA_ROW}
-        after_heights = {r: h for r, h in after_heights.items() if r < HISTORY_FIRST_DATA_ROW}
-    if allow_row_heights:
+        before_heights = {
+            r: h for r, h in before_heights.items() if r < HISTORY_FIRST_DATA_ROW
+        }
+        after_heights = {
+            r: h for r, h in after_heights.items() if r < HISTORY_FIRST_DATA_ROW
+        }
+    if allow_row_heights == "any":
+        # 行の高さの変化をすべて許す（広がった行も、狭まった行も、差分として扱わない）
+        before_heights, after_heights = {}, {}
+    elif allow_row_heights:
         # 行の高さが広がった行だけを許す（狭まった行・既定の高さに戻った行は差分として残す）
         grown = {
-            r for r, h in after_heights.items()
-            if h is not None and (before_heights.get(r) is None or h > before_heights[r])
+            r
+            for r, h in after_heights.items()
+            if h is not None
+            and (before_heights.get(r) is None or h > before_heights[r])
         }
         before_heights = {r: h for r, h in before_heights.items() if r not in grown}
         after_heights = {r: h for r, h in after_heights.items() if r not in grown}
@@ -134,7 +148,9 @@ def diff_sheet(name, before, after, allow_history_row_heights=False, allow_row_h
     return diffs
 
 
-def verify(before_path, after_path, allow_history_row_heights=False, allow_row_heights=False):
+def verify(
+    before_path, after_path, allow_history_row_heights=False, allow_row_heights=False
+):
     wb_before = openpyxl.load_workbook(before_path, data_only=False)
     wb_after = openpyxl.load_workbook(after_path, data_only=False)
 
@@ -150,7 +166,9 @@ def verify(before_path, after_path, allow_history_row_heights=False, allow_row_h
             continue
         before = snapshot_sheet_structure(wb_before, wb_before[name])
         after = snapshot_sheet_structure(wb_after, wb_after[name])
-        diffs = diff_sheet(name, before, after, allow_history_row_heights, allow_row_heights)
+        diffs = diff_sheet(
+            name, before, after, allow_history_row_heights, allow_row_heights
+        )
         if diffs:
             all_diffs[name] = diffs
 
@@ -193,22 +211,41 @@ def main():
     args = sys.argv[1:]
     allow_history_row_heights = "--allow-history-row-heights" in args
     allow_row_heights = "--allow-row-heights" in args
+    if "--allow-row-height-changes" in args:
+        # 広がった行も狭まった行も許す
+        allow_row_heights = "any"
     allow_font_colors = "--allow-font-colors" in args
-    args = [a for a in args if a not in ("--allow-history-row-heights", "--allow-row-heights", "--allow-font-colors")]
+    args = [
+        a
+        for a in args
+        if a
+        not in (
+            "--allow-history-row-heights",
+            "--allow-row-heights",
+            "--allow-row-height-changes",
+            "--allow-font-colors",
+        )
+    ]
     if len(args) != 2:
         print(__doc__)
         sys.exit(2)
 
     before_path, after_path = args
-    diffs = verify(before_path, after_path, allow_history_row_heights, allow_row_heights)
+    diffs = verify(
+        before_path, after_path, allow_history_row_heights, allow_row_heights
+    )
 
     # 文字色の変化を許す場合は、差分から外して、変わったセルだけを表示する
     if allow_font_colors:
         for sheet in list(diffs):
-            colors = [d for d in diffs[sheet] if d.startswith("フォント色が変化したセル")]
+            colors = [
+                d for d in diffs[sheet] if d.startswith("フォント色が変化したセル")
+            ]
             for d in colors:
                 print(f"(参考)[{sheet}] {d}")
-            diffs[sheet] = [d for d in diffs[sheet] if not d.startswith("フォント色が変化したセル")]
+            diffs[sheet] = [
+                d for d in diffs[sheet] if not d.startswith("フォント色が変化したセル")
+            ]
             if not diffs[sheet]:
                 del diffs[sheet]
 
