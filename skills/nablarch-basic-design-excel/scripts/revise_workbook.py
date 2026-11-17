@@ -48,6 +48,7 @@
       "sheet": "シート名",
       "place": "特記事項（E39〜E41）",              // 変更箇所と、変更内容の見出し
       "cells": ["E39:E41"],                       // 範囲でよい。変わったセルとの積になる
+      "cleared": true,                            // 省略可。セルを空にしただけ（値が変わったセルが無い）のまとまりのときに書く。警告が出なくなる
       "type": "追加",                             // 追加・変更・削除
       "text": "変更前：…　変更後：…",
       "confirm": "要確認",                        // 省略時「任意」（draft_change_list.py が使う）
@@ -144,6 +145,27 @@ def _check_spec(spec):
         raise StepError(
             "source と output は、別のパスにしてください（元の写しを上書きしないため）。"
         )
+    # 出力先が、Excel などで開かれていると、書き込めずに途中で止まる。先に、わかりやすく知らせる
+    output = Path(spec["output"])
+    opened = [
+        lock.name
+        for lock in output.parent.glob("~$*")
+        if output.name.startswith(lock.name[2:])
+    ]
+    if opened:
+        raise StepError(
+            f"出力先のファイルが、開かれています（ロックファイル {opened[0]} があります）: {output}"
+            + chr(10)
+            + "  Excel などで開いていれば、保存して閉じてから、もう一度実行してください。"
+        )
+    if output.exists():
+        try:
+            with open(output, "ab"):
+                pass
+        except PermissionError:
+            raise StepError(
+                f"出力先のファイルに、書き込めません（開かれているか、読み取り専用です）: {output}"
+            )
     for key in ("version", "date", "kind", "author", "summary"):
         if key not in spec["history"]:
             raise StepError(f"history に「{key}」がありません。")
@@ -242,7 +264,8 @@ def _assign_groups(spec, changed):
             sorted(wanted & set(changed.get(group["sheet"], [])), key=_cell_order)
         )
         remaining.get(group["sheet"], set()).difference_update(hit)
-        if not per_group[-1]:
+        # セルを空にしただけの変更のまとまり（cleared: true）は、変わったセルが無くてよい（赤字にもできない）
+        if not per_group[-1] and not group.get("cleared"):
             print(
                 f"  ! 変わったセルが無い groups があります: {group['sheet']} {group.get('place', '')}"
             )

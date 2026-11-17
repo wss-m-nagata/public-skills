@@ -131,7 +131,7 @@ def estimate_height(html, width, font=11, pad=20):
     text = re.sub(r"<[^>]+>", "", text)
     text = text.replace("&nbsp;", " ").replace("&amp;", "&")
 
-    avail = max(40, width - 24)          # 左右の余白（spacingLeft ＋ 枠線）
+    avail = max(40, width - 24)  # 左右の余白（spacingLeft ＋ 枠線）
     lines = 0
     for para in text.split("\n"):
         run = 0.0
@@ -166,6 +166,10 @@ S_TBD = (
 S_SCOPE_OUT = (
     "rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#9E9E9E;dashed=1;"
     "fontColor=#616161;fontSize=11;align=left;verticalAlign=middle;spacingLeft=12;"
+)
+S_TERMINATOR = (
+    "ellipse;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#546E7A;"
+    "fontColor=#37474F;fontSize=11;"
 )
 S_AWS = (
     "sketch=0;outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;"
@@ -250,7 +254,6 @@ AI_NOTE = (
     "※ この T.B.D はAIの自動生成です。内容は必ずしも正しいとは限りません。"
     "重要な情報は確認するようにしてください。</span>"
 )
-
 
 
 # ---- 手直しの検知 --------------------------------------------------------
@@ -371,9 +374,11 @@ def record_baseline(path, by=None):
     os.makedirs(os.path.dirname(ledger), exist_ok=True)
     rec = {
         "sha256": _digest(path),
-        "recorded_at": datetime.datetime.now().astimezone().isoformat(timespec="seconds"),
+        "recorded_at": datetime.datetime.now()
+        .astimezone()
+        .isoformat(timespec="seconds"),
         "recorded_by": by or os.path.basename(_sys.argv[0] or "?"),
-            "host": _host_of(path),
+        "host": _host_of(path),
     }
     with io.open(ledger, "w", encoding="utf-8", newline="\n") as handle:
         json.dump(rec, handle, ensure_ascii=False, indent=2)
@@ -457,7 +462,7 @@ class Page:
                 "edge": "1",
                 "parent": "1",
                 "source": source,
-                    "target": target,
+                "target": target,
             },
         )
         attrs = {"relative": "1", "as": "geometry"}
@@ -559,18 +564,27 @@ class Page:
     def note(self, title, body, x, y, w=620, h=None):
         """補足（黄色の枠）。図では表せない前提や背景を書く。
 
+        仕様（処理・テーブル・流れの決まり）は書かない。仕様は callout() に書く。
+        消すと、読み手が図の位置づけを取り違えるものが対象。
+
         高さ h は省略できる。省略すると本文と幅から見積もる。
         """
         self.node(title, S_HEAD, x, y, 320, 20, kind="text")
         return self.node(body, S_NOTE, x, y + 25, w, _auto_h(h, body, w), kind="note")
 
     def callout(self, title, body, x, y, w=620, h=None):
-        """吹き出し（橙の枠）。読み手が誤解しやすい点を先回りして説明する。
+        """吹き出し（橙の枠）。図では表せない仕様、誤解しやすい仕様を書く。
+
+        処理・テーブル・流れの決まり、数え方、例外など、消すと実装・テスト・見積もりの判断が
+        変わるものは、small() ではなく、ここに書く。
+        どの図形のことか分かりにくいときは、lead() で引き出し線を引く。
 
         高さ h は省略できる。省略すると本文と幅から見積もる。
         """
         self.node(title, S_HEAD, x, y, 320, 20, kind="text")
-        return self.node(body, S_CALLOUT, x, y + 25, w, _auto_h(h, body, w), kind="note")
+        return self.node(
+            body, S_CALLOUT, x, y + 25, w, _auto_h(h, body, w), kind="note"
+        )
 
     def section(self, text, x, y, w=700):
         """1ページの中を段に分ける見出し。
@@ -583,18 +597,26 @@ class Page:
         return self.node(text, S_HEAD, x, y, w, 20, kind="text")
 
     def small(self, text, x, y, w=340, h=None):
-        """図形のそばに置く小さな注釈。
+        """図形・線のそばに置く小さな注釈。callout() に書いた仕様を、支えるために使う。
+
+        書くのは、1つの図形・線に紐づく、1行に収まる語句か短い条件だけ。
+        仕様の本体は callout() に書く。複数の図形にまたがる、2行以上、条件が2つ以上のときも
+        callout() に書く。迷ったら callout()（small() は灰色の小さい文字で、読み飛ばされやすい）。
 
         高さ h は省略できる。省略すると本文と幅から見積もる。
         """
-        return self.node(text, S_SMALL, x, y, w, _auto_h(h, text, w, font=10, floor=20), kind="text")
+        return self.node(
+            text, S_SMALL, x, y, w, _auto_h(h, text, w, font=10, floor=20), kind="text"
+        )
 
     def text(self, text, x, y, w=420, h=None):
         """本文サイズのテキスト。凡例などに使う。
 
         高さ h は省略できる。省略すると本文と幅から見積もる。
         """
-        return self.node(text, S_TEXT, x, y, w, _auto_h(h, text, w, floor=20), kind="text")
+        return self.node(
+            text, S_TEXT, x, y, w, _auto_h(h, text, w, floor=20), kind="text"
+        )
 
     def tbd(self, body, x, y, w=820, h=None, by_ai=True):
         """T.B.D（実装者に確認したい未確定事項）。
@@ -602,7 +624,7 @@ class Page:
         仕様が未確定な箇所や、実装が要件を満たしていない箇所を赤い破線の枠で示す。
         by_ai=True のときは、AIの自動生成である旨の断り書きを末尾に自動で付ける。
         読み手が内容を鵜呑みにしないために必要な情報なので、既定で付く。
-        
+
         高さ h は省略できる。省略すると本文と幅から見積もる。
         """
         value = "<b>T.B.D　実装者に確認</b><br>" + body + (AI_NOTE if by_ai else "")
@@ -618,10 +640,25 @@ class Page:
         使ってよいのは、システムの外・前後の工程・別の図の3つへ流れが出ていくときだけ。
         実装があるものを「この機能の作成対象ではない」という理由で省いてはいけない
         （既定ルール §4）。誰が作るかは名前の後ろの（既存）（他機能で作る）で示す。
-        
+
         高さ h は省略できる。省略すると本文と幅から見積もる。
         """
-        return self.node(body, S_SCOPE_OUT, x, y, w, _auto_h(h, body, w, floor=60), kind="note")
+        return self.node(
+            body, S_SCOPE_OUT, x, y, w, _auto_h(h, body, w, floor=60), kind="note"
+        )
+
+    def terminator(self, text, x, y, w=84, h=50):
+        """別のページへ続く、または別のページから続くことを示す楕円の記号。
+
+        1つの操作がページをまたぐときに使う。続きの有無は、ページ名と同じ丸数字で書く
+        （例：「④から続く」「⑤に続く」）。
+
+        - 続く先のページがある側は、その遷移先の画面の名前に「（⑤に続く）」と書けば足りる。
+        - 続きを受ける側のページは、利用者（`actor()`）の代わりにこの記号を、
+          利用者が置かれる位置（最初の画面の左）に置き、そこから画面へ `flow()` で線を引く。
+          利用者の位置に置くのは、読み手が起点の記号を見て、続きだと分かるようにするため。
+        """
+        return self.node(text, S_TERMINATOR, x, y, w, h, kind="box")
 
     def gen_box(self, body, x, y, w=300, h=None):
         """世代・状態などを説明する補助ボックス。
@@ -648,32 +685,32 @@ class Page:
     def self_loop(self, shape, label="", side="top", gap=44, span=(0.65, 0.9)):
         """画面の中だけで完結する操作を、その画面への自己ループで描く。
 
-処理を呼ばずに画面の中で終わる操作（保持している一覧の絞り込みなど）に使う。
-処理の箱が無いこと自体が「Backend を作らなくてよい」という情報になるため、
-線を省いて文章だけで補うより、ループとして見せたほうが伝わる。
+        処理を呼ばずに画面の中で終わる操作（保持している一覧の絞り込みなど）に使う。
+        処理の箱が無いこと自体が「Backend を作らなくてよい」という情報になるため、
+        線を省いて文章だけで補うより、ループとして見せたほうが伝わる。
 
-**既定は画面の右上（side="top"）である。** 3段構成では画面の下を処理へ降りる線が
-必ず通り、左右は前後の画面への遷移線でふさがっているため、構造的に空いているのは
-上だけである。下に置くと、その画面が呼ぶ処理への線とラベルが必ず競合する。
+        **既定は画面の右上（side="top"）である。** 3段構成では画面の下を処理へ降りる線が
+        必ず通り、左右は前後の画面への遷移線でふさがっているため、構造的に空いているのは
+        上だけである。下に置くと、その画面が呼ぶ処理への線とラベルが必ず競合する。
 
-**中継点で経路を固定している。** 接続位置（exitX / entryX）の指定だけでは
-drawio の直交ルータが経路を決めきれず、2点を近づけるとループが潰れて線に見えず、
-離すと戻り脚が図形を突き抜ける。中継点を置いて初めて形が決まる。
+        **中継点で経路を固定している。** 接続位置（exitX / entryX）の指定だけでは
+        drawio の直交ルータが経路を決めきれず、2点を近づけるとループが潰れて線に見えず、
+        離すと戻り脚が図形を突き抜ける。中継点を置いて初めて形が決まる。
 
-見出し（section）とぶつからないよう、段の見出しと画面の間は 60px 以上あける。
+        見出し（section）とぶつからないよう、段の見出しと画面の間は 60px 以上あける。
 
-Args:
-    shape (str): 対象の画面のID。
-    label (str): 線のラベル。「条件を変える → 画面内で絞る」のように
-        操作と、その結果どうなるかを書く。
-    side (str): "top"（既定。画面の上）または "bottom"（画面の下）。
-    gap (int): 画面の辺からループまでの距離（px）。
-    span (tuple): ループの出口・入口の位置。画面の幅に対する割合で、
-        既定は右寄りの (0.65, 0.9)。
+        Args:
+            shape (str): 対象の画面のID。
+            label (str): 線のラベル。「条件を変える → 画面内で絞る」のように
+                操作と、その結果どうなるかを書く。
+            side (str): "top"（既定。画面の上）または "bottom"（画面の下）。
+            gap (int): 画面の辺からループまでの距離（px）。
+            span (tuple): ループの出口・入口の位置。画面の幅に対する割合で、
+                既定は右寄りの (0.65, 0.9)。
 
-Returns:
-    None: 線を1本足すだけで、参照するIDは無い。
-"""
+        Returns:
+            None: 線を1本足すだけで、参照するIDは無い。
+        """
         # 中継点を計算するため、対象の座標を控えから引く
         if shape not in self.geoms:
             raise KeyError("この図に無い図形が指定された（対象: %s）" % shape)
@@ -703,7 +740,7 @@ Returns:
                 "edge": "1",
                 "parent": "1",
                 "source": shape,
-                    "target": shape,
+                "target": shape,
             },
         )
         geo = ET.SubElement(cell, "mxGeometry", {"relative": "1", "as": "geometry"})
@@ -761,7 +798,7 @@ Returns:
         self.edge(src, dst, label, C_GEN, **kw)
 
     def lead(self, src, dst, **kw):
-        """T.B.D などの注記が、どの図形に対するものかを示す引き出し線。
+        """callout() や T.B.D などの注記が、どの図形に対するものかを示す引き出し線。
 
         矢印を付けないのは、処理の流れと混同させないため。
         """
@@ -833,15 +870,16 @@ class Diagram:
                 "このまま書き出すと、その手直しは消える。\n"
                 "修正は .drawio を直接編集すること"
                 "（SKILL.md 手順7、assets/edit_existing.py）。\n"
-                "作り直すと決めた場合だけ save(path, force=True) とする。" % (path, detail)
-                )
+                "作り直すと決めた場合だけ save(path, force=True) とする。"
+                % (path, detail)
+            )
         if state == "unknown" and not force:
             raise RuntimeError(
                 "%s の台帳が無く、手直しの有無を判定できない（%s）。\n"
                 "生成スクリプトが書いたままだと分かっているなら、次で基準を作ってから実行する。\n"
                 "    from drawio_builder import record_baseline; record_baseline(%r)\n"
                 "作り直してよいなら save(path, force=True)。" % (path, detail, path)
-                )
+            )
         io.open(path, "w", encoding="utf-8", newline="\n").write(self.to_xml())
         record_baseline(path)
         return path
@@ -900,6 +938,7 @@ def legend_page(diagram, schemas, tables, steps=None, scope=None, no=None):
         "・テーブルへの<b>書き込みは下向きの緑</b>の矢印。<br>"
         "・テーブルからの<b>読み取りは上向きの青</b>の矢印。<br>"
         "・丸数字は、その操作の中での処理の順序を示す。<br>"
+        "・楕円は、別のページから続く、または別のページへ続くことを示す。<br>"
         "・同じテーブルが複数の処理に出てくることがある。<br>"
         "　処理ごとに流れを追えるようにするため、あえて重複して描いている。",
         340,
@@ -941,7 +980,7 @@ def legend_page(diagram, schemas, tables, steps=None, scope=None, no=None):
     p.node("スキーマの和名", S_HEAD, 40, y, 300, 20, kind="text")
     p.text(
         "<br>".join("%s　＝　%s" % (ja, en) for ja, en in schemas), 40, y + 25, 420, 50
-        )
+    )
 
     y += 90
     p.node("テーブルの和名と物理名", S_HEAD, 40, y, 300, 20, kind="text")
@@ -962,7 +1001,7 @@ def legend_page(diagram, schemas, tables, steps=None, scope=None, no=None):
         p.node("画面の段階", S_HEAD, 700, 400, 300, 20, kind="text")
         p.text(
             "<br>".join("%s：%s" % (no, name) for no, name in steps), 700, 425, 300, 170
-            )
+        )
 
     scope_bottom = 570
     if scope:

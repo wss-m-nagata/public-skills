@@ -6,3 +6,4 @@
 /.clinerules-test
 tmp/
 
+*.pyc

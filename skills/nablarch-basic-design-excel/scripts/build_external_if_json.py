@@ -22,6 +22,7 @@
 {
   "msg_id": "ORD001R",                         # 電文ID。ファイル名・U8に入る
   "msg_name": "注文受付要求",   # 電文名。表紙・目次・変更履歴に入る
+  "history_summary": "新規作成",               # 省略可。変更履歴の第1.0版の変更内容（既定は「新規作成」）
   "io": "入力",                                 # 入力 / 出力
   "peer": "受注システム",          # 相手先
   "tx": "ORD001／注文受付",      # 入出力取引ID/名称
@@ -280,7 +281,7 @@ def prepare(template, out_path, sheet_name, records):
     # ここで使う行番号は、まだ何も挿入していない「元の(拡張前の)」位置であることに注意。
 
     # 1) データ構成サンプルの枠が足りなければ、枠の最後の行(下の罫線)の前に行を足す
-    insert_rows_keep_layout(ws, SAMPLE_BOX_LAST_ROW, sample_extra, SAMPLE_BOX_MIDDLE_ROW)
+    insert_rows_keep_layout(ws, SAMPLE_BOX_LAST_ROW, sample_extra, SAMPLE_BOX_MIDDLE_ROW, max_col=40)
 
     # 2) ブロックを、下のブロックから新設する/広げる。
     # 下から処理するため、i番目を処理する時点で i より上は誰も触っていない。
@@ -293,22 +294,22 @@ def prepare(template, out_path, sheet_name, records):
             # insert_rows_keep_layoutは書式(_style)だけを複製し、A列の見出し文字列
             # 「レコード名」「レコードID」はテンプレート実在ブロックの静的な値なので複製されない。
             # そのため見出し文字列は別途明示的に書き込む(後の差し込みで、値ごと押し下げられる)。
-            insert_rows_keep_layout(ws, NEW_BLOCK_AT, BLOCK_ROWS + needs[i], tmpl_data_row)
-            insert_rows_keep_layout(ws, NEW_BLOCK_AT, 1, tmpl_id_row)
+            insert_rows_keep_layout(ws, NEW_BLOCK_AT, BLOCK_ROWS + needs[i], tmpl_data_row, max_col=40)
+            insert_rows_keep_layout(ws, NEW_BLOCK_AT, 1, tmpl_id_row, max_col=40)
             ws.cell(row=NEW_BLOCK_AT, column=1).value = "レコードID"
-            insert_rows_keep_layout(ws, NEW_BLOCK_AT, 1, tmpl_name_row)
+            insert_rows_keep_layout(ws, NEW_BLOCK_AT, 1, tmpl_name_row, max_col=40)
             ws.cell(row=NEW_BLOCK_AT, column=1).value = "レコード名"
-            insert_rows_keep_layout(ws, NEW_BLOCK_AT, 1, SPACER_ROW)
+            insert_rows_keep_layout(ws, NEW_BLOCK_AT, 1, SPACER_ROW, max_col=40)
         elif needs[i] > 0:
             # 既存ブロックの項目数が7件を超える場合、データ行を広げる。
             # テンプレートに実在するブロックなので、block_base は元のシートの行を返す
             data_row = block_base(i)[2]
-            insert_rows_keep_layout(ws, data_row + BLOCK_ROWS, needs[i], data_row)
+            insert_rows_keep_layout(ws, data_row + BLOCK_ROWS, needs[i], data_row, max_col=40)
 
     if len(records) < n_physical:
         start = BLOCKS_BASE[len(records)][0] + total
         end = BLOCKS_BASE[-1][2] + BLOCK_ROWS - 1 + total
-        clear_rows(ws, range(start, end + 1))
+        clear_rows(ws, range(start, end + 1), max_col=40)
 
     # 3) 入力規則(必須・データ型のプルダウン)を、使うブロックのデータ行にかけ直す。
     # テンプレートの入力規則は3ブロック分しか無く、行を差し込んでも広がらないため。
@@ -435,7 +436,7 @@ def build_mapping(d, sheet_name):
                 "D8": h["date"],
                 "G8": "新規",
                 "J8": "-",
-                "Q8": "新規作成",
+                "Q8": d.get("history_summary", "新規作成"),
                 "AF8": h["author"],
             },
             "表紙": {

@@ -29,13 +29,19 @@ from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.cell_range import CellRange
 
 
-def insert_rows_keep_layout(ws, at_row, count, style_row, max_col=40):
+def insert_rows_keep_layout(ws, at_row, count, style_row, max_col=None):
     """at_row の直前に count 行を挿入し、style_row の書式を複製する。
 
     at_row 以降にある結合セル・行高・入力規則も同じだけ下へずらす。
+
+    max_col は、書式を複製する右端の列番号。省略すると、シートの最終列（ws.max_column）まで複製する。
+    決め打ちの列数にすると、それより右の列（WebサービスAPI一覧のAO〜BF列など）の罫線が、
+    挿入した行に付かない。
     """
     if count <= 0:
         return
+    if max_col is None:
+        max_col = ws.max_column
 
     # 1) 結合セルをいったん全て解除して記録する
     merges = [str(m) for m in list(ws.merged_cells.ranges)]
@@ -117,8 +123,13 @@ def insert_rows_keep_layout(ws, at_row, count, style_row, max_col=40):
             )
 
 
-def clear_rows(ws, rows, max_col=40):
-    """値・罫線・塗り・結合を消して、使っていない領域を空白にする。"""
+def clear_rows(ws, rows, max_col=None):
+    """値・罫線・塗り・結合を消して、使っていない領域を空白にする。
+
+    max_col は、消す右端の列番号。省略すると、シートの最終列（ws.max_column）まで消す。
+    """
+    if max_col is None:
+        max_col = ws.max_column
     from openpyxl.styles import Border, PatternFill
 
     for rng in [

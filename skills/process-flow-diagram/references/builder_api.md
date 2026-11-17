@@ -83,11 +83,12 @@ d.save("処理フロー_xxx.drawio")
 | `tables(names, x, y, title, kind, cols)` | (枠ID, 幅, 高さ) | テーブル群。`kind` は `in`/`out`/`off` |
 | `files(names, x, y, title, kind, cols)` | (枠ID, 幅, 高さ) | ファイル群 |
 | `stores(names, x, y, title, kind, cols)` | (枠ID, 幅, 高さ) | DB以外の保存先（認証基盤・キュー・オブジェクトストレージ・外部システム） |
-| `note(title, body, x, y)` | ID | 補足（黄） |
-| `callout(title, body, x, y)` | ID | 吹き出し（橙）。誤解しやすい点の説明 |
-| `small(text, x, y)` | ID | 図形のそばの小さな注釈 |
+| `note(title, body, x, y)` | ID | 補足（黄）。図では表せない前提や背景 |
+| `callout(title, body, x, y)` | ID | 吹き出し（橙）。図では表せない仕様、誤解しやすい仕様。仕様はここに書く |
+| `small(text, x, y)` | ID | 図形・線のそばの小さな注釈（灰）。`callout()` の仕様を支える、1行の短い補足。仕様だけを `small()` に書かない |
 | `tbd(body, x, y)` | ID | 未確定事項（赤の破線）。AI注記が自動で付く |
 | `scope_out(body, x, y)` | ID | この図では扱わない範囲 |
+| `terminator(text, x, y)` | ID | 別のページから続く／別のページへ続くことを示す楕円（「④から続く」） |
 | `gen_box(body, x, y)` | ID | 世代・状態の説明ボックス |
 
 `tables()` は幅と高さも返す。次の要素をその右に置くとき、`x + w + 40` のように使うと
@@ -105,7 +106,7 @@ d.save("処理フロー_xxx.drawio")
 | `delete(lmb, frame, label)` | 赤 | テーブルからの削除 |
 | `cascade(src, dst, label)` | 赤の点線 | 外部キーによる連鎖削除 |
 | `relate(src, dst, label)` | 紫 | 世代関係など補助的な関係 |
-| `lead(src, dst)` | 赤の点線・矢印なし | 注記の引き出し線 |
+| `lead(src, dst)` | 赤の点線・矢印なし | 注記の引き出し線（`callout()`・`tbd()` などが、どの図形のことかを示す） |
 
 `read` と `write` は接続位置が既定で入っているので、そのまま呼べば上下に線が出る。
 

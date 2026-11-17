@@ -1,6 +1,6 @@
 {
-  "sha256": "f4dd4fda7db45d845a31b07807bab434afddce62480bce5fd0e8a8334e5925a1",
-  "recorded_at": "2026-09-08T11:23:18+09:00",
+  "sha256": "0c315553ddf45d9a8e6215b1bc8b42f6aef2260f5e3bfbc5f97f69be3a92b1a5",
+  "recorded_at": "2026-11-16T13:06:44+09:00",
   "recorded_by": "build_example.py",
   "host": "app.diagrams.net"
 }
