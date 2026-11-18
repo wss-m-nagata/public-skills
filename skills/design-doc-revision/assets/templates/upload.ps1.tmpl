@@ -1,0 +1,180 @@
+# ファイルサーバーのレビュー用の置き場（{{FOLDER_NAME}}）に、今回の修正資料を上げるスクリプト。
+#
+# 何をするか:
+#   1. 置き場にすでにあるファイル（.xlsx・.drawio。old\ の下は除く）を、同じフォルダの old\ へ移す
+#      （移す範囲は、$MoveScope で決める。all＝置き場のすべて、uploaded＝今回上げる資料と同じ場所・名前のものだけ）
+#      （末尾に最終更新日 _YYYYMMDD を付ける）。置き場のフォルダが、まだ無いときは、作って、移すファイルは無い。
+#   2. 今回の資料（$Upload）を、手元から、置き場に上げる。
+#   3. 上げたファイルが、手元と同じ中身か（SHA-256）、移したファイルが、移す前と同じ中身か、を確かめる。
+#
+# 使い方（PowerShell で、このファイルのあるフォルダ（手元の {{FOLDER_NAME}}）から実行する）:
+#   .\{{UPLOAD_SCRIPT}}.ps1             # 確認だけ。何も変更しない（ドライラン）。
+#   .\{{UPLOAD_SCRIPT}}.ps1 -Execute    # 実際に移して、上げる。実行の前に確認を求める。
+#   同じフォルダの「{{UPLOAD_SCRIPT}}.bat」をダブルクリックすると、確認のあとに、実行まで進む。
+#
+# 守っていること:
+#   - 消さない。移す（Move-Item）か、新しく置く（Copy-Item）だけ。ただし、誰も開いていないのに残っているロックファイル（~$）は、確認のうえで、削除する。
+#   - old\ に、同じ名前のファイルがあれば、最終更新の時刻も付けた名前で移す（_YYYYMMDD_HHmm）。それでも同じ名前があれば、止める（上書きしない）。
+#   - 移すファイルを、開いている人がいれば、止める。
+#   - 上げるのは、$Upload に書いた資料だけ（拡張子は .xlsx・.drawio に限る）。README.md・このスクリプトなどは、上げない。
+#   - ドライランで1件でも NG があれば、何も変更しない。途中で止まった場合は、その時点までの処理を表示する。やり直す前に、サーバーの状態を確かめること。
+#
+# このスクリプトが対象にしないもの:
+#   - 作成中の資料（ファイル名に「作成中」を含むもの）。上げない（含まれていると、止まる）。
+#     ただし、$AllowInProgress に書いた資料は、上げてよい（レビュー中の確認資料を、作成中の名前のまま上げ直すときなど）。
+#   - 正本への反映。レビュー担当者と合意したあとに、別の作業で行う。
+
+[CmdletBinding()]
+param(
+    [switch]$Execute
+)
+
+$ErrorActionPreference = "Stop"
+
+# --- 場所 ---
+$ServerRoot = "{{SERVER_ROOT}}"
+$LocalDir = $PSScriptRoot   # このスクリプトの置き場所（手元の {{FOLDER_NAME}}）
+$ServerDir = Join-Path $ServerRoot "{{FOLDER_NAME}}"
+
+# --- 今回上げる資料（手元の {{FOLDER_NAME}} からの相対パス） ---
+$Upload = @(
+{{UPLOAD_ITEMS}}
+)
+
+# --- 作成中の名前のまま、上げてよい資料（$Upload のうち、ユーザーが指定したもの。ふつうは空） ---
+$AllowInProgress = @(
+{{ALLOW_IN_PROGRESS}}
+)
+
+# --- old\ へ移す範囲：all（置き場のすべて）／uploaded（今回上げる資料と同じ場所・名前のものだけ） ---
+$MoveScope = "{{MOVE_SCOPE}}"
+
+# --- 部品 ---
+function Get-Hash([string]$Path) { return (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash }
+
+# ファイルを、ほかの人（または別のプログラム）が開いているかを返す。排他的に開けなければ、開いている
+function Test-FileOpenedByOthers([string]$Path) {
+    try {
+        $stream = [System.IO.File]::Open($Path, [System.IO.FileMode]::Open, [System.IO.FileAccess]::ReadWrite, [System.IO.FileShare]::None)
+        $stream.Close()
+        return $false
+    } catch {
+        return $true
+    }
+}
+
+# 移す先（同じフォルダの old\ の中。最終更新日 _YYYYMMDD を付けた名前）を返す
+function Get-OldDestination([System.IO.FileInfo]$Item) {
+    $stem = [System.IO.Path]::GetFileNameWithoutExtension($Item.Name)
+    $oldDir = Join-Path $Item.DirectoryName "old"
+    # 末尾は、最終更新日（_YYYYMMDD）。同じ名前が old\ に既にあるとき（同じ日に何度も直したとき）は、時刻も付ける（_YYYYMMDD_HHmm）
+    $byDate = Join-Path $oldDir ($stem + "_" + $Item.LastWriteTime.ToString("yyyyMMdd") + $Item.Extension)
+    if (-not (Test-Path -LiteralPath $byDate)) { return $byDate }
+    return (Join-Path $oldDir ($stem + "_" + $Item.LastWriteTime.ToString("yyyyMMdd_HHmm") + $Item.Extension))
+}
+
+$problems = New-Object System.Collections.Generic.List[string]
+$staleLocks = New-Object System.Collections.Generic.List[string]
+function Add-Problem([string]$Message) { $script:problems.Add($Message); Write-Host "  [NG] $Message" -ForegroundColor Red }
+
+# --- 事前の確認（何も変更しない） ---
+Write-Host "=== 事前の確認 ===" -ForegroundColor Cyan
+if (-not (Test-Path -LiteralPath $ServerRoot)) { Add-Problem "サーバーのレビュー用の置き場につながりません: $ServerRoot" }
+$serverDirIsNew = -not (Test-Path -LiteralPath $ServerDir)
+if ($serverDirIsNew) { Write-Host "  （サーバーに、このフォルダは、まだありません。実行のときに作成する）" -ForegroundColor Yellow }
+
+Write-Host "[1] 上げる資料（手元）"
+foreach ($rel in $Upload) {
+    $leaf = [System.IO.Path]::GetFileName($rel)
+    $ext = [System.IO.Path]::GetExtension($rel).ToLower()
+    if ((@('.xlsx', '.drawio') -notcontains $ext) -or $leaf.StartsWith('~$')) { Add-Problem "上げられない種類のファイル（.xlsx・.drawio 以外、またはロックファイル）: $rel"; continue }
+    if ($leaf.Contains('作成中') -and ($AllowInProgress -notcontains $rel)) { Add-Problem "作成中のファイルは上げない: $rel"; continue }
+    $src = Join-Path $LocalDir $rel
+    if (-not (Test-Path -LiteralPath $src)) { Add-Problem "手元に無い: $rel"; continue }
+    if (Test-Path -LiteralPath (Join-Path (Split-Path -Parent $src) ('~$' + $leaf))) { Add-Problem "手元のファイルを開いている（閉じてから実行する）: $rel"; continue }
+    Write-Host "  OK  $rel"
+}
+
+Write-Host "[2] 置き場にあるファイルを、old\ へ移す（old\ の下は対象外）"
+$existing = @()
+if (Test-Path -LiteralPath $ServerDir) {
+    $existing = @(Get-ChildItem -LiteralPath $ServerDir -Recurse -File |
+        Where-Object { @('.xlsx', '.drawio') -contains $_.Extension.ToLower() -and -not $_.Name.StartsWith('~$') -and $_.FullName -notlike '*\old\*' })
+}
+if ($MoveScope -eq 'uploaded') {
+    $existing = @($existing | Where-Object { $Upload -contains $_.FullName.Substring($ServerDir.Length + 1) })
+}
+# 全部を移す指定のときは、今回上げない資料も old\ へ移す。置き場に残らなくなるため、警告する
+if ($MoveScope -eq 'all') {
+    $notUploaded = @($existing | Where-Object { $Upload -notcontains $_.FullName.Substring($ServerDir.Length + 1) })
+    foreach ($item in $notUploaded) {
+        Write-Host "  警告：今回は上げないのに、old\ へ移される（置き場から無くなる）: $($item.FullName.Substring($ServerDir.Length + 1))" -ForegroundColor Yellow
+    }
+}
+$plan = @()
+foreach ($item in $existing) {
+    $relative = $item.FullName.Substring($ServerDir.Length + 1)
+    if (Test-FileOpenedByOthers $item.FullName) { Add-Problem "サーバーのファイルを、誰かが開いている（閉じてもらってから実行する）: $relative"; continue }
+    $lock = Join-Path $item.DirectoryName ('~$' + $item.Name)
+    if (Test-Path -LiteralPath $lock) { $staleLocks.Add($lock); Write-Host "  （ロックファイル ~`$$($item.Name) は残骸。実行のときに削除する）" -ForegroundColor Yellow }
+    $old = Get-OldDestination $item
+    if (Test-Path -LiteralPath $old) { Add-Problem "移す先（old）に同じ名前がある: $($old.Substring($ServerDir.Length + 1))"; continue }
+    Write-Host "  OK  $relative"
+    Write-Host "      → $($old.Substring($ServerDir.Length + 1))"
+    $plan += @{ Item = $item; Old = $old; Relative = $relative; Hash = (Get-Hash $item.FullName) }
+}
+if ($existing.Count -eq 0) { Write-Host "  （移すファイルはありません）" }
+
+if ($problems.Count -gt 0) {
+    Write-Host ""
+    Write-Host "確認で $($problems.Count) 件の問題がありました。何も変更していません。解決してから、もう一度実行してください。" -ForegroundColor Red
+    exit 1
+}
+Write-Host ""
+Write-Host "事前の確認は、すべて OK です（old\ へ移す: $($plan.Count) 件、上げる: $($Upload.Count) 件）。" -ForegroundColor Green
+
+if (-not $Execute) {
+    Write-Host "（ドライランです。実際に移して上げるときは、-Execute を付けて実行してください。）" -ForegroundColor Yellow
+    exit 0
+}
+
+Write-Host ""
+Write-Host "old\ へ移すファイル:" -ForegroundColor Cyan
+foreach ($p in $plan) { Write-Host "  $($p.Relative)" }
+Write-Host "上げるファイル:" -ForegroundColor Cyan
+foreach ($rel in $Upload) { Write-Host "  $rel" }
+$answer = Read-Host "ファイルサーバーのレビュー用の置き場で、上のファイルを old\ へ移し、今回の資料を上げます。よろしいですか（y/N）"
+if ($answer -ne "y") { Write-Host "中止しました。何も変更していません。"; exit 0 }
+
+# --- 実行 ---
+Write-Host "=== 実行 ===" -ForegroundColor Cyan
+if ($serverDirIsNew) {
+    New-Item -ItemType Directory -Force -Path $ServerDir | Out-Null
+    Write-Host "作成した（置き場のフォルダ）: $ServerDir"
+}
+foreach ($lock in $staleLocks) {
+    Remove-Item -LiteralPath $lock -Force
+    Write-Host "削除した（残骸のロックファイル）: $lock"
+}
+foreach ($p in $plan) {
+    New-Item -ItemType Directory -Force -Path (Split-Path -Parent $p.Old) | Out-Null
+    Move-Item -LiteralPath $p.Item.FullName -Destination $p.Old
+    Write-Host "旧版を移した: $($p.Relative)"
+}
+foreach ($rel in $Upload) {
+    $dst = Join-Path $ServerDir $rel
+    New-Item -ItemType Directory -Force -Path (Split-Path -Parent $dst) | Out-Null
+    Copy-Item -LiteralPath (Join-Path $LocalDir $rel) -Destination $dst
+    Write-Host "上げた: $rel"
+}
+
+# --- 確認 ---
+Write-Host "=== 確認（上げたファイルが手元と同じ中身か。移したファイルが、移す前と同じ中身か） ===" -ForegroundColor Cyan
+$ng = 0
+foreach ($rel in $Upload) {
+    if ((Get-Hash (Join-Path $LocalDir $rel)) -eq (Get-Hash (Join-Path $ServerDir $rel))) { Write-Host "  一致  $rel" } else { Write-Host "  不一致  $rel" -ForegroundColor Red; $ng++ }
+}
+foreach ($p in $plan) {
+    if ((Test-Path -LiteralPath $p.Old) -and ((Get-Hash $p.Old) -eq $p.Hash)) { Write-Host "  旧版OK  $($p.Old.Substring($ServerDir.Length + 1))" } else { Write-Host "  旧版NG  $($p.Relative)" -ForegroundColor Red; $ng++ }
+}
+if ($ng -eq 0) { Write-Host "すべて確認できました。" -ForegroundColor Green } else { Write-Host "$ng 件に問題があります。確かめてください。" -ForegroundColor Red; exit 1 }

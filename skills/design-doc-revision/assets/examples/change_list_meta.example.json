@@ -1,0 +1,25 @@
+{
+  "title": "<件名> 設計書の変更箇所一覧（YYYY-MM-DD）",
+  "summary": "・<何のために、何を直したかを、1〜2文で>",
+  "confirm_note": "今回は、<要確認の行が何についてか>です。（要確認の行が無いときは、この欄を省略する）",
+  "folder_name": "<案件名>",
+  "recipient": "<レビュー担当者の呼び名>",
+  "specs": [
+    {
+      "spec": "<revise_workbook.py の仕様JSONのパス>",
+      "target_file": "<フォルダA>/<元の設計書A>.xlsx",
+      "handling": "修正"
+    }
+  ],
+  "extra_rows": [
+    {
+      "confirm": "任意",
+      "file": "<フォルダC>/<元の図>.drawio",
+      "sheet": "<タブ名>",
+      "spot": "<直した図形・メモの場所>",
+      "kind": "変更",
+      "before": "<変更前の文>",
+      "after": "<変更後の文>"
+    }
+  ]
+}

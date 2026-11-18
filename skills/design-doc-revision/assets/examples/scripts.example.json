@@ -1,0 +1,26 @@
+{
+  "folder_name": "<案件名>",
+  "suffix": "<識別子>",
+  "move_scope": "uploaded",
+  "upload": [
+    "<フォルダB>/<元の設計書B>.xlsx",
+    "<フォルダA>/<元の設計書A>.xlsx",
+    "変更履歴/変更箇所一覧_YYYY-MM-DD_<件名>.xlsx",
+    "変更履歴/確認資料_YYYY-MM-DD_<件名>.xlsx"
+  ],
+  "reflect": [
+    {
+      "path": "<フォルダB>/<元の設計書B>.xlsx",
+      "base_file": "<修正の元にした版の写し>.xlsx"
+    },
+    {
+      "path": "<フォルダA>/<新しい設計書>.xlsx",
+      "new": true
+    },
+    {
+      "path": "<フォルダC>/<新しい図>.drawio",
+      "root": "<段階の反映先（設計書のルートからの相対パス）>",
+      "new": true
+    }
+  ]
+}

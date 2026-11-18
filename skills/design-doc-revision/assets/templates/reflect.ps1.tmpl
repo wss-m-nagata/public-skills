@@ -1,0 +1,159 @@
+# レビュー担当者のレビューで合意が取れた資料を、正本に反映するスクリプト。
+#
+# 何をするか:
+#   1. 正本の今のファイルを、同じフォルダの old\ へ、最終更新日を付けた名前（_YYYYMMDD）で移す。
+#   2. レビュー用の置き場（{{FOLDER_NAME}}）でレビューした修正版を、正本の元の場所に上げる。
+#      新しく作った資料（正本に無いもの）は、正本に新しく置く。
+#   3. 上げたファイルが、手元の修正版と同じ中身か（SHA-256）を確かめる。
+#
+# 使い方:
+#   同じフォルダの「正本反映.bat」をダブルクリックする。
+#   確認（ドライラン）が終わると、実行に進み、反映するファイルの一覧を出して確認を求める。
+#   PowerShell から直接使うときは、このファイルのあるフォルダ（手元の {{FOLDER_NAME}}）で実行する。
+#     .\正本反映.ps1             # 確認だけ。何も変更しない（ドライラン）。
+#     .\正本反映.ps1 -Execute    # 実際に移す・上げる。実行の前に確認を求める。
+#
+# 守っていること:
+#   - 消さない。移す（Move-Item）か、新しく置く（Copy-Item）だけ。
+#   - 移す先に、同じ名前のファイルがあれば、止める（上書きしない）。
+#   - 正本のファイルが、修正の元にした版と違えば、止める（ほかの人が直した可能性があるため）。
+#   - 新しく置くファイルと同じ名前が正本にすでにあれば、止める。
+#   - レビュー用の置き場にある修正版が、手元の修正版（レビューを受けた版）と違えば、止める。
+#   - ファイルを開いている人がいれば、止める。ロックファイル（~$）が残っていても、誰も開いていなければ残骸とみなし、確認のうえで、そのロックファイルだけを削除する。
+#   - 上げるのは、下の $Targets に書いたファイルだけ（拡張子は .xlsx・.drawio に限る）。変更箇所一覧・確認資料・このスクリプトなどは、上げない。
+#   - ドライランで1件でも NG があれば、何も変更しない。
+#
+# 反映したあと、レビュー用の置き場の {{FOLDER_NAME}} の、反映済みの資料をどうするか（取り除く）は、このスクリプトでは行わない。
+
+[CmdletBinding()]
+param(
+    [switch]$Execute
+)
+
+$ErrorActionPreference = "Stop"
+
+# --- 場所 ---
+$DesignRoot = "{{DESIGN_ROOT}}"
+$WorkFolder = Join-Path $DesignRoot "{{REVIEW_ROOT}}\{{FOLDER_NAME}}"   # サーバーのレビュー用の置き場（レビューに出した版）
+$LocalFolder = $PSScriptRoot                                                                          # 手元の {{FOLDER_NAME}}（修正版）
+
+# --- 反映するファイル ---
+#   Root  : 反映先のフォルダ（設計書のルートからの相対パス）
+#   Path  : 反映先（Root）の中の相対パス
+#   Local : レビュー用の置き場・手元の中の相対パス
+#   Base  : 修正の元にした、反映先の版の SHA-256（新しく置くファイルは $null）
+$Targets = @(
+{{TARGET_ITEMS}}
+)
+
+# --- 部品 ---
+function Get-Hash([string]$Path) { return (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash }
+
+function Test-FileOpenedByOthers([string]$Path) {
+    # 排他的に開けなければ、誰かが開いている。開けるなら、誰も開いていない
+    try {
+        $stream = [System.IO.File]::Open($Path, [System.IO.FileMode]::Open, [System.IO.FileAccess]::ReadWrite, [System.IO.FileShare]::None)
+        $stream.Close()
+        return $false
+    } catch {
+        return $true
+    }
+}
+
+$problems = New-Object System.Collections.Generic.List[string]
+$staleLocks = New-Object System.Collections.Generic.List[string]
+function Add-Problem([string]$Message) { $script:problems.Add($Message); Write-Host "  [NG] $Message" -ForegroundColor Red }
+
+# --- 事前の確認（何も変更しない） ---
+Write-Host "=== 事前の確認 ===" -ForegroundColor Cyan
+$plan = @()
+foreach ($t in $Targets) {
+    $name = [System.IO.Path]::GetFileName($t.Path)
+    $ext = [System.IO.Path]::GetExtension($name).ToLower()
+    if ((@('.xlsx', '.drawio') -notcontains $ext) -or $name.StartsWith('~$')) { Add-Problem "反映できない種類のファイル（.xlsx・.drawio 以外、またはロックファイル）: $name"; continue }
+
+    $destPath = Join-Path (Join-Path $DesignRoot $t.Root) $t.Path
+    $folder = Split-Path -Parent $destPath
+    $oldDir = Join-Path $folder "old"
+    $localPath = Join-Path $LocalFolder $t.Local
+    $workPath = Join-Path $WorkFolder $t.Local
+    $isNew = ($null -eq $t.Base)
+
+    Write-Host "[$name]"
+    if (-not (Test-Path -LiteralPath $localPath)) { Add-Problem "手元の修正版が無い: $($t.Local)"; continue }
+    if (-not (Test-Path -LiteralPath $workPath)) { Add-Problem "レビュー用の置き場に、レビューに出した版が無い: $($t.Local)"; continue }
+    if (Test-Path -LiteralPath (Join-Path (Split-Path -Parent $localPath) ('~$' + $name))) { Add-Problem "手元の修正版を開いている（閉じてから実行する）"; continue }
+    # 置き場でレビューに出した版が、手元の修正版と同じか
+    if ((Get-Hash $workPath) -ne (Get-Hash $localPath)) { Add-Problem "置き場の版が、手元の修正版と違う（レビューに出した後に変わった可能性）"; continue }
+
+    if ($isNew) {
+        # 新しく置くファイル：反映先に、同じ名前が無いこと
+        if (Test-Path -LiteralPath $destPath) { Add-Problem "新しく置くファイルと同じ名前が、$($t.Root) にすでにある: $($t.Path)"; continue }
+        Write-Host "  OK  新規 -> $($t.Path)"
+        $plan += @{ Name = $name; Path = "$($t.Root)\$($t.Path)"; IsNew = $true; DestPath = $destPath; OldDir = $null; OldPath = $null; LocalPath = $localPath }
+        continue
+    }
+
+    if (-not (Test-Path -LiteralPath $destPath)) { Add-Problem "$($t.Root) に無い: $($t.Path)"; continue }
+    # 反映先のファイルが、修正の元にした版のままか
+    if ((Get-Hash $destPath) -ne $t.Base) { Add-Problem "$($t.Root) のファイルが、修正の元にした版から変わっている（ほかの人が直した可能性）"; continue }
+
+    # 開いている人がいないか
+    $lock = Join-Path $folder ('~$' + $name)
+    if (Test-FileOpenedByOthers $destPath) { Add-Problem "$($t.Root) のファイルを、開いている人がいる"; continue }
+    if (Test-Path -LiteralPath $lock) { $staleLocks.Add($lock); Write-Host "  （ロックファイル $('~$' + $name) は残骸。実行のときに削除する）" -ForegroundColor Yellow }
+
+    # 旧版の名前（最終更新日を付ける）
+    $date = (Get-Item -LiteralPath $destPath).LastWriteTime.ToString("yyyyMMdd")
+    $oldName = [System.IO.Path]::GetFileNameWithoutExtension($name) + "_" + $date + $ext
+    $oldPath = Join-Path $oldDir $oldName
+    if (Test-Path -LiteralPath $oldPath) { Add-Problem "移す先に同じ名前がある: old\$oldName"; continue }
+
+    Write-Host "  OK  旧版 -> $(Split-Path -Parent $t.Path)\old\$oldName"
+    Write-Host "      修正版（手元）を $($t.Path) に上げる"
+    $plan += @{ Name = $name; Path = "$($t.Root)\$($t.Path)"; IsNew = $false; DestPath = $destPath; OldDir = $oldDir; OldPath = $oldPath; LocalPath = $localPath }
+}
+
+if ($problems.Count -gt 0) {
+    Write-Host ""
+    Write-Host "確認で $($problems.Count) 件の問題がありました。何も変更していません。解決してから、もう一度実行してください。" -ForegroundColor Red
+    exit 1
+}
+Write-Host ""
+Write-Host "事前の確認は、すべて OK です。" -ForegroundColor Green
+
+if (-not $Execute) {
+    Write-Host "（ドライランです。何も変更していません。）" -ForegroundColor Yellow
+    exit 0
+}
+
+Write-Host ""
+Write-Host "正本に反映するファイル（これだけを反映します）:" -ForegroundColor Cyan
+foreach ($p in $plan) { Write-Host "  $($p.Path)$(if ($p.IsNew) { '（新規）' })" }
+$answer = Read-Host "正本の今のファイルを old\ へ移し、修正版を上げます（新規は置くだけ）。よろしいですか（y/N）"
+if ($answer -ne "y") { Write-Host "中止しました。何も変更していません。"; exit 0 }
+
+# --- 実行 ---
+Write-Host "=== 実行 ===" -ForegroundColor Cyan
+foreach ($lock in $staleLocks) {
+    Remove-Item -LiteralPath $lock -Force
+    Write-Host "削除した（残骸のロックファイル）: $lock"
+}
+foreach ($p in $plan) {
+    # 置き先のフォルダが無ければ作る（機能のフォルダが新規のとき）
+    New-Item -ItemType Directory -Force -Path (Split-Path -Parent $p.DestPath) | Out-Null
+    if (-not $p.IsNew) {
+        New-Item -ItemType Directory -Force -Path $p.OldDir | Out-Null
+        Move-Item -LiteralPath $p.DestPath -Destination $p.OldPath
+    }
+    Copy-Item -LiteralPath $p.LocalPath -Destination $p.DestPath
+    Write-Host "反映した: $($p.Path)"
+}
+
+# --- 上げたファイルの確認 ---
+Write-Host "=== 上げたファイルの確認（手元の修正版と同じ中身か） ===" -ForegroundColor Cyan
+$ng = 0
+foreach ($p in $plan) {
+    if ((Get-Hash $p.LocalPath) -eq (Get-Hash $p.DestPath)) { Write-Host "  一致  $($p.Path)" } else { Write-Host "  不一致  $($p.Path)" -ForegroundColor Red; $ng++ }
+}
+if ($ng -eq 0) { Write-Host "すべて一致しました。" -ForegroundColor Green } else { Write-Host "$ng 件が一致しません。確かめてください。" -ForegroundColor Red; exit 1 }

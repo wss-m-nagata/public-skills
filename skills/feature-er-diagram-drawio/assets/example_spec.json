@@ -1,0 +1,130 @@
+{
+  "entities": {
+    "product": {
+      "table": "catalog.product",
+      "logical": "商品",
+      "status": "unchanged",
+      "pk": ["商品ID（product_id） PK"],
+      "cols": ["商品名（product_name）", "単価（unit_price）", "販売状態（sale_status）on_sale／stopped", "…"]
+    },
+    "customer": {
+      "table": "shop.customer",
+      "logical": "顧客",
+      "status": "unchanged",
+      "pk": ["顧客ID（customer_id） PK"],
+      "cols": ["顧客名（customer_name）", "メールアドレス（email） U", "…"]
+    },
+    "order": {
+      "table": "shop.order",
+      "logical": "注文",
+      "status": "changed",
+      "pk": ["注文ID（order_id） PK"],
+      "cols": ["顧客ID（customer_id） FK", "注文日時（ordered_at）", "合計金額（total_amount）",
+               "★ 値引額（discount_amount）← 今回追加", "★ 状態（order_status）（変更：キャンセル済みを表す値を足す）",
+               "✕ 備考（note）"]
+    },
+    "order_item": {
+      "table": "shop.order_item",
+      "logical": "注文明細",
+      "status": "unchanged",
+      "pk": ["注文明細ID（order_item_id） PK"],
+      "cols": ["注文ID（order_id） FK", "商品ID（product_id） FK", "数量（quantity）", "単価（unit_price）（注文時点の値を保持）",
+               "U（order_id, product_id）"]
+    },
+    "order_coupon": {
+      "table": "shop.order_coupon",
+      "logical": "注文クーポン",
+      "status": "new",
+      "pk": ["注文クーポンID（order_coupon_id） PK"],
+      "cols": ["注文ID（order_id） FK U", "クーポンコード（coupon_code）", "値引額（discount_amount）"]
+    },
+    "legacy_cart": {
+      "table": "shop.legacy_cart",
+      "logical": "旧カート",
+      "status": "abolished",
+      "pk": ["カートID（cart_id） PK"],
+      "cols": ["顧客ID（customer_id）", "商品ID（product_id）"]
+    }
+  },
+  "pages": [
+    {
+      "subject": "注文の登録",
+      "description": [
+        "左が商品マスタ、右が注文を受ける側のテーブル。",
+        "注文明細の単価は、注文時点の商品単価を写して持つ（商品の単価が変わっても、過去の注文は変わらない）。"
+      ],
+      "layout": "columns",
+      "groups": [
+        {"label": "商品（catalog）", "entities": ["product"]},
+        {"label": "注文（shop）", "entities": ["customer", "order", "order_item", "order_coupon"]},
+        {"entities": ["legacy_cart"]}
+      ],
+      "edges": [
+        {"from": "customer", "to": "order"},
+        {"from": "order", "to": "order_item", "label": "ON DELETE CASCADE"},
+        {"from": "product", "to": "order_item"},
+        {"from": "order", "to": "order_coupon", "kind": "zero_to_one", "label": "1:0..1（UNIQUE）ON DELETE CASCADE"}
+      ],
+      "notes": [
+        {
+          "kind": "point",
+          "title": "現行DDLからの変更点",
+          "lines": [
+            "・注文に、値引額（discount_amount）を追加する。クーポン適用時に、合計金額から引く額を持つため。",
+            "・注文の状態に、キャンセル済みを表す値を足す。",
+            "・注文から備考（note）を削除する（画面に入力欄が無く、使われないため）。",
+            "・注文クーポン（shop.order_coupon）を新しく作る。1つの注文に適用できるクーポンは1件まで。"
+          ]
+        },
+        {
+          "kind": "point",
+          "title": "DBの制約では表せない決まりごと（注文の登録処理で検証する）",
+          "lines": [
+            "・値引額は、合計金額を超えないこと。",
+            "・販売状態が stopped の商品は、注文明細に追加できないこと。"
+          ]
+        },
+        {
+          "kind": "readonly",
+          "title": "値を読むだけでFKの無い関係",
+          "lines": [
+            "・商品 … 注文の登録時に、販売状態と単価を読む（注文明細へは単価の値を写す）。"
+          ]
+        },
+        {
+          "kind": "tbd",
+          "title": "T.B.D　業務担当に確認",
+          "lines": [
+            "・キャンセル済みの注文の値引額は、そのまま残すか、0にするか。"
+          ]
+        },
+        {
+          "kind": "scope",
+          "title": "この図に載せていないもの",
+          "lines": [
+            "・shop.shipment（出荷）… 注文の登録では読み書きしない。",
+            "・メール送信キュー … テーブルではないため、処理フロー図を参照する。"
+          ]
+        }
+      ]
+    }
+  ],
+  "changes": {
+    "lead": "対象はDDLフォルダの現行ファイルである。",
+    "schema_owner": [
+      "・catalog は商品情報の領域で、注文側は読み取りだけを行う。",
+      "・shop は注文情報の領域。"
+    ],
+    "rows": [
+      {"file": "020_shop_create_order.sql", "table": "shop.order", "kind": "変更",
+       "lines": ["値引額（discount_amount）を追加する。", "クーポン適用時に、合計金額から引く額を持つため。",
+                 "備考（note）を削除する。画面に入力欄が無いため。"]},
+      {"table": "shop.order_coupon", "kind": "新規",
+       "lines": ["注文に適用したクーポンを持つテーブルを作る。", "値引額の根拠を残すため。"]},
+      {"file": "040_shop_create_legacy_cart.sql", "table": "shop.legacy_cart", "kind": "廃止",
+       "lines": ["テーブルごと削除する。", "新しい注文の流れでは使わないため。"]},
+      {"file": "030_shop_create_order_item.sql", "table": "shop.order_item", "kind": "変更なし",
+       "lines": ["変更しない。"]}
+    ]
+  }
+}

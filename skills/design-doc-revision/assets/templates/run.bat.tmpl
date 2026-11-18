@@ -1,0 +1,17 @@
+@echo off
+rem {{DESCRIPTION}}
+rem ダブルクリックで起動する。まず確認（ドライラン）を行い、問題が無ければ、実行に進む。
+rem 実行の前に、対象のファイルの一覧を表示して確認を求めるので、y を入力したときだけ実行する。
+rem cmd が日本語を読めるよう、このファイルは Shift-JIS（CRLF）で保存している。
+setlocal
+cd /d "%~dp0"
+
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0{{PS1}}"
+if errorlevel 1 goto end
+
+echo.
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0{{PS1}}" -Execute
+
+:end
+echo.
+pause
