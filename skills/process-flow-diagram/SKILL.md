@@ -244,6 +244,10 @@ python .claude/skills/process-flow-diagram/scripts/diff_drawio.py <控え>.drawi
 
 最後は新規作成と同じく `validate_drawio.py` と `preview_drawio.py` を通す。
 
+**直したら、変更履歴のページに、1行を足す。**
+ページが無い図には、先頭のページとして足す（ページ名は「変更履歴」。）。
+書き方（列・箇所の示し方・位置の区画）は、[references/default_rules.md](references/default_rules.md) の §7「変更履歴のページ」にある。
+
 ## 既にある図を読む
 
 図を読んで、実装・テスト・仕様の確認に使うときの手順。図は直さない。
