@@ -1,0 +1,128 @@
+/*
+ * 修正履歴
+ * <YYYY/MM/DD>: <会社の略称><氏名>: 新規作成。単体テストのレポートの見た目。
+ *
+ * 単体テストのレポート（pytest-html）の見た目。pytest-html の標準の見た目の後に読み込み、上書きする。
+ * 色・文字の大きさ・行の高さは、デジタル庁デザインシステム（DADS）のデザイントークンの値を使う。
+ */
+
+/* 文字 */
+body {
+  font-family: "Noto Sans JP", "Yu Gothic UI", "Meiryo", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  color: #1a1a1a;
+  background-color: #ffffff;
+  margin: 24px 32px;
+}
+
+h1 {
+  font-size: 28px;
+  line-height: 1.5;
+  color: #1a1a1a;
+}
+
+h2 {
+  font-size: 20px;
+  line-height: 1.5;
+  color: #1a1a1a;
+}
+
+p,
+li {
+  color: #1a1a1a;
+}
+
+a {
+  color: #0017c1;
+}
+
+/* 概要の環境の表 */
+#environment td {
+  border-color: #cccccc;
+  padding: 8px 12px;
+}
+
+#environment tr:nth-child(odd) {
+  background-color: #f2f2f2;
+}
+
+/* 結果の表 */
+#results-table {
+  border: 1px solid #cccccc;
+  color: #1a1a1a;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+#results-table th,
+#results-table td {
+  border: 1px solid #cccccc;
+  padding: 8px 12px;
+  vertical-align: top;
+}
+
+#results-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: #f2f2f2;
+  color: #1a1a1a;
+  white-space: nowrap;
+}
+
+#results-table tbody tr:nth-child(even) > td {
+  background-color: #fafafa;
+}
+
+/* 結果の色 */
+span.passed,
+.passed .col-result {
+  color: #197a4b;
+  font-weight: 700;
+}
+
+span.skipped,
+span.xfailed,
+span.rerun,
+.skipped .col-result,
+.xfailed .col-result,
+.rerun .col-result {
+  color: #c74700;
+  font-weight: 700;
+}
+
+span.error,
+span.failed,
+span.xpassed,
+.error .col-result,
+.failed .col-result,
+.xpassed .col-result {
+  color: #ce0000;
+  font-weight: 700;
+}
+
+/* 列の幅 */
+.col-result,
+.col-spec-no,
+.col-duration {
+  white-space: nowrap;
+}
+
+.col-testId {
+  min-width: 16em;
+  word-break: break-all;
+}
+
+.col-spec-viewpoint,
+.col-spec-content,
+.col-spec-expected {
+  min-width: 14em;
+}
+
+/* 失敗したときのログ */
+.logwrapper,
+.logwrapper .logexpander {
+  background-color: #f2f2f2;
+  color: #1a1a1a;
+}

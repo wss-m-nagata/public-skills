@@ -1,0 +1,74 @@
+# Revision History
+# <YYYY/MM/DD>: <会社の略称><氏名>: 新規作成。
+
+name: バグ報告 (bug)
+description: 不具合の報告
+title: "[bug] "
+labels:
+  - bug
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: 概要
+      description: どのような不具合か
+    validations:
+      required: true
+
+  - type: dropdown
+    id: origin_stage
+    attributes:
+      label: 発生工程
+      description: "不具合が作り込まれた工程。分からない場合は「不明」を選ぶ"
+      options:
+        - 要求分析
+        - 要件定義
+        - 設計
+        - 実装
+        - 単体テスト
+        - 結合テスト
+        - 総合テスト
+        - 受け入れテスト
+        - 不明
+    validations:
+      required: false
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 再現手順
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期待する動作
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: 実際の動作
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: 環境情報
+      description: dev/prd、ブラウザ、ユーザー種別など
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: 補足（ログ・スクリーンショット等）
+    validations:
+      required: false

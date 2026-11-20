@@ -1,0 +1,12 @@
+{
+  "_comment": "Issueに付けるラベルの定義。プロジェクトで決めた内容に書き換える。name・color（6桁の16進数）・description（100文字以内）を持つ。",
+  "labels": [
+    { "name": "bug", "color": "d73a4a", "description": "実装済みの動作が、仕様や期待と違う。修正が必要な不具合" },
+    { "name": "enhancement", "color": "a2eeef", "description": "画面・APIなど、アプリの機能の追加や変更（新機能・機能改善）" },
+    { "name": "documentation", "color": "0075ca", "description": "規約・仕様・設計書・手順書など、資料の追加や修正" },
+    { "name": "infra", "color": "5319e7", "description": "AWS構成、CI/CD、デプロイなど、インフラの追加や変更" },
+    { "name": "P1", "color": "b60205", "description": "緊急対応が必要。すぐに対応しないといけない" },
+    { "name": "P2", "color": "fbca04", "description": "機能が使えない、または回避策がある。リリース計画を立てて対応する" },
+    { "name": "P3", "color": "0e8a16", "description": "軽微、または改善事項。リリース時期は問わない" }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "_comment": "承認なしで許可（allow）、実行のたびに確認（ask）、禁止（deny）する操作の推奨。プロジェクトに合わせて、書き換える。",
+  "permissions": {
+    "allow": [
+      "Bash(git status)",
+      "Bash(git status *)",
+      "Bash(git diff)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(gh issue view *)",
+      "Bash(gh pr view *)",
+      "Bash(gh label list)",
+      "Bash(gh label list *)",
+      "Bash(gh run list *)",
+      "Bash(gh run view *)",
+      "Bash(pnpm typecheck)",
+      "Bash(pnpm lint)",
+      "Bash(uv run pytest)",
+      "Bash(uv run pytest *)",
+      "Bash(uv run python tests/unit_report.py)",
+      "Bash(uv run python tests/unit_report.py *)"
+    ],
+    "ask": [
+      "Bash(git commit *)"
+    ],
+    "deny": [
+      "Bash(git push *)",
+      "Bash(gh pr merge *)"
+    ]
+  }
+}

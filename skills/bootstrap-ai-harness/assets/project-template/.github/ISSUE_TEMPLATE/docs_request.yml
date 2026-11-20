@@ -1,0 +1,38 @@
+# Revision History
+# <YYYY/MM/DD>: <会社の略称><氏名>: 新規作成。
+
+name: ドキュメント (docs)
+description: docs/ 配下のドキュメント追加・更新の依頼
+title: "[docs] "
+labels:
+  - documentation
+body:
+  - type: textarea
+    id: target
+    attributes:
+      label: 対象ドキュメント
+      description: "対象ファイルパス、または新規作成する場合は配置予定のフォルダ（例: docs/20_rules/）"
+    validations:
+      required: true
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: 更新・追加内容
+    validations:
+      required: true
+
+  - type: textarea
+    id: reason
+    attributes:
+      label: 理由・背景
+      description: 実装変更に伴う更新か、新規ガイドライン策定かなど
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: 補足
+    validations:
+      required: false

@@ -1,0 +1,24 @@
+# 依存パッケージ、生成物、ビルドの出力
+node_modules
+.nuxt
+.output
+dist
+cdk.out
+.venv
+
+# テストの証跡とレポート
+evidence
+test-results
+monocart-report
+playwright-report
+
+# ロックファイル（パッケージマネージャーが管理する）
+pnpm-lock.yaml
+package-lock.json
+uv.lock
+
+# 資料（設計書の生成元のJSONなどを含む。資料の書き方は、文書の規約に従う）
+docs
+
+# Markdown（行末の半角スペース2つによる改行など、文書の書き方の規約を崩さないため）
+*.md

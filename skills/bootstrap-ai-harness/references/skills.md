@@ -2,35 +2,44 @@
 
 ## 標準で導入するスキル
 
-| スキル | 用途 | 実行するタイミング |
-| --- | --- | --- |
-| `generate-screen-design-rules` | DADSを主、Carbonを補完として、具体値と部品の状態を含む画面設計規約を作る。 | 初期構築時と規約の更新時。 |
-| `process-flow-diagram` | 画面、バックエンド処理、テーブルやファイルの関係を処理フロー図に整理する。 | 機能の洗い出し、見積もり、設計の前段階。 |
-| `nablarch-frontend-design-excel` | 画面一覧・画面遷移・画面機能設計・画面単体テスト仕様などをExcelの様式で作る。 | 対象と内容が決まり、設計書を作成・更新するとき。 |
-| `nablarch-basic-design-excel` | API、機能、外部インタフェース、テーブルなどのバックエンド設計書や単体テスト仕様をExcelの様式で作る。 | 対象と内容が決まり、設計書を作成・更新するとき。 |
+| 区分 | スキル | 用途 | 実行するタイミング |
+| --- | --- | --- | --- |
+| 設計書・図 | `generate-screen-design-rules` | DADSを主、Carbonを補完として、具体値と部品の状態を含む画面設計規約を作る。 | 初期構築時と規約の更新時。 |
+| 設計書・図 | `process-flow-diagram` | 画面、バックエンド処理、テーブルやファイルの関係を処理フロー図に整理する。 | 機能の洗い出し、見積もり、設計の前段階。 |
+| 設計書・図 | `nablarch-frontend-design-excel` | 画面一覧・画面遷移・画面機能設計・画面単体テスト仕様などをExcelの様式で作る。 | 対象と内容が決まり、設計書を作成・更新するとき。 |
+| 設計書・図 | `nablarch-basic-design-excel` | API、機能、外部インタフェース、テーブルなどのバックエンド設計書や単体テスト仕様をExcelの様式で作る。 | 対象と内容が決まり、設計書を作成・更新するとき。 |
+| 汎用版 | `create-github-issue` | チケット（GitHub Issue）の作成、作業ブランチの準備、進捗の記録。 | 設計・開発の作業を始めるとき。 |
+| 汎用版 | `design-doc-revision` | 設計書の修正、変更箇所一覧と確認資料の作成、レビュー用の場所への配置・正式版への反映のスクリプトの作成。 | 設計書を作る・直すとき。 |
+| 汎用版 | `feature-er-diagram-drawio` | 処理フロー図の機能ごとに、使うテーブルと変更点をER図にまとめる。 | DBを使う機能の設計。 |
+| 汎用版 | `pre-push-check` | 全テスト・AIレビュー・規約チェックを流し、結果を報告する。 | プッシュする前。 |
+| 外部 | `playwright-best-practices` | API・ブラウザの自動試験を書く・直す。 | 開発環境での試験。 |
 
-この4つを基本セットとし、明示されたプロジェクト方針により不要なものがあれば理由を示して除外する。
-`design-standards`は画面規約で必要に応じて用いる任意の補完スキルであり、必須ではない。
-Playwrightの補助スキルは必要に応じて追加する。
+- 各スキルを使う工程は、`docs/50_operation/AI駆動開発の運用/運用フロー.md` の「使用スキル」に従う。
+- 明示されたプロジェクト方針により不要なものがあれば、理由を示して除外する。
+  DBを使わないプロジェクトでは、`feature-er-diagram-drawio` を除外する。
+- `design-standards` は、画面規約で必要に応じて用いる任意の補完スキルであり、必須ではない。
+- 汎用版の4つは、初回の使用時に、プロジェクトのハーネスを読み、読み取れないものだけを質問して、回答を `.agents/config/<スキル名>/settings.md` に保存する。
+  このスキルでは、その設定ファイルを作らない。
 
 ## 導入
 
-1. 新規プロジェクトで利用するAIごとに、基本セットの所在と付属資料を先に確認する。
-   `nablarch-frontend-design-excel`は利用可能なものを使う前提とし、同名スキルを無条件で再導入しない。
-   不足するスキルだけを、新規プロジェクトのGitリポジトリのルートで公開リポジトリからプロジェクト単位で導入する。
-   Claude Codeの場合は、必要なスキルに対応する次のコマンドを使う。
+1. 公開スキルのリポジトリを確かめる。
+   `.agents/config/bootstrap-ai-harness/settings.md` の「公開スキルのリポジトリ」に値があれば、それを使う。
+   無ければ、利用者に尋ね、設定ファイルに保存する。
+2. 新規プロジェクトのGitリポジトリのルートで、導入済みのスキル（`.claude/skills/`）を確かめ、不足するスキルだけを、AIが次のコマンドで導入する。
 
    ```powershell
-   gh skill install wss-m-nagata/public-skills generate-screen-design-rules --agent claude-code --scope project
-   gh skill install wss-m-nagata/public-skills process-flow-diagram --agent claude-code --scope project
-   gh skill install wss-m-nagata/public-skills nablarch-frontend-design-excel --agent claude-code --scope project
-   gh skill install wss-m-nagata/public-skills nablarch-basic-design-excel --agent claude-code --scope project
+   # 公開スキル（区分が「設計書・図」「汎用版」のもの）
+   npx skills add <公開スキルのリポジトリ> --skill <スキル名> --agent claude-code
+
+   # 外部のスキル
+   npx skills add currents-dev/playwright-best-practices-skill --skill playwright-best-practices --agent claude-code
    ```
 
-   Codexでも使用する場合は、同じ各コマンドの `--agent claude-code` を `--agent codex` に置き換えて実行する。
+   `nablarch-frontend-design-excel`は、利用可能なものを使う前提とし、同名スキルを無条件で再導入しない。
+   Codexでも使用する場合は、`--agent claude-code` を `--agent codex` に置き換えて実行する。
    それぞれの配置先、正本と同期方法を定める。
-   取得する版の指定が必要なら利用者の方針に従って `--pin` を指定し、指定しない場合はコマンドの既定の解決に従う。
-2. 各コマンドの終了結果と導入先の `SKILL.md`、付属資料を確認する。
+3. 各コマンドの終了結果と導入先の `SKILL.md`、付属資料を確認する。
    各スキルの`SKILL.md`が参照するテンプレート・資料・実行ファイルがそろっていることを確認する。
    中断された導入ではディレクトリや `SKILL.md` が存在しても一部しか展開されていない場合があるため、導入成功と扱わず復旧する。
    公開版に目的のスキルがない場合や取得に失敗した場合は、導入済みと扱わず、スキル名とエラーを報告する。
@@ -38,7 +47,11 @@ Playwrightの補助スキルは必要に応じて追加する。
    導入先に同名スキルがある場合は強制上書きせず、内容と版の差を確認して既存の利用方針に合わせる。
    再配布条件と、Python、openpyxl、Excel等の必要な実行環境を各スキルの指示に従って確認する。
    環境の不足は報告し、未承認のインストールを行わない。
-3. スキル名、配置先、実行する作業、参照する規約を新規プロジェクトのAI向け指示に追記する。
+4. `.gitignore` を確かめる。
+   スキルの作業用ファイルを置く `.agents/state/` は、Gitに入れないため、`.gitignore` に `/.agents/state/` があることを確かめ、無ければ足す。
+   スキルの設定を置く `.agents/config/` は、チームで共有するため、`.gitignore` に入れない。
+   `.agents/` 全体を除外する記述があれば、利用者に伝える。
+5. スキル名、配置先、実行する作業、参照する規約を新規プロジェクトのAI向け指示に追記する。
    対象AIが実際にその配置を読み込めることを確認し、認識に再読み込みが必要な場合は利用者に伝える。
 
 ## 画面規約の初期生成

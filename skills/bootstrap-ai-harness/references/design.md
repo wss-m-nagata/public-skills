@@ -8,8 +8,9 @@ Nuxt・Vue・VuetifyのSPA、API GatewayとLambdaのバックエンド、AWS CDK
 
 | テンプレート | 展開先と役割 |
 | --- | --- |
-| `project-template/` | Webアプリ全体のREADME、AI指示、Issueテンプレート、共通の規約・仕様・用語集、フロントエンド規約。 |
+| `project-template/` | Webアプリ全体のREADME、AI指示、Issueテンプレート、共通の規約・仕様・用語集、フロントエンド規約、AI駆動開発の運用（`docs/50_operation/AI駆動開発の運用/`）。 |
 | `service-template/` | `backend/<サービス名>/docs/`へサービスごとに配置する設計・仕様・手順のひな形。 |
+| `service-root-template/` | `backend/<サービス名>/`へサービスごとに配置する`AGENTS.md`・`CLAUDE.md`と、単体テストのレポートのスクリプト。サービスの技術スタックは、アプリ全体と異なってよく、`AGENTS.md`の「技術スタック」に、異なるものと、アプリ全体で決めていないものだけを書く。レポートのスクリプトは、`pytest`と`pytest-html`を開発用の依存に入れて使い（`uv add --dev pytest pytest-html`。サービスの「インストール手順」にも書く）、仕様書の名前からAPI IDを読む形（`_SPEC_ID_PATTERN`）を、プロジェクトのIDの付け方に合わせて直す。 |
 | 公開スキル | 画面規約と設計書の作成に必要なスキルは[必須スキルの導入](skills.md)に従って公開元から取得する。 |
 
 必要に応じて`docs/40_spec/requirements/`、`table-definition/`、`detailed-design/`、`nuxt/docs/60_design/`、`backend/`、`e2e/`、`infra/`を資料配置の計画として扱う。
@@ -51,3 +52,4 @@ Gitは空ディレクトリを管理しないため、実際の資料やファ�
 | webapp/nuxt/docs/20_rules/ | Nuxtの構成と画面規約。 | 実在しない共通部品や設定を実装済みと書かない。 |
 | docs/30_glossary/用語集.md | 用語と説明の管理方法。 | 現行の業務システム名、Lambda名と組織情報。 |
 | webapp/backend/master-maintenance/docs/ | サービスごとの資料構成。 | 組織図API、接続先、シークレット名と具体的なテーブル。 |
+| AI駆動開発の運用（README、運用フロー、図） | 役割、処理フロー、AIが守る決まり、利用ツール、スキル、ハーネスの種類。 | 課題管理（Backlogなど）からの着手のフロー、元プロジェクトのファイルサーバーのパス、プロジェクト固有のスキル。 |

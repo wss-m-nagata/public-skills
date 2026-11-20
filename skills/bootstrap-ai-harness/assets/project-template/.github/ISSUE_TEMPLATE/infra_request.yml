@@ -1,0 +1,39 @@
+# Revision History
+# <YYYY/MM/DD>: <会社の略称><氏名>: 新規作成。
+
+name: インフラ (infra)
+description: インフラ（CDK）構成に関する変更・対応
+title: "[infra] "
+labels:
+  - infra
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: 概要
+      description: どのようなインフラ変更・対応が必要か
+    validations:
+      required: true
+
+  - type: textarea
+    id: target
+    attributes:
+      label: 対象リソース・スタック
+      description: 対象の CDK のスタック名やAWSリソースを記載
+    validations:
+      required: false
+
+  - type: textarea
+    id: reason
+    attributes:
+      label: 変更理由
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: 補足（構成図・関連ドキュメント等）
+      description: "関連する資料があれば、リポジトリ内のファイルパス（例: docs/20_rules/リポジトリ規約.md）またはURLで記載"
+    validations:
+      required: false

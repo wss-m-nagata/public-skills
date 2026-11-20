@@ -1,0 +1,43 @@
+# Revision History
+# <YYYY/MM/DD>: <会社の略称><氏名>: 新規作成。
+
+name: 機能追加 (feature)
+description: 新機能・機能改善の提案
+title: "[feature] "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: background
+    attributes:
+      label: 背景・目的
+      description: なぜこの機能が必要か
+    validations:
+      required: true
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: 概要
+      description: 追加・変更したい機能の内容
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: 受け入れ条件
+      description: 完了とみなす条件を箇条書きで
+      placeholder: |
+        - [ ] ...
+        - [ ] ...
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: 補足・関連ドキュメント
+      description: "関連する資料があれば、リポジトリ内のファイルパス（例: docs/20_rules/リポジトリ規約.md）またはURLで記載"
+    validations:
+      required: false

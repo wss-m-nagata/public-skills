@@ -1,0 +1,7 @@
+# Revision History
+# <YYYY/MM/DD>: <会社の略称><氏名>: 新規作成。
+#
+# 規約へのリンクを案内する場合は、contact_links を追加する。
+# URLが誤っていると、GitHub上でIssueのひな形の選択画面が正しく表示されないため、実在するURLを書く。
+
+blank_issues_enabled: true

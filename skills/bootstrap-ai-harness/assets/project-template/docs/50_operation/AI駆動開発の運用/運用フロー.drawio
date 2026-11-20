@@ -1,0 +1,645 @@
+<mxfile host="65bd71144e" pages="3">
+    <diagram name="1.全体フロー" id="page1">
+        <mxGraphModel dx="1048" dy="273" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2220" pageHeight="860" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="c3" value="&lt;b&gt;AI駆動開発の全体フロー&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fontSize=24;" parent="1" vertex="1">
+                    <mxGeometry x="8" y="6" width="2184" height="36" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4" value="人が要件定義書・画面詳細設計書を作ります。生成AIが、それを読んで書類をつくります。人は、その書類を見て判断します。外部の担当者もレビューします。作業の記録は、チケットに残します。" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=14;fontColor=#444444;" parent="1" vertex="1">
+                    <mxGeometry x="8" y="44" width="2184" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="c5" value="AIが行う" style="rounded=1;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;fontSize=13;arcSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="8" y="78" width="132" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="c6" value="人が判断する" style="rounded=1;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=2;fontSize=13;arcSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="78" width="132" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="c7" value="外部が判断する" style="rounded=1;html=1;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=2;fontSize=13;arcSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="292" y="78" width="132" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="c8" value="" style="shape=document;html=1;boundedLbl=1;size=0.15;fillColor=#FFFFFF;strokeColor=#6C8EBF;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="434" y="76" width="44" height="32" as="geometry"/>
+                </mxCell>
+                <mxCell id="c9" value="AIがつくる書類" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="484" y="78" width="130" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="c10" value="" style="shape=document;html=1;boundedLbl=1;size=0.15;fillColor=#FFFFFF;strokeColor=#D79B00;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="624" y="76" width="44" height="32" as="geometry"/>
+                </mxCell>
+                <mxCell id="c11" value="人が用意した資料" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="674" y="78" width="130" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="c12" value="作業の記録（チケット）" style="rounded=0;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="814" y="78" width="180" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="c13" value="" style="rounded=0;html=1;fillColor=#EEF6EC;strokeColor=#B3B3B3;" parent="1" vertex="1">
+                    <mxGeometry y="118" width="2700" height="118" as="geometry"/>
+                </mxCell>
+                <mxCell id="c14" value="&lt;b&gt;外部の&lt;br&gt;レビュー担当者&lt;/b&gt;" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#D5E8D4;strokeColor=#B3B3B3;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry y="118" width="104" height="118" as="geometry"/>
+                </mxCell>
+                <mxCell id="c15" value="" style="rounded=0;html=1;fillColor=#FFF4E8;strokeColor=#B3B3B3;" parent="1" vertex="1">
+                    <mxGeometry y="236" width="2700" height="134" as="geometry"/>
+                </mxCell>
+                <mxCell id="c16" value="&lt;b&gt;開発担当者&lt;br&gt;（人）&lt;/b&gt;" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#FFE6CC;strokeColor=#B3B3B3;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry y="236" width="104" height="134" as="geometry"/>
+                </mxCell>
+                <mxCell id="c17" value="" style="rounded=0;html=1;fillColor=#F4F4F4;strokeColor=#B3B3B3;" parent="1" vertex="1">
+                    <mxGeometry y="370" width="2700" height="124" as="geometry"/>
+                </mxCell>
+                <mxCell id="c18" value="&lt;b&gt;書類&lt;br&gt;（読む資料・&lt;br&gt;つくるもの）&lt;/b&gt;" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#E6E6E6;strokeColor=#B3B3B3;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry y="370" width="104" height="124" as="geometry"/>
+                </mxCell>
+                <mxCell id="c19" value="" style="rounded=0;html=1;fillColor=#EAF1FB;strokeColor=#B3B3B3;" parent="1" vertex="1">
+                    <mxGeometry y="494" width="2700" height="134" as="geometry"/>
+                </mxCell>
+                <mxCell id="c20" value="&lt;b&gt;生成AI&lt;/b&gt;" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#DAE8FC;strokeColor=#B3B3B3;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry y="494" width="104" height="134" as="geometry"/>
+                </mxCell>
+                <mxCell id="c21" value="" style="rounded=0;html=1;fillColor=#FFF9E3;strokeColor=#B3B3B3;" parent="1" vertex="1">
+                    <mxGeometry y="628" width="2700" height="92" as="geometry"/>
+                </mxCell>
+                <mxCell id="c22" value="&lt;b&gt;作業の記録&lt;br&gt;（チケット）&lt;/b&gt;" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#FFF2CC;strokeColor=#B3B3B3;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry y="628" width="104" height="92" as="geometry"/>
+                </mxCell>
+                <mxCell id="A0" value="&lt;b&gt;設計書の案をつくる&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;読む：要件定義書・画面詳細設計書・WBS・スキル&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;fontSize=15;verticalAlign=middle;arcSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="322" y="503" width="188" height="116" as="geometry"/>
+                </mxCell>
+                <mxCell id="D0" value="&lt;b&gt;設計書（案）&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 12px; color: rgb(51, 51, 51);&quot;&gt;処理フロー図・API仕様書など&lt;/span&gt;" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;size=0.12;fillColor=#FFFFFF;strokeColor=#6C8EBF;strokeWidth=2;fontSize=13;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="322" y="380" width="188" height="104" as="geometry"/>
+                </mxCell>
+                <mxCell id="I0" value="&lt;b&gt;設計チケットを作り、経緯・進捗を記録&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="322" y="641" width="188" height="66" as="geometry"/>
+                </mxCell>
+                <mxCell id="H1" value="&lt;b&gt;案を確認して、外部に依頼する&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;判断：OK→レビュー用に置く&lt;br&gt;直す→AIに指示&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=2;fontSize=15;verticalAlign=middle;arcSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="530" y="245" width="188" height="116" as="geometry"/>
+                </mxCell>
+                <mxCell id="E2" value="&lt;b&gt;外部がレビューする&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 12px; color: rgb(51, 51, 51);&quot;&gt;見る：設計書（案）&lt;br&gt;判断：合意するか&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=2;fontSize=15;verticalAlign=middle;arcSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="738" y="119" width="188" height="116" as="geometry"/>
+                </mxCell>
+                <mxCell id="H3" value="&lt;b&gt;正式版に反映する&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;AI支援：反映スクリプト提供&lt;br&gt;実行は人&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=2;fontSize=15;verticalAlign=middle;arcSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="946" y="245" width="188" height="116" as="geometry"/>
+                </mxCell>
+                <mxCell id="A4" value="&lt;b&gt;プログラムとテスト仕様書をつくり、試験する&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;読む：正式版の設計書・ハーネス&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;fontSize=15;verticalAlign=middle;arcSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="1424" y="503" width="188" height="116" as="geometry"/>
+                </mxCell>
+                <mxCell id="D4" value="&lt;b&gt;プログラム・テスト仕様書・試験結果&lt;/b&gt;" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;size=0.12;fillColor=#FFFFFF;strokeColor=#6C8EBF;strokeWidth=2;fontSize=13;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="1424" y="380" width="188" height="104" as="geometry"/>
+                </mxCell>
+                <mxCell id="I4" value="&lt;b style=&quot;color: rgb(63, 63, 63); scrollbar-color: rgb(226, 226, 226) rgb(251, 251, 251);&quot;&gt;実装チケットを作り、経緯・進捗を記録&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="1424" y="641" width="188" height="66" as="geometry"/>
+                </mxCell>
+                <mxCell id="H5" value="&lt;b&gt;結果を確認し、開発環境に配備する&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;判断：OK→配備&lt;br&gt;直す→AIに指示&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=2;fontSize=15;verticalAlign=middle;arcSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="1632" y="245" width="188" height="116" as="geometry"/>
+                </mxCell>
+                <mxCell id="A6" value="&lt;b&gt;開発環境で試験し、設計書を実装に合わせて直す&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;読む：配備したプログラム・設計書&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;fontSize=15;verticalAlign=middle;arcSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="1840" y="503" width="188" height="116" as="geometry"/>
+                </mxCell>
+                <mxCell id="D6" value="&lt;b&gt;試験結果&lt;/b&gt;&lt;div&gt;&lt;b&gt;設計書（修正案）&lt;/b&gt;&lt;/div&gt;" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;size=0.12;fillColor=#FFFFFF;strokeColor=#6C8EBF;strokeWidth=2;fontSize=13;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="1840" y="380" width="188" height="104" as="geometry"/>
+                </mxCell>
+                <mxCell id="I6" value="&lt;b&gt;修正の経緯を記録&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="1840" y="641" width="188" height="66" as="geometry"/>
+                </mxCell>
+                <mxCell id="E7" value="&lt;b&gt;外部がレビューする&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 12px; color: rgb(51, 51, 51);&quot;&gt;見る：設計書（修正案）&lt;br&gt;判断：合意するか&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=2;fontSize=15;verticalAlign=middle;arcSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="2048" y="119" width="188" height="116" as="geometry"/>
+                </mxCell>
+                <mxCell id="H8" value="&lt;b&gt;正式版に反映し、取り込む&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;見る：試験結果&lt;br&gt;判断：OK→取り込み、チケットを閉じる&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=2;fontSize=15;verticalAlign=middle;arcSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="2256" y="245" width="188" height="116" as="geometry"/>
+                </mxCell>
+                <mxCell id="I8" value="&lt;b&gt;完了を記録&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="2256" y="641" width="188" height="66" as="geometry"/>
+                </mxCell>
+                <mxCell id="H00" value="&lt;b&gt;要件定義書・画面詳細設計書を作る&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;人が作る。AIの入力になる&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=2;fontSize=15;verticalAlign=middle;arcSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="114" y="245" width="188" height="116" as="geometry"/>
+                </mxCell>
+                <mxCell id="D00" value="&lt;b&gt;要件定義書・画面詳細設計書&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;人が作った資料&lt;/span&gt;" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;size=0.12;fillColor=#FFFFFF;strokeColor=#D79B00;strokeWidth=2;fontSize=13;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="114" y="380" width="188" height="104" as="geometry"/>
+                </mxCell>
+                <mxCell id="c23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;exitX=1;exitY=0.5;entryX=0;entryY=0.5;exitDx=0;exitDy=0;" parent="1" source="D00" target="A0" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="1" source="A0" target="H1" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="1" source="H1" target="E2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="1" source="E2" target="H3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;exitX=1;exitY=0.5;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="H3" target="2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="1" source="A4" target="H5" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="1" source="H5" target="A6" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="1" source="A6" target="E7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="1" source="E7" target="H8" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#6C8EBF;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" parent="1" source="A0" target="D0" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c33" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#6C8EBF;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" parent="1" source="A4" target="D4" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#6C8EBF;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" parent="1" source="A6" target="D6" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c35" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#D79B00;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="1" source="H00" target="D00" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c36" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;strokeWidth=2;dashed=1;strokeColor=#999999;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="1" source="A0" target="I0" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c37" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;strokeWidth=2;dashed=1;strokeColor=#999999;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="1" source="A4" target="I4" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c38" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;strokeWidth=2;dashed=1;strokeColor=#999999;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="1" source="A6" target="I6" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c39" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;strokeWidth=2;dashed=1;strokeColor=#999999;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="1" source="H8" target="I8" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c40" value="※ 設計書を直したときも、人が確認してレビュー用に置き、外部レビューを経て正式版に反映します（2枚目と同じ手順）。プッシュする前には、AIが全テスト・AIレビュー・規約チェックを流し、人が結果を確認します（3枚目）。" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#888888;dashed=1;fontSize=13;align=left;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry y="732" width="2200" height="48" as="geometry"/>
+                </mxCell>
+                <mxCell id="c41" value="用語：チケット＝作業の記録帳（GitHub Issue）／正式版＝設計書の正式な置き場所／スキル＝AIの作成マニュアル／ハーネス＝AIが守る開発ルール／取り込み＝PR（変更の提出）を経て、本体に反映すること" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=13;fontColor=#333333;" parent="1" vertex="1">
+                    <mxGeometry y="790" width="2200" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="2" value="&lt;b&gt;設計書（正式版）&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 12px; color: rgb(51, 51, 51);&quot;&gt;処理フロー図・API仕様書など&lt;/span&gt;" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;size=0.12;fillColor=#FFFFFF;strokeColor=#6C8EBF;strokeWidth=2;fontSize=13;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="1161" y="380" width="188" height="104" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;exitX=1;exitY=0.5;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitDx=0;exitDy=0;" parent="1" source="2" target="A4" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1144" y="313" as="sourcePoint"/>
+                        <mxPoint x="1171" y="442" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="4" value="&lt;b&gt;設計チケットを閉じる&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="946" y="641" width="188" height="66" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;strokeWidth=2;dashed=1;strokeColor=#999999;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="H3" target="4" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="426" y="629" as="sourcePoint"/>
+                        <mxPoint x="426" y="651" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="EIlxaIvaBmQJ2q-dTRqi-5" value="&lt;b&gt;設計書（正式版）&lt;/b&gt;" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;size=0.12;fillColor=#FFFFFF;strokeColor=#6C8EBF;strokeWidth=2;fontSize=13;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="2492" y="381" width="188" height="104" as="geometry"/>
+                </mxCell>
+                <mxCell id="EIlxaIvaBmQJ2q-dTRqi-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="H8" target="EIlxaIvaBmQJ2q-dTRqi-5" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="2479" y="310" as="sourcePoint"/>
+                        <mxPoint x="2506" y="439" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram name="2.設計工程" id="page2">
+        <mxGraphModel dx="1288" dy="402" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2282" pageHeight="880" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="c3" value="&lt;b&gt;設計工程のフロー&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fontSize=24;" parent="1" vertex="1">
+                    <mxGeometry x="8" y="6" width="1976" height="36" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4" value="生成AIが資料を読んで設計書の案をつくり、人が判断します。外部のレビュー担当者と合意してから、正式版に反映します。" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=14;fontColor=#444444;" parent="1" vertex="1">
+                    <mxGeometry x="8" y="44" width="1976" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="c5" value="AIが行う" style="rounded=1;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;fontSize=13;arcSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="8" y="78" width="132" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="c6" value="人が判断する" style="rounded=1;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=2;fontSize=13;arcSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="78" width="132" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="c7" value="外部が判断する" style="rounded=1;html=1;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=2;fontSize=13;arcSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="292" y="78" width="132" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="c8" value="" style="shape=document;html=1;boundedLbl=1;size=0.15;fillColor=#FFFFFF;strokeColor=#6C8EBF;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="434" y="76" width="44" height="32" as="geometry"/>
+                </mxCell>
+                <mxCell id="c9" value="AIがつくる書類" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="484" y="78" width="130" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="c10" value="" style="shape=document;html=1;boundedLbl=1;size=0.15;fillColor=#FFFFFF;strokeColor=#D79B00;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="624" y="76" width="44" height="32" as="geometry"/>
+                </mxCell>
+                <mxCell id="c11" value="人が用意した資料" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="674" y="78" width="130" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="c12" value="作業の記録（チケット）" style="rounded=0;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="814" y="78" width="180" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="c13" value="" style="rounded=0;html=1;fillColor=#EEF6EC;strokeColor=#B3B3B3;" parent="1" vertex="1">
+                    <mxGeometry y="118" width="2700" height="118" as="geometry"/>
+                </mxCell>
+                <mxCell id="c14" value="&lt;b&gt;外部の&lt;br&gt;レビュー担当者&lt;/b&gt;" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#D5E8D4;strokeColor=#B3B3B3;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry y="118" width="104" height="118" as="geometry"/>
+                </mxCell>
+                <mxCell id="c15" value="" style="rounded=0;html=1;fillColor=#FFF4E8;strokeColor=#B3B3B3;" parent="1" vertex="1">
+                    <mxGeometry y="236" width="2700" height="134" as="geometry"/>
+                </mxCell>
+                <mxCell id="c16" value="&lt;b&gt;開発担当者&lt;br&gt;（人）&lt;/b&gt;" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#FFE6CC;strokeColor=#B3B3B3;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry y="236" width="104" height="134" as="geometry"/>
+                </mxCell>
+                <mxCell id="c17" value="" style="rounded=0;html=1;fillColor=#F4F4F4;strokeColor=#B3B3B3;" parent="1" vertex="1">
+                    <mxGeometry y="370" width="2700" height="124" as="geometry"/>
+                </mxCell>
+                <mxCell id="c18" value="&lt;b&gt;書類&lt;br&gt;（読む資料・&lt;br&gt;つくるもの）&lt;/b&gt;" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#E6E6E6;strokeColor=#B3B3B3;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry y="370" width="104" height="124" as="geometry"/>
+                </mxCell>
+                <mxCell id="c19" value="" style="rounded=0;html=1;fillColor=#EAF1FB;strokeColor=#B3B3B3;" parent="1" vertex="1">
+                    <mxGeometry y="494" width="2700" height="212" as="geometry"/>
+                </mxCell>
+                <mxCell id="c20" value="&lt;b&gt;生成AI&lt;/b&gt;" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#DAE8FC;strokeColor=#B3B3B3;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry y="494" width="104" height="212" as="geometry"/>
+                </mxCell>
+                <mxCell id="c21" value="" style="rounded=0;html=1;fillColor=#FFF9E3;strokeColor=#B3B3B3;" parent="1" vertex="1">
+                    <mxGeometry y="706" width="2700" height="92" as="geometry"/>
+                </mxCell>
+                <mxCell id="c22" value="&lt;b&gt;作業の記録&lt;br&gt;（チケット）&lt;/b&gt;" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#FFF2CC;strokeColor=#B3B3B3;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry y="706" width="104" height="92" as="geometry"/>
+                </mxCell>
+                <mxCell id="H0" value="&lt;b&gt;設計する機能を決めて、資料を渡す&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;どの機能を設計するかを伝える&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=2;fontSize=15;verticalAlign=middle;arcSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="114" y="245" width="188" height="116" as="geometry"/>
+                </mxCell>
+                <mxCell id="D0" value="&lt;b&gt;要件定義書・画面詳細設計書・WBS・連携仕様&lt;/b&gt;" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;size=0.12;fillColor=#FFFFFF;strokeColor=#D79B00;strokeWidth=2;fontSize=13;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="114" y="380" width="188" height="104" as="geometry"/>
+                </mxCell>
+                <mxCell id="A1" value="&lt;b&gt;チケットを作る&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;読む：依頼の内容&lt;br&gt;作成前に人が確認&lt;/span&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#7B3F9E&#39;&gt;使用スキル：チケットの作成&lt;/span&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#2E7D32&#39;&gt;ルール（ハーネスのこと）：共通の指示書・Git運用規約&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;fontSize=15;verticalAlign=middle;arcSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="322" y="504" width="240" height="192" as="geometry"/>
+                </mxCell>
+                <mxCell id="D1" value="&lt;b&gt;設計用チケット&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;作業の記録帳&lt;/span&gt;" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;size=0.12;fillColor=#FFFFFF;strokeColor=#6C8EBF;strokeWidth=2;fontSize=13;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="322" y="380" width="188" height="104" as="geometry"/>
+                </mxCell>
+                <mxCell id="I1" value="&lt;b&gt;経緯の記録を始める&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="348" y="719" width="188" height="66" as="geometry"/>
+                </mxCell>
+                <mxCell id="A2" value="&lt;b&gt;設計書の案をつくる&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;読む：要件定義書・画面詳細設計書など&lt;/span&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#7B3F9E&#39;&gt;使用スキル：&lt;/span&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#7B3F9E&#39;&gt;・設計書の修正手順（全体）&lt;/span&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#7B3F9E&#39;&gt;・処理フロー図の作成&lt;/span&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#7B3F9E&#39;&gt;・API仕様書・テーブル定義書の作成&lt;/span&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#7B3F9E&#39;&gt;・ER図の作成&lt;/span&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#2E7D32&#39;&gt;ルール：共通の指示書・開発規約（DB）&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;fontSize=15;verticalAlign=middle;arcSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="583" y="504" width="240" height="192" as="geometry"/>
+                </mxCell>
+                <mxCell id="D2" value="&lt;b&gt;設計書の案&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;処理フロー図・API仕様書・ER図・テーブル定義書&lt;/span&gt;" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;size=0.12;fillColor=#FFFFFF;strokeColor=#6C8EBF;strokeWidth=2;fontSize=13;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="609" y="380" width="188" height="104" as="geometry"/>
+                </mxCell>
+                <mxCell id="I2" value="&lt;b&gt;検討経緯・判断理由を記録&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="610" y="719" width="188" height="66" as="geometry"/>
+                </mxCell>
+                <mxCell id="A3" value="&lt;b&gt;変更箇所一覧と確認資料をつくる&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;読む：設計書の案&lt;/span&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#7B3F9E&#39;&gt;使用スキル：変更箇所一覧・確認資料の作成&lt;/span&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#2E7D32&#39;&gt;ルール：共通の指示書&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;fontSize=15;verticalAlign=middle;arcSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="846" y="504" width="240" height="192" as="geometry"/>
+                </mxCell>
+                <mxCell id="D3" value="&lt;b&gt;変更箇所一覧・確認資料&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;何が変わるか／判断してほしい点&lt;/span&gt;" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;size=0.12;fillColor=#FFFFFF;strokeColor=#6C8EBF;strokeWidth=2;fontSize=13;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="871" y="380" width="188" height="104" as="geometry"/>
+                </mxCell>
+                <mxCell id="H4" value="&lt;b&gt;案をレビューして、判断する&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;見る：設計書の案・一覧&lt;br&gt;判断：OK→次へ／直す→AIに指示&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=2;fontSize=15;verticalAlign=middle;arcSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="1123" y="245" width="188" height="116" as="geometry"/>
+                </mxCell>
+                <mxCell id="H5" value="&lt;b&gt;レビュー用の場所に置き、外部に依頼する&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;AIは直接置けないため、人が実行&lt;/span&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#7B3F9E&#39;&gt;使用スキル：設計書の修正手順（配置用スクリプト）&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=2;fontSize=15;verticalAlign=middle;arcSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="1331" y="245" width="188" height="116" as="geometry"/>
+                </mxCell>
+                <mxCell id="E6" value="&lt;b&gt;外部がレビューする&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;見る：設計書・変更箇所一覧&lt;br&gt;判断：合意するか&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=2;fontSize=15;verticalAlign=middle;arcSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="1539" y="119" width="188" height="116" as="geometry"/>
+                </mxCell>
+                <mxCell id="H7" value="&lt;b&gt;正式版に反映する&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;AI支援：反映スクリプト提供&lt;br&gt;実行は人&lt;/span&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#7B3F9E&#39;&gt;使用スキル：設計書の修正手順（反映用スクリプト）&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=2;fontSize=15;verticalAlign=middle;arcSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="1747" y="245" width="188" height="116" as="geometry"/>
+                </mxCell>
+                <mxCell id="A8" value="&lt;b&gt;結果をチケットに記録する&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;読む：作業の結果・正式版の設計書&lt;/span&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#7B3F9E&#39;&gt;使用スキル：チケットの作成・更新&lt;/span&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#2E7D32&#39;&gt;ルール：共通の指示書&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;fontSize=15;verticalAlign=middle;arcSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="2225" y="504" width="240" height="192" as="geometry"/>
+                </mxCell>
+                <mxCell id="I8" value="&lt;b&gt;作業結果を記録&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="2253" y="719" width="188" height="66" as="geometry"/>
+                </mxCell>
+                <mxCell id="c23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="1" source="H0" target="A1" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="1" source="A1" target="A2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="1" source="A2" target="A3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;entryX=0;entryY=0.5;" parent="1" source="A3" target="H4" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1026" y="600" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="c27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="1" source="H4" target="H5" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="1" source="H5" target="E6" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="1" source="E6" target="H7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="H7" target="n2_doc" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#D79B00;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="1" source="H0" target="D0" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#6C8EBF;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" parent="1" source="A1" target="D1" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c33" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#6C8EBF;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" parent="1" source="A2" target="D2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#6C8EBF;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" parent="1" source="A3" target="D3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c35" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;strokeWidth=2;dashed=1;strokeColor=#999999;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="1" source="A1" target="I1" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c36" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;strokeWidth=2;dashed=1;strokeColor=#999999;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="1" source="A2" target="I2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c37" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;strokeWidth=2;dashed=1;strokeColor=#999999;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="1" source="A8" target="I8" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c38" value="用語：チケット＝作業の記録帳（GitHub Issue）／正式版＝設計書の正式な置き場所／スキル＝AIの作成マニュアル／ハーネス＝AIが守る開発ルール／取り込み＝PR（変更の提出）を経て、本体に反映すること／処理フロー図＝画面・処理・データのつながりを示す図／API仕様書＝システム間で何を送り何を返すかの取り決め／ER図・テーブル定義書＝データの入れ物の設計" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=13;fontColor=#333333;" parent="1" vertex="1">
+                    <mxGeometry y="810" width="2262" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="n2_doc" value="&lt;b&gt;設計書（正式版）&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 12px; color: rgb(51, 51, 51);&quot;&gt;処理フロー図・API仕様書など&lt;/span&gt;" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;size=0.12;fillColor=#FFFFFF;strokeColor=#6C8EBF;strokeWidth=2;fontSize=13;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="1962" y="380" width="188" height="104" as="geometry"/>
+                </mxCell>
+                <mxCell id="n2_doc_to_a8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="n2_doc" target="A8" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="lg_manual" value="&lt;b&gt;&lt;span style=&#39;color:#7B3F9E&#39;&gt;使用スキル&lt;/span&gt;&lt;/b&gt;＝AIの作成マニュアル" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="1010" y="78" width="300" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="lg_rule" value="&lt;b&gt;&lt;span style=&#39;color:#2E7D32&#39;&gt;ルール&lt;/span&gt;&lt;/b&gt;（ハーネス）＝AIが守る開発ルール" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="1320" y="78" width="300" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="o4gk0BcKaWCSpuKUF-U3-1" value="&lt;b&gt;作業結果を確認する&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px;color:#333333&quot;&gt;見る：チケット&lt;/span&gt;&lt;br&gt;&lt;div&gt;&lt;span style=&quot;font-size:12px;color:#333333&quot;&gt;判断：OK→次へ／直す→AIに指示&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=2;fontSize=15;verticalAlign=middle;arcSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="2491" y="244" width="188" height="116" as="geometry"/>
+                </mxCell>
+                <mxCell id="o4gk0BcKaWCSpuKUF-U3-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="A8" target="o4gk0BcKaWCSpuKUF-U3-1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="2371" y="600" as="sourcePoint"/>
+                        <mxPoint x="2406" y="768" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="o4gk0BcKaWCSpuKUF-U3-3" value="&lt;b&gt;チケットを閉じる&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="2490" y="719" width="188" height="66" as="geometry"/>
+                </mxCell>
+                <mxCell id="o4gk0BcKaWCSpuKUF-U3-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;strokeWidth=2;dashed=1;strokeColor=#999999;exitX=0.5;exitY=1;entryX=0.5;entryY=0;exitDx=0;exitDy=0;entryDx=0;entryDy=0;" parent="1" source="o4gk0BcKaWCSpuKUF-U3-1" target="o4gk0BcKaWCSpuKUF-U3-3" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="2401" y="740" as="sourcePoint"/>
+                        <mxPoint x="2401" y="763" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram name="3.開発・テスト工程" id="page3">
+        <mxGraphModel dx="1288" dy="402" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2508" pageHeight="938" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="c3" value="&lt;b&gt;開発・テスト工程のフロー&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fontSize=24;" parent="1" vertex="1">
+                    <mxGeometry x="8" y="6" width="2184" height="36" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4" value="生成AIが、正式版の設計書とハーネス（開発ルール）に従って、プログラムとテストをつくります。人が結果を確認してから、取り込みます。" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=14;fontColor=#444444;" parent="1" vertex="1">
+                    <mxGeometry x="8" y="44" width="2184" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="c5" value="AIが行う" style="rounded=1;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;fontSize=13;arcSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="8" y="78" width="132" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="c6" value="人が判断する" style="rounded=1;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=2;fontSize=13;arcSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="78" width="132" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="c7" value="外部が判断する" style="rounded=1;html=1;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=2;fontSize=13;arcSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="292" y="78" width="132" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="c8" value="" style="shape=document;html=1;boundedLbl=1;size=0.15;fillColor=#FFFFFF;strokeColor=#6C8EBF;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="434" y="76" width="44" height="32" as="geometry"/>
+                </mxCell>
+                <mxCell id="c9" value="AIがつくる書類" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="484" y="78" width="130" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="c10" value="" style="shape=document;html=1;boundedLbl=1;size=0.15;fillColor=#FFFFFF;strokeColor=#D79B00;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="624" y="76" width="44" height="32" as="geometry"/>
+                </mxCell>
+                <mxCell id="c11" value="人が用意した資料" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="674" y="78" width="130" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="c12" value="作業の記録（チケット）" style="rounded=0;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="814" y="78" width="180" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="c13" value="" style="rounded=0;html=1;fillColor=#EEF6EC;strokeColor=#B3B3B3;" parent="1" vertex="1">
+                    <mxGeometry y="118" width="3208" height="118" as="geometry"/>
+                </mxCell>
+                <mxCell id="c14" value="&lt;b&gt;外部の&lt;br&gt;レビュー担当者&lt;/b&gt;" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#D5E8D4;strokeColor=#B3B3B3;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry y="118" width="104" height="118" as="geometry"/>
+                </mxCell>
+                <mxCell id="c15" value="" style="rounded=0;html=1;fillColor=#FFF4E8;strokeColor=#B3B3B3;" parent="1" vertex="1">
+                    <mxGeometry y="236" width="3208" height="134" as="geometry"/>
+                </mxCell>
+                <mxCell id="c16" value="&lt;b&gt;開発担当者&lt;br&gt;（人）&lt;/b&gt;" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#FFE6CC;strokeColor=#B3B3B3;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry y="236" width="104" height="134" as="geometry"/>
+                </mxCell>
+                <mxCell id="c17" value="" style="rounded=0;html=1;fillColor=#F4F4F4;strokeColor=#B3B3B3;" parent="1" vertex="1">
+                    <mxGeometry y="370" width="3208" height="124" as="geometry"/>
+                </mxCell>
+                <mxCell id="c18" value="&lt;b&gt;書類&lt;br&gt;（読む資料・&lt;br&gt;つくるもの）&lt;/b&gt;" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#E6E6E6;strokeColor=#B3B3B3;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry y="370" width="104" height="124" as="geometry"/>
+                </mxCell>
+                <mxCell id="c19" value="" style="rounded=0;html=1;fillColor=#EAF1FB;strokeColor=#B3B3B3;" parent="1" vertex="1">
+                    <mxGeometry y="494" width="3208" height="212" as="geometry"/>
+                </mxCell>
+                <mxCell id="c20" value="&lt;b&gt;生成AI&lt;/b&gt;" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#DAE8FC;strokeColor=#B3B3B3;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry y="494" width="104" height="212" as="geometry"/>
+                </mxCell>
+                <mxCell id="c21" value="" style="rounded=0;html=1;fillColor=#FFF9E3;strokeColor=#B3B3B3;" parent="1" vertex="1">
+                    <mxGeometry y="706" width="3208" height="92" as="geometry"/>
+                </mxCell>
+                <mxCell id="c22" value="&lt;b&gt;作業の記録&lt;br&gt;（チケット）&lt;/b&gt;" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#FFF2CC;strokeColor=#B3B3B3;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry y="706" width="104" height="92" as="geometry"/>
+                </mxCell>
+                <mxCell id="A0" value="&lt;b&gt;チケットを作り、実装の方針を整理する&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;読む：正式版の設計書&lt;br&gt;作成前に人が確認&lt;/span&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#7B3F9E&#39;&gt;使用スキル：チケットの作成&lt;/span&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#2E7D32&#39;&gt;ルール（ハーネスのこと）：共通の指示書・サービス別の指示書・開発規約・Git運用規約&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;fontSize=15;verticalAlign=middle;arcSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="384" y="504" width="188" height="192" as="geometry"/>
+                </mxCell>
+                <mxCell id="D0" value="&lt;b&gt;開発用チケット・実装方針案&lt;/b&gt;" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;size=0.12;fillColor=#FFFFFF;strokeColor=#6C8EBF;strokeWidth=2;fontSize=13;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="384" y="380" width="188" height="104" as="geometry"/>
+                </mxCell>
+                <mxCell id="I0" value="&lt;b&gt;開発用チケットを作る&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="384" y="719" width="188" height="66" as="geometry"/>
+                </mxCell>
+                <mxCell id="H1" value="&lt;b&gt;方針を決める&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;見る：実装方針案&lt;br&gt;判断：方針・未決事項&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=2;fontSize=15;verticalAlign=middle;arcSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="592" y="245" width="188" height="116" as="geometry"/>
+                </mxCell>
+                <mxCell id="A2" value="&lt;b&gt;プログラムをつくる&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;読む：設計書&lt;/span&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#7B3F9E&#39;&gt;使用スキル：なし&lt;/span&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#2E7D32&#39;&gt;ルール：共通の指示書・サービス別の指示書・開発規約・自動整形&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;fontSize=15;verticalAlign=middle;arcSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="800" y="504" width="188" height="192" as="geometry"/>
+                </mxCell>
+                <mxCell id="D2" value="&lt;b&gt;プログラム&lt;/b&gt;" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;size=0.12;fillColor=#FFFFFF;strokeColor=#6C8EBF;strokeWidth=2;fontSize=13;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="800" y="380" width="188" height="104" as="geometry"/>
+                </mxCell>
+                <mxCell id="I2" value="&lt;b&gt;進捗を書き戻す&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="800" y="719" width="188" height="66" as="geometry"/>
+                </mxCell>
+                <mxCell id="A3" value="&lt;b&gt;テスト仕様書をつくり、試験する&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;読む：プログラム・設計書&lt;/span&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#7B3F9E&#39;&gt;使用スキル：単体テスト仕様書の作成&lt;/span&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#2E7D32&#39;&gt;ルール：共通の指示書・テスト規約&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;fontSize=15;verticalAlign=middle;arcSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="1008" y="504" width="188" height="192" as="geometry"/>
+                </mxCell>
+                <mxCell id="D3" value="&lt;b&gt;単体テスト仕様書・試験結果&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;実装が終わってから作る&lt;/span&gt;" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;size=0.12;fillColor=#FFFFFF;strokeColor=#6C8EBF;strokeWidth=2;fontSize=13;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="1008" y="380" width="188" height="104" as="geometry"/>
+                </mxCell>
+                <mxCell id="I3" value="&lt;b&gt;試験結果を記録&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="1008" y="719" width="188" height="66" as="geometry"/>
+                </mxCell>
+                <mxCell id="H4" value="&lt;b&gt;結果を確認し、開発環境に配備する&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;判断：OK→配備&lt;br&gt;直す→AIに指示&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=2;fontSize=15;verticalAlign=middle;arcSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="1424" y="245" width="188" height="116" as="geometry"/>
+                </mxCell>
+                <mxCell id="A5" value="&lt;b&gt;開発環境で試験する&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;読む：配備したプログラム&lt;/span&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#7B3F9E&#39;&gt;使用スキル：自動試験の作成&lt;/span&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#2E7D32&#39;&gt;ルール：共通の指示書・テスト規約&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;fontSize=15;verticalAlign=middle;arcSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="1632" y="504" width="188" height="192" as="geometry"/>
+                </mxCell>
+                <mxCell id="D5" value="&lt;b&gt;開発環境の試験結果&lt;/b&gt;" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;size=0.12;fillColor=#FFFFFF;strokeColor=#6C8EBF;strokeWidth=2;fontSize=13;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="1632" y="380" width="188" height="104" as="geometry"/>
+                </mxCell>
+                <mxCell id="A6" value="&lt;b&gt;設計書を直す&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;読む：実装で決めたこと・設計書&lt;/span&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#7B3F9E&#39;&gt;使用スキル：設計書の修正手順&lt;/span&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#2E7D32&#39;&gt;ルール：共通の指示書・Git運用規約&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;fontSize=15;verticalAlign=middle;arcSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="1840" y="504" width="188" height="192" as="geometry"/>
+                </mxCell>
+                <mxCell id="D6" value="&lt;b&gt;設計書の修正案&lt;/b&gt;" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;size=0.12;fillColor=#FFFFFF;strokeColor=#6C8EBF;strokeWidth=2;fontSize=13;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="1840" y="380" width="188" height="104" as="geometry"/>
+                </mxCell>
+                <mxCell id="I6" value="&lt;b&gt;修正の経緯を記録&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="1840" y="719" width="188" height="66" as="geometry"/>
+                </mxCell>
+                <mxCell id="E7" value="&lt;b&gt;外部がレビューする&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;見る：設計書の修正案&lt;br&gt;判断：合意するか&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=2;fontSize=15;verticalAlign=middle;arcSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="2048" y="119" width="188" height="116" as="geometry"/>
+                </mxCell>
+                <mxCell id="H8" value="&lt;b&gt;正式版に反映し、取り込む&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;scrollbar-color: rgb(226, 226, 226) rgb(251, 251, 251); font-size: 12px; color: rgb(51, 51, 51);&quot;&gt;AI支援：反映スクリプト提供&lt;br style=&quot;color: rgb(63, 63, 63); scrollbar-color: rgb(226, 226, 226) rgb(251, 251, 251);&quot;&gt;実行は人&lt;/span&gt;&lt;br style=&quot;color: rgb(63, 63, 63); scrollbar-color: rgb(226, 226, 226) rgb(251, 251, 251);&quot;&gt;&lt;span style=&quot;scrollbar-color: rgb(226, 226, 226) rgb(251, 251, 251); font-size: 12px; color: rgb(123, 63, 158);&quot;&gt;&lt;font style=&quot;color: rgb(123, 63, 158);&quot;&gt;使用スキル：設計書の修正手順（反映用スクリプト）&lt;/font&gt;&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=2;fontSize=15;verticalAlign=middle;arcSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="2256" y="245" width="188" height="116" as="geometry"/>
+                </mxCell>
+                <mxCell id="A3b" value="&lt;b&gt;プッシュ前の確認を流す&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;読む：コミットした変更・規約&lt;/span&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#7B3F9E&#39;&gt;使用スキル：プッシュ前の確認&lt;/span&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#2E7D32&#39;&gt;ルール：共通の指示書・開発規約・テスト規約&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;fontSize=15;verticalAlign=middle;arcSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="1216" y="504" width="188" height="192" as="geometry"/>
+                </mxCell>
+                <mxCell id="D3b" value="&lt;b&gt;確認結果の表&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;全テスト＋AIレビュー＋規約チェック&lt;/span&gt;" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;size=0.12;fillColor=#FFFFFF;strokeColor=#6C8EBF;strokeWidth=2;fontSize=13;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="1216" y="380" width="188" height="104" as="geometry"/>
+                </mxCell>
+                <mxCell id="c26a" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="1" source="A3" target="A3b" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c33a" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#6C8EBF;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" parent="1" source="A3b" target="D3b" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="1" source="A0" target="H1" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="1" source="H1" target="A2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="1" source="A2" target="A3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="1" source="A3b" target="H4" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="1" source="H4" target="A5" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="1" source="A5" target="A6" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="1" source="A6" target="E7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="1" source="E7" target="H8" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#6C8EBF;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" parent="1" source="A0" target="D0" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#6C8EBF;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" parent="1" source="A2" target="D2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c33" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#6C8EBF;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" parent="1" source="A3" target="D3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#6C8EBF;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" parent="1" source="A5" target="D5" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c35" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#6C8EBF;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" parent="1" source="A6" target="D6" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c36" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;strokeWidth=2;dashed=1;strokeColor=#999999;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="1" source="A0" target="I0" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c37" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;strokeWidth=2;dashed=1;strokeColor=#999999;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="1" source="A2" target="I2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c38" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;strokeWidth=2;dashed=1;strokeColor=#999999;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="1" source="A3" target="I3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c39" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;strokeWidth=2;dashed=1;strokeColor=#999999;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="1" source="A6" target="I6" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c41" value="※ 設計書を直したときは、人が確認してレビュー用に置き、外部レビューを経て正式版に反映します（2枚目と同じ手順）。" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#888888;dashed=1;fontSize=13;align=left;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry y="810" width="2488" height="48" as="geometry"/>
+                </mxCell>
+                <mxCell id="c42" value="用語：チケット＝作業の記録帳（GitHub Issue）／正式版＝設計書の正式な置き場所／スキル＝AIの作成マニュアル／ハーネス＝AIが守る開発ルール／取り込み＝PR（変更の提出）を経て、本体に反映すること" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=13;fontColor=#333333;" parent="1" vertex="1">
+                    <mxGeometry y="868" width="2488" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="n3_doc_in" value="&lt;b&gt;設計書（正式版）&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 12px; color: rgb(51, 51, 51);&quot;&gt;設計工程でできたもの&lt;/span&gt;" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;size=0.12;fillColor=#FFFFFF;strokeColor=#6C8EBF;strokeWidth=2;fontSize=13;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="114" y="380" width="188" height="104" as="geometry"/>
+                </mxCell>
+                <mxCell id="n3_doc_in_edge" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="n3_doc_in" target="A0" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="n3_doc_out" value="&lt;b&gt;設計書（正式版）&lt;/b&gt;" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;size=0.12;fillColor=#FFFFFF;strokeColor=#6C8EBF;strokeWidth=2;fontSize=13;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="2492" y="380" width="188" height="104" as="geometry"/>
+                </mxCell>
+                <mxCell id="n3_doc_out_edge" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="H8" target="n3_doc_out" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="lg_manual" value="&lt;b&gt;&lt;span style=&#39;color:#7B3F9E&#39;&gt;使用スキル&lt;/span&gt;&lt;/b&gt;＝AIの作成マニュアル" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="1010" y="78" width="300" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="lg_rule" value="&lt;b&gt;&lt;span style=&#39;color:#2E7D32&#39;&gt;ルール&lt;/span&gt;&lt;/b&gt;（ハーネス）＝AIが守る開発ルール" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="1320" y="78" width="300" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="fbL6PiDO4tU4wcPhmaXC-1" value="&lt;b&gt;結果をチケットに記録する&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#333333&#39;&gt;読む：作業の結果・正式版の設計書&lt;/span&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#7B3F9E&#39;&gt;使用スキル：チケットの作成・更新&lt;/span&gt;&lt;br&gt;&lt;span style=&#39;font-size:12px;color:#2E7D32&#39;&gt;ルール：共通の指示書&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;fontSize=15;verticalAlign=middle;arcSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="2744" y="506" width="240" height="192" as="geometry"/>
+                </mxCell>
+                <mxCell id="fbL6PiDO4tU4wcPhmaXC-2" value="&lt;b&gt;作業結果を記録&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="2770" y="721" width="188" height="66" as="geometry"/>
+                </mxCell>
+                <mxCell id="fbL6PiDO4tU4wcPhmaXC-3" style="rounded=0;html=1;endArrow=open;strokeWidth=2;dashed=1;strokeColor=#999999;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="1" source="fbL6PiDO4tU4wcPhmaXC-1" target="fbL6PiDO4tU4wcPhmaXC-2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="fbL6PiDO4tU4wcPhmaXC-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="n3_doc_out" target="fbL6PiDO4tU4wcPhmaXC-1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="2678" y="430" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="fbL6PiDO4tU4wcPhmaXC-5" value="&lt;b&gt;作業結果を確認する&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px;color:#333333&quot;&gt;見る：チケット&lt;/span&gt;&lt;br&gt;&lt;div&gt;&lt;span style=&quot;font-size:12px;color:#333333&quot;&gt;判断：OK→次へ／直す→AIに指示&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=2;fontSize=15;verticalAlign=middle;arcSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="3010" y="246" width="188" height="116" as="geometry"/>
+                </mxCell>
+                <mxCell id="fbL6PiDO4tU4wcPhmaXC-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#333333;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="fbL6PiDO4tU4wcPhmaXC-1" target="fbL6PiDO4tU4wcPhmaXC-5" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="2890" y="602" as="sourcePoint"/>
+                        <mxPoint x="2925" y="770" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="fbL6PiDO4tU4wcPhmaXC-7" value="&lt;b&gt;チケットを閉じる&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="3009" y="721" width="188" height="66" as="geometry"/>
+                </mxCell>
+                <mxCell id="fbL6PiDO4tU4wcPhmaXC-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;strokeWidth=2;dashed=1;strokeColor=#999999;exitX=0.5;exitY=1;entryX=0.5;entryY=0;exitDx=0;exitDy=0;entryDx=0;entryDy=0;" parent="1" source="fbL6PiDO4tU4wcPhmaXC-5" target="fbL6PiDO4tU4wcPhmaXC-7" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="2920" y="742" as="sourcePoint"/>
+                        <mxPoint x="2920" y="765" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

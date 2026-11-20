@@ -44,6 +44,7 @@
        {"name": "顧客ID", "id": "customerId", "type": "半角英数字",
         "size": "7", "required": "○", "multi": "1",
         "note": "", "sample": "\\"1000123\\"",
+        "default": "",                          # 省略時の値。省略可。備考に省略時の値を書いたら同じ値を書く
         "changed": true}                        # 省略可(既定false)。trueにすると
                                                   #   その項目行(No.〜備考)の文字色を赤にする。
                                                   #   新設計へのレビュー時に変更箇所を
@@ -415,6 +416,12 @@ def build_mapping(d, sheet_name):
                     cells["%s%d" % (ITEM_COLS[k], r)] = v
             if it.get("note"):
                 cells["%s%d" % (ITEM_COLS["note"], r)] = it["note"]
+            # デフォルト値（省略時の値）。数値は数値のまま、文字列は文字列のまま書く
+            if it.get("default") not in (None, ""):
+                cells["%s%d" % (ITEM_COLS["default"], r)] = it["default"]
+            elif any(w in str(it.get("note", "")) for w in ("省略時", "既定", "デフォルト", "初期値")):
+                # 備考に省略時の値を書いたのに、デフォルト値の列が空のとき
+                print("警告: 項目「%s」の備考に省略時の値らしき記載があるが、default が空です。" % it["name"], file=sys.stderr)
 
     # データ構成サンプルは必ず書く。1行につき1セル（セル内改行は表示されないため）
     first = SAMPLE_LABEL_ROW + total + 1
