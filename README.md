@@ -1,115 +1,106 @@
-# public-skills
+# AI Agent Skills for Internal Business Apps
 
-公開用の AI エージェント向けスキルを管理するリポジトリです。
-各スキルの対象環境や利用条件は、リンク先の `SKILL.md` を参照してください。
+[日本語版](README.ja.md)
 
-`gh skill publish` で各スキルを公開します。
+Public, reusable skills for building internal business applications with generative AI. Use them with coding agents such as Claude Code and Codex to set up a new web app, turn requirements into screen and API designs, document data flows, and verify changes before release.
 
-## 収録スキル
+Start with [bootstrap-ai-harness](skills/bootstrap-ai-harness/SKILL.md) for a new app, or install individual skills for your existing workflow. The bootstrap skill supports a stack based on Nuxt, Vue, Vuetify, Python APIs, AWS CDK, and Playwright. Each skill's `SKILL.md` explains its requirements and how to use it.
 
-| スキル | 概要 |
+## Available skills
+
+| Skill | What it does |
 | --- | --- |
-| [a5er-editor](skills/a5er-editor/SKILL.md) | A5:SQL Mk-2のER図ファイル（`.a5er`）を解析・編集・新規生成する。テーブル・カラム、PK/FK、インデックス、論理名、リレーションなどを、仕様に沿って安全に更新する。 |
-| [ai-development-assessment](skills/ai-development-assessment/SKILL.md) | プロジェクトのAI駆動開発の実践状況を「AI駆動開発 実践力カタログ」評価基準に基づいて確認・採点し、Excelへ出力する。 |
-| [bootstrap-ai-harness](skills/bootstrap-ai-harness/SKILL.md) | Nuxt・Vue・Vuetify、Python API、AWS CDK、Playwrightを前提とする新規Webアプリ向けに、AI開発用の資料・指示・スキルの配置と運用を整える。 |
-| [create-github-issue](skills/create-github-issue/SKILL.md) | GitHub Issue を、リポジトリの Issue テンプレートから作り、作業用のブランチを用意する。作成後の進捗コメントや引き継ぎも扱う。 |
-| [dev-document-writing](skills/dev-document-writing/SKILL.md) | ドキュメントの種別（規約・仕様書・設計書・手順書・案内・タスク・課題管理・ソースコード・AI向け指示）ごとに、何を書き、何を書かないかを定める。README.md と AGENTS.md の書き方も扱う。 |
-| [data-flow-volume](skills/data-flow-volume/SKILL.md) | 設計資料を基にデータの流れとテーブル別の想定件数、更新頻度、保持期間などを整理し、Excelにまとめる。 |
-| [design-doc-revision](skills/design-doc-revision/SKILL.md) | 共有の場所の設計書を課題に合わせて直し、変更箇所一覧・確認資料を作り、レビューを経て正本へ反映するまでの手順を行う。 |
-| [feature-er-diagram-drawio](skills/feature-er-diagram-drawio/SKILL.md) | 処理フロー図の1まとまりが使うテーブルだけを載せた、機能別のER図（draw.io）を作成・更新・検査する。 |
-| [genai-knowledge-comic](skills/genai-knowledge-comic/SKILL.md) | 生成AIの活用・導入・不活用リスクなどを説明する、複数ページのナレッジコミックを作成する。コミックの生成には別途 `baoyu-comic` スキルを使用する。 |
-| [generate-screen-design-rules](skills/generate-screen-design-rules/SKILL.md) | プロジェクト向けの画面設計ルールを作成・更新し、デザイン原則や参照資料を基に画面の共通ルールを整理する。 |
-| [nablarch-basic-design-excel](skills/nablarch-basic-design-excel/SKILL.md) | Nablarch開発標準のバックエンド基本設計書と単体テスト仕様書のExcelを作成・更新する。 |
-| [nablarch-frontend-design-excel](skills/nablarch-frontend-design-excel/SKILL.md) | Nablarch開発標準の画面設計書や単体テスト仕様書のExcelを、SPA向けに読み替えて作成・更新する。 |
-| [pre-push-check](skills/pre-push-check/SKILL.md) | プッシュする前に、変わった領域ごとに、全テスト・AIレビュー・規約チェックを行い、結果を報告する。 |
-| [process-flow-diagram](skills/process-flow-diagram/SKILL.md) | 画面・バックエンド処理・テーブルやファイルの関係を示す処理フロー図を、draw.io形式で作成・更新・確認する。 |
-| [prompt-8-plus-1](skills/prompt-8-plus-1/SKILL.md) | 8+1の公式を用いて、再利用可能なプロンプトを設計・改善・レビューする。 |
+| [a5er-editor](skills/a5er-editor/SKILL.md) | Read, edit, and generate A5:SQL Mk-2 ER diagrams (`.a5er`), including tables, columns, keys, indexes, logical names, and relationships. |
+| [ai-development-assessment](skills/ai-development-assessment/SKILL.md) | Assess a project's AI-assisted development practices against a rubric and export the results to Excel. |
+| [bootstrap-ai-harness](skills/bootstrap-ai-harness/SKILL.md) | Set up project documentation, agent instructions, and skills for a new web app. |
+| [create-github-issue](skills/create-github-issue/SKILL.md) | Create GitHub issues from repository templates, prepare working branches, and document progress and handoffs. |
+| [dev-document-writing](skills/dev-document-writing/SKILL.md) | Define what belongs in standards, specifications, designs, procedures, and other project documents, including README and AGENTS.md files. |
+| [data-flow-volume](skills/data-flow-volume/SKILL.md) | Turn design inputs into an Excel summary of data flows, estimated record counts, update frequencies, and retention periods. |
+| [design-doc-revision](skills/design-doc-revision/SKILL.md) | Revise shared design documents, prepare change summaries and review materials, and apply reviewed changes to the authoritative copy. |
+| [feature-er-diagram-drawio](skills/feature-er-diagram-drawio/SKILL.md) | Create, update, and validate feature-level draw.io ER diagrams for the tables used by a process. |
+| [genai-knowledge-comic](skills/genai-knowledge-comic/SKILL.md) | Explain generative AI use cases, adoption, and the risks of non-adoption in a multi-page comic. Requires the separate `baoyu-comic` skill to generate the comic. |
+| [generate-screen-design-rules](skills/generate-screen-design-rules/SKILL.md) | Create project-specific UI design rules using design principles and reference material. |
+| [nablarch-basic-design-excel](skills/nablarch-basic-design-excel/SKILL.md) | Create and update Nablarch-style backend design documents and unit test specifications in Excel. |
+| [nablarch-frontend-design-excel](skills/nablarch-frontend-design-excel/SKILL.md) | Create and update Nablarch-style screen designs and unit test specifications for single-page applications in Excel. |
+| [pre-push-check](skills/pre-push-check/SKILL.md) | Run tests, AI review, and standards checks for the areas you changed before pushing. |
+| [process-flow-diagram](skills/process-flow-diagram/SKILL.md) | Create, update, and validate draw.io diagrams showing how screens, backend processes, tables, and files relate. |
+| [prompt-8-plus-1](skills/prompt-8-plus-1/SKILL.md) | Design, refine, and review reusable prompts using the 8+1 formula. |
 
-## skills CLI でのインストール
+## Install with the skills CLI
 
-Node.js と npm が利用できる環境で、インストール先のプロジェクトから実行します。
-エージェントやスキルは対話形式で選択できます。
+From your target project, run the following with Node.js and npm available. The CLI lets you choose skills and agents interactively.
 
 ```bash
 npx skills add wss-m-nagata/public-skills
 
-# スキルを指定する例
+# Install one skill
 npx skills add wss-m-nagata/public-skills --skill prompt-8-plus-1
 
-# Claude Code または Codex のプロジェクトにインストールする例
+# Install one skill for Claude Code or Codex
 npx skills add wss-m-nagata/public-skills --skill prompt-8-plus-1 --agent claude-code
 npx skills add wss-m-nagata/public-skills --skill prompt-8-plus-1 --agent codex
 ```
 
-GitHub 上の公開済み内容がインストールされます。
-各スキルの実行環境や外部依存は、インストール後に `SKILL.md` を確認してください。
+These commands install the version available on GitHub. Check the installed `SKILL.md` for runtime requirements and external dependencies.
 
-## gh-skill でのインストール方法
+## Install with gh-skill
 
-`gh` の [`gh-skill`](https://github.com/github/gh-skill) 拡張を使って、`gh skill install` でインストールします。
+Use the [gh-skill](https://github.com/github/gh-skill) extension for GitHub CLI.
 
-```
-# 対話式でスキルを選択してインストール
+```bash
+# Choose skills interactively
 gh skill install wss-m-nagata/public-skills
 
-# スキルを指定してインストール（例: ai-development-assessment）
+# Install one skill
 gh skill install wss-m-nagata/public-skills ai-development-assessment
 
-# バージョンを指定してインストール
+# Pin a version
 gh skill install wss-m-nagata/public-skills ai-development-assessment --pin v1.0.0
 
-# すべてのスキルをまとめてインストール
+# Install all skills
 gh skill install wss-m-nagata/public-skills --all
 ```
 
-`--agent` でインストール先のエージェント（例: `claude-code`）、`--scope` でインストール範囲（`project` または `user`）を指定できます。
+Use `--agent` to select the agent and `--scope` to choose the installation scope (`project` or `user`).
 
-```
+```bash
 gh skill install wss-m-nagata/public-skills ai-development-assessment --agent claude-code --scope project
 ```
 
-## スキルの更新方法
-
-`gh skill update` でインストール済みのスキルを更新できます。
+## Update installed skills
 
 ```bash
-# 更新可能なスキルを確認（更新はしない）
+# Preview available updates
 gh skill update --dry-run
 
-# 対話式で更新するスキルを確認して更新
+# Choose skills to update interactively
 gh skill update
 
-# スキルを指定して更新（例: ai-development-assessment）
+# Update one skill
 gh skill update ai-development-assessment
 
-# インストール済みのすべてのスキルを更新（確認なし）
+# Update all installed skills without prompting
 gh skill update --all
 ```
 
-※ `--pin` でバージョンを固定したスキルは通常の更新対象から除外されます。
+Skills pinned with `--pin` are excluded from regular updates.
 
+## Repository layout
 
-## 構成
-
-```
-skills/<スキル名>/
-├── SKILL.md      # スキル定義（name / description / 手順）
-├── scripts/      # 補助スクリプト
-├── references/   # 評価基準などの参照データ
-└── assets/       # テンプレート等の静的ファイル
-```
-
-## 公開方法
-
-```
-gh skill publish
+```text
+skills/<skill-name>/
+├── SKILL.md      # Skill name, description, and instructions
+├── scripts/      # Helper scripts
+├── references/   # Supporting reference material
+└── assets/       # Templates and other resources
 ```
 
-## ライセンス
+## Publishing
 
-このリポジトリのスキルは、MIT ライセンスで公開しています（リポジトリ直下の `LICENSE`）。
-スキルを1つだけインストールしても、ライセンスが付くように、各スキルのディレクトリにも `LICENSE` を置いています。
+Skills are published with `gh skill publish`.
 
-一部のスキルには、第三者の資料（IBM Carbon Design System、デジタル庁デザインシステム、Nablarch開発標準のテンプレートなど）が含まれています。
-それらは、提供元のライセンスに従います。
-該当するスキルの `THIRD_PARTY_NOTICES.md` を参照してください。
+## License
+
+The skills in this repository are released under the [MIT License](LICENSE). Each skill directory includes a license so it accompanies an individual installation.
+
+Some skills include third-party material from sources such as IBM Carbon Design System, Japan's Digital Agency Design System, and the Nablarch development standards. Those materials follow their respective licenses. See the relevant skill's `THIRD_PARTY_NOTICES.md` for details.

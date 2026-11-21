@@ -16,7 +16,10 @@ Playwrightの一般的な書き方は、[Playwright公式ドキュメント](htt
 
 ディレクトリ構成の全体は、[README.md](../../README.md)を参照する。
 
-- E2Eテストは`e2e/tests/`に置く。
+- 画面のE2Eテストコードは`e2e/tests/<機能名>/`に置く。
+  商品管理の例では`e2e/tests/product-catalog/`に置く。
+- DBに投入する試験データは`e2e/tests/data/<画面ID>_<データNo>_<名称>/`に置く。
+  SQLと投入・後片付けの決まりは、[テスト規約](テスト規約.md)の「テストデータとテストの接続先」に従う。
 - Playwrightの設定ファイルは、`e2e/`の直下に置く。  
   通常の実行用は`playwright.config.ts`、証跡の取得用は`playwright.evidence.config.ts`とする。
 - テストが増えて重複が出てきたら、次のディレクトリを作って切り出す。
@@ -30,18 +33,21 @@ Playwrightの一般的な書き方は、[Playwright公式ドキュメント](htt
 
 ### ファイル名
 
-- E2Eテストのファイルは、`<機能名>.spec.ts`とする（例: `products.spec.ts`）。
+- E2Eテストのファイルは、`<テスト対象>.spec.ts`とする（例: `products.spec.ts`）。
 
 ### テスト名
 
 - 日本語で書く。  
   チーム内でレポートをそのまま共有し、内容を確認しやすくするためである。
-- 「何をしたら、どうなるか」が分かる文にする。
+- 単体テスト仕様書のケースNo.を先頭に置き、`ケースNo.<番号>　<テスト概要>`の形式にする。
+  概要は、操作と結果が分かる文にする。
+  条件マトリックスを使う場合も対応するケースNo.を先頭に置き、概要の後に表番号と条件No.を記載する。
+  ケースの一部を確認する場合は、名前に「一部」と記載する。
 
 ```typescript
 test.describe("商品一覧画面", () => {
-  test("商品一覧が表示される", async ({ page }) => { /* ... */ });
-  test("商品コードで検索すると該当する商品が表示される", async ({ page }) => { /* ... */ });
+  test("ケースNo.1　商品一覧が表示される", async ({ page }) => { /* ... */ });
+  test("ケースNo.2　商品コードで検索すると該当する商品が表示される（条件マトリックスC01 条件No.1）", async ({ page }) => { /* ... */ });
 });
 ```
 
@@ -217,7 +223,7 @@ E2Eテストの実行結果は、レポートをエビデンスとして扱う�
 | --- | --- | --- |
 | 前提 | `annotation` | テスト名の下に「種別：説明」で表示される |
 | 操作 | `test.step("操作N：〜")` | ステップの一覧として表示される |
-| 期待結果 | `test.step("期待結果：〜")` と`expect` | ステップの一覧として表示される。<br/>失敗したステップは赤く表示される |
+| 想定結果 | `test.step("想定結果：〜")` と`expect` | ステップの一覧として表示される。<br/>失敗したステップは赤く表示される |
 
 ### 書き方
 
@@ -226,7 +232,7 @@ import { expect, test } from "@playwright/test";
 
 test.describe("商品一覧画面", () => {
   test(
-    "商品コードで検索すると該当する商品が表示される",
+    "ケースNo.2　商品コードで検索すると該当する商品が表示される",
     {
       annotation: [
         { type: "前提", description: "テスト専用のユーザーでログインしていること" },
@@ -242,8 +248,15 @@ test.describe("商品一覧画面", () => {
         });
       });
 
-      await test.step("操作2：商品コードに「P001」を入力して「検索」をクリックする", async (step) => {
+      await test.step("操作2：商品コードに「P001」を入力する", async (step) => {
         await page.getByTestId("product-code").fill("P001");
+        await step.attach(step.titlePath.at(-1)!, {
+          body: await page.screenshot({ fullPage: true }),
+          contentType: "image/png",
+        });
+      });
+
+      await test.step("操作3：「検索」をクリックする", async (step) => {
         await page.getByTestId("search-button").click();
         await step.attach(step.titlePath.at(-1)!, {
           body: await page.screenshot({ fullPage: true }),
@@ -251,8 +264,28 @@ test.describe("商品一覧画面", () => {
         });
       });
 
-      await test.step("期待結果：該当する商品の一覧が表示される", async () => {
+      await test.step("想定結果：該当する商品の一覧が表示される", async (step) => {
         await expect(page.getByTestId("product-results")).toBeVisible();
+        // この例では一覧が画面上部にあるため、想定結果を下端に表示する。
+        await page.evaluate(() => {
+          const callout = document.createElement("aside");
+          callout.id = "evidence-callout";
+          callout.textContent = "想定結果：該当する商品の一覧が表示される";
+          Object.assign(callout.style, {
+            position: "fixed", bottom: "16px", left: "16px", zIndex: "10000",
+            background: "#fff4cc", color: "#202020", border: "2px solid #b04b00",
+            borderRadius: "8px", padding: "12px", pointerEvents: "none",
+          });
+          document.body.appendChild(callout);
+        });
+        try {
+          await step.attach(step.titlePath.at(-1)!, {
+            body: await page.screenshot(),
+            contentType: "image/png",
+          });
+        } finally {
+          await page.locator("#evidence-callout").evaluate((callout) => callout.remove());
+        }
       });
     },
   );
@@ -265,7 +298,7 @@ test.describe("商品一覧画面", () => {
 書いた内容は、パネルの中で次のように振り分けられる。
 
 ```text
-商品コードで検索すると該当する商品が表示される      ✓ 1.2s
+ケースNo.2　商品コードで検索すると該当する商品が表示される      ✓ 1.2s
 
   Annotations
     前提: テスト専用のユーザーでログインしていること / 商品データが登録されていること
@@ -273,13 +306,18 @@ test.describe("商品一覧画面", () => {
   Attachments
     操作1：商品一覧画面（/products）を開く
     ［画像］
-    操作2：商品コードに「P001」を入力して「検索」をクリックする
+    操作2：商品コードに「P001」を入力する
     ［画像］
+    操作3：「検索」をクリックする
+    ［画像］
+    想定結果：該当する商品の一覧が表示される
+    ［想定結果の吹き出しを付けた画像］
 
   Steps
     ▸ 操作1：商品一覧画面（/products）を開く                          0.3s
-    ▸ 操作2：商品コードに「P001」を入力して「検索」をクリックする      0.5s
-    ▸ 期待結果：該当する商品の一覧が表示される                          0.2s
+    ▸ 操作2：商品コードに「P001」を入力する
+    ▸ 操作3：「検索」をクリックする
+    ▸ 想定結果：該当する商品の一覧が表示される                          0.2s
 ```
 
 成功したテストでもステップは残る。  
@@ -308,20 +346,7 @@ await test.step("操作1：商品一覧画面（/products）を開く", async (s
 `"画面"`のような固定の文言は、添付名に使わない。  
 操作が2つ以上あると、レポートでどちらの画像か区別できなくなるためである。
 
-撮影するのは、次のときである。
-
-- 画面が切り替わる操作の直後（`page.goto()`、画面遷移を伴うクリックなど）。
-- ポップアップやモーダルが表示されたとき。
-- エラーメッセージが表示されたとき。
-- 期待結果を確かめたあと。
-
-次の場合は撮影しない。
-
-- 入力の途中など、画面の状態が変わらない操作。
-- 同じ画面を続けて撮ることになる場合。
-
-**理由**: すべてのステップで撮ると、レポートが重くなり、確認する側の負担も増える。  
-画面の状態が変わった瞬間だけを残す。
+操作直後と想定結果を確認した時点の画面を記録する。前提の状態を画面で示せる場合は、その画面も添付する。
 
 ### ルール
 
@@ -334,12 +359,18 @@ await test.step("操作1：商品一覧画面（/products）を開く", async (s
 - 操作は、`操作1：`から連番にする。
   - 1ステップを1操作とし、複数の操作を1ステップにまとめない。
   - 実際の画面の文言（ボタン名・リンク名）をステップ名に含める。
-- 期待結果は`期待結果：`で始め、`expect`を必ず含める。
-  - 期待結果が複数ある場合は、ステップを分ける。
+- 想定結果は`想定結果：`で始め、`expect`を必ず含める。
+  - 想定結果が複数ある場合は、ステップを分ける。
 - `expect`を`test.step`の外に書かない。  
   レポートに現れず、何を確かめたのかが残らないためである。
 - ステップ名は日本語で書く。
-- 画面が切り替わったステップでは、スクリーンショットを添付する。
+- ケースは前提、操作、想定結果の順に記載する。想定結果の後に別の操作や前提が必要になる場合は、次のテストケースに分ける。
+  同じ操作に対する複数の想定結果は、同じケースで確認する。
+- 操作ごとに操作後の画面を、想定結果ごとに確認時点の画面を添付する。
+  添付名に「前提」「操作」とその番号、または「想定結果」と確認内容を入れる。
+- 想定結果の画像には、確認箇所を隠さない位置に「想定結果」と具体的な期待値を吹き出しで表示する。
+  実測値は期待値と区別し、計測値やAPI応答など画面だけで判断できない結果はテキストでも添付する。
+  撮影用の表示は検証の後に追加し、撮影が終わったら取り除く。
 - 添付名は、`step.attach(step.titlePath.at(-1)!, ...)`と書き、ステップ名と一致させる。
 
 ## 証跡の保管
@@ -379,7 +410,7 @@ evidence/
 次は、対応するnpmスクリプトを設定した場合の例である。
 
 ```powershell
-npm run test:e2e:evidence -- tests/products.spec.ts
+npm run test:e2e:evidence -- tests/product-catalog/products.spec.ts
 ```
 
 - 出力先のディレクトリ名と日付は、指定したテストファイルと実行日から自動で決まるようにする。
@@ -404,8 +435,8 @@ npm run test:e2e:evidence -- tests/products.spec.ts
 | ブラウザを表示して実行する | `npm run test:e2e:headed` |
 | UI Mode（調査・開発のとき） | `npm run test:e2e:ui` |
 | レポートを表示する | `npm run test:e2e:report` |
-| 証跡を取得する | `npm run test:e2e:evidence -- tests/products.spec.ts` |
-| ファイルを指定して実行する | `npx playwright test tests/products.spec.ts` |
+| 証跡を取得する | `npm run test:e2e:evidence -- tests/product-catalog/products.spec.ts` |
+| ファイルを指定して実行する | `npx playwright test tests/product-catalog/products.spec.ts` |
 | テスト名で絞り込んで実行する | `npx playwright test -g "商品一覧"` |
 
 - テストコードを書いている間は、UI Modeを使う。
@@ -416,12 +447,12 @@ npm run test:e2e:evidence -- tests/products.spec.ts
 - 本規約を、生成AIへの入力として渡す。
 - あわせて、次の情報を伝える。
   - 対象の画面のURL（またはパス）。
-  - 操作の手順と期待結果を、文章で1〜3シナリオ分。
+  - 操作の手順と想定結果を、文章で1〜3シナリオ分。
   - 対象の画面のHTMLの構造（見出しやリンクの文言、`id`や`data-testid`が分かるもの）。
 - 生成AIが作ったコードは、必ず次を確認する。
   - `waitForTimeout`が理由のコメントなしに入っていないか。
   - 自動で作られた識別子や、位置に依存するセレクタを使っていないか。
-  - 前提・操作・期待結果が、`annotation`と`test.step`で書かれているか。
+  - 前提・操作・想定結果が、`annotation`と`test.step`で書かれているか。
   - 添付名がステップ名と一致しており、どのステップの画像か特定できるか。
   - 確かめたい内容を実際に確かめているか（表示されるだけで満足していないか）。
 

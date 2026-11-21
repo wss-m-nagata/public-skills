@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+# Revision History
+# 2026/11/21: WSS永田 道拓: 画面E2Eの生成と変更履歴の書式確認を追加。
+#   - 画面E2Eで変更箇所がある場合も表紙の版数を赤字にする。
 """
 単体テスト仕様書(画面)／単体テスト仕様書(共通コンポーネント)を、テスト項目の定義ファイル(JSON)から組み立てるスクリプト。
 
@@ -21,6 +24,7 @@
                         「観点」のNoや「分類」を決める前に、これで残る観点を見る。
   --allow-unaddressed : テストケースも対象外理由も無い観点が残っていても、エラーにしない(書きかけの確認用)。
   --cases-json        : 組み立てた結果の全テストケース(ケースNo・分類・観点・テスト内容など)をJSONに書き出す。
+  --screen-e2e        : 画面単位のE2E試験仕様書を作る。定義の形式は画面用の記入要領を参照。
 
 テンプレートは assets/templates/フォーマット/ の
 「単体テスト仕様書(画面)_(取引ID)_(取引名).xlsx」または
@@ -767,6 +771,17 @@ def _write_document(wb, document):
         history[f"{HISTORY_COLUMNS['変更箇所']}{row}"] = "\n".join(item["変更箇所"])
         history[f"{HISTORY_COLUMNS['変更内容']}{row}"] = "\n".join(item["変更内容"])
         history[f"{HISTORY_COLUMNS['担当者']}{row}"] = item["担当者"]
+        # 変更履歴の書式を確認し、既存の定義も読み込めるよう警告で知らせる。
+        if item["区分"] == "変更":
+            places = item["変更箇所"]
+            contents = item["変更内容"]
+            if not any(line.startswith("　") for line in places) or (
+                len(contents) < 3 or not any(line.startswith("　") for line in contents[2:])
+            ):
+                print(
+                    f"警告: 変更履歴 {item['版数']} のシート名・ケースNo・変更前後の書式を確認してください。",
+                    file=sys.stderr,
+                )
     fit_rows(history)
 
     # 2. 表紙(J23・J25・I21 は数式なので書かない)
@@ -1016,6 +1031,7 @@ def main():
     parser.add_argument("--list-catalog", action="store_true")
     parser.add_argument("--filter")
     parser.add_argument("--sheet-template")
+    parser.add_argument("--screen-e2e", action="store_true")
     args = parser.parse_args()
 
     # 観点の一覧(空のテンプレートの観点No・分類・観点の文言)
@@ -1025,6 +1041,30 @@ def main():
         return
     if not args.definition or not args.output:
         parser.error("定義jsonと出力パスを指定してください(観点の一覧だけなら --list-catalog)")
+
+    if args.screen_e2e:
+        from build_screen_e2e import write_e2e_sheets
+
+        definition = json.loads(Path(args.definition).read_text(encoding="utf-8"))
+        wb = openpyxl.load_workbook(args.template)
+        ws, has_changes = write_e2e_sheets(wb, definition)
+        _link_header_to_history(ws)
+        _fill_header(ws, definition.get("header", {}))
+        _write_document(wb, definition["document"])
+        if has_changes:
+            mark_font_red(wb["表紙"], "J19")
+        save_with_shapes(wb, args.template, args.output)
+        if args.cases_json:
+            cases = [
+                {"ケースNo": str(number), **case}
+                for number, case in enumerate(definition["cases"], 1)
+            ]
+            Path(args.cases_json).write_text(
+                json.dumps({ws.title: cases}, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+        print(f"{ws.title}: テストケース {len(definition['cases'])} 件")
+        return
 
     summary, warnings = build(
         args.template,

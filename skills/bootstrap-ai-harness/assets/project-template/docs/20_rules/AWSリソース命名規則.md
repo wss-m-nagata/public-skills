@@ -40,6 +40,8 @@ SSMパラメータとシークレットは階層をスラッシュで区切る�
 | リソース | 形式 |
 | --- | --- |
 | 共有インフラのスタック | `{識別名}-webapp-{環境}` |
+| 共有インフラのスタック（API Gateway用のWAF） | `{識別名}-webappwaf-{環境}` |
+| 共有インフラのスタック（us-east-1。CloudFront用のWAF） | `{識別名}-webappedge-{環境}` |
 | GitHub Actions用IAMロールのスタック | `{識別名}-githubactions-{環境}` |
 | サービスのスタック | `{識別名}-{サービス略称}-{環境}` |
 | Lambda | `{識別名}-{サービス略称}{機能名}-{環境}` |
@@ -49,6 +51,8 @@ SSMパラメータとシークレットは階層をスラッシュで区切る�
 | API Gatewayのステージ | `{環境}` |
 | CloudFront | `{識別名}-cf-{環境}` |
 | CloudFront Functions | `{識別名}-cf{機能名}-{環境}` |
+| WAFのWebACL | `{識別名}-waf{用途}-{環境}`（用途は、CloudFront用が`cf`、API Gateway用が`apigw`） |
+| WAFのIPセット | `{識別名}-ipset{用途}-{環境}` |
 | Cognitoのユーザープール | `{識別名}-userpool-{環境}` |
 | Cognitoのアプリクライアント | `{識別名}-webapp-{環境}` |
 | Cognitoのドメイン（先頭部分） | `{識別名}-webapp-{環境}` |

@@ -1,3 +1,5 @@
+# Revision History
+# 2026/11/21: WSS永田 道拓: 画面E2Eの生成から試験データの書式を再利用できるようにする。
 """単体テスト仕様書に、試験データのシートを足す。
 
 build_unit_test_spec.py で作った単体テスト仕様書（.xlsx）の末尾に、試験データの定義（JSON）から
@@ -99,7 +101,7 @@ def _header_style(wb):
     for ws in wb.worksheets:
         for row in ws.iter_rows(max_row=20):
             for cell in row:
-                if cell.value == "ケースNo":
+                if cell.value in ("ケースNo", "ケースNo."):
                     return copy(cell.font), copy(cell.fill)
     return Font(bold=True), None
 
@@ -109,8 +111,9 @@ def _body_font(wb):
     for ws in wb.worksheets:
         for row in ws.iter_rows(max_row=20):
             for cell in row:
-                if cell.value == "ケースNo":
-                    return copy(ws.cell(row=cell.row + 1, column=cell.column + 9).font)
+                if cell.value in ("ケースNo", "ケースNo."):
+                    content = next(c for c in row if c.value == "テスト内容")
+                    return copy(ws.cell(row=cell.row + 1, column=content.column).font)
     return Font()
 
 
@@ -160,9 +163,15 @@ def _write_table(
 
 def add_sheet(spec_path, definition_path, output_path):
     """仕様書に試験データのシートを足して保存する。"""
-    definition = json.load(open(definition_path, encoding="utf-8"))
+    definition = json.loads(Path(definition_path).read_text(encoding="utf-8"))
     wb = openpyxl.load_workbook(spec_path)
+    write_test_data_sheet(wb, definition)
+    # 表紙の図形（機密区分など）は、元の仕様書から戻す。
+    save_with_shapes(wb, spec_path, output_path)
 
+
+def write_test_data_sheet(wb, definition):
+    """既存ブックに試験データを書き、保存処理は呼び出し元に任せる。"""
     # 同じ名前のシートがあれば作り直す
     name = definition.get("sheet_name", "試験データ")
     if name in wb.sheetnames:
@@ -254,8 +263,7 @@ def add_sheet(spec_path, definition_path, output_path):
                 DATASET_FIRST_COL,
             )
 
-    # 表紙の図形（機密区分など）は、openpyxl で保存すると消えるため、元の仕様書から戻す
-    save_with_shapes(wb, spec_path, output_path)
+    return ws
 
 
 def main():

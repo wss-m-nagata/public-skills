@@ -17,6 +17,8 @@
     7. 表紙・変更履歴を書く（apply_mapping.py と同じ書き込み）。
     8. 結合セルの長文が隠れないよう、行の高さを合わせる（fit_row_heights.py と同じ数え方）。
     9. 画面レイアウトの画像を、枠に収まる大きさにして、既存の図形を保ったまま貼る。
+       赤枠と番号（layouts[].elements）があるときは、画像と、赤枠の図形・番号のテキストボックスを、1つのグループにして貼る
+       （印刷の倍率で画像が縮んでも、赤枠がずれないようにするため）。
        画像は、シートの drawing の XML へ直接書き足す（openpyxl の add_image() は使わない。図形の復元と
        衝突するため）。位置は、左上・右下をセルで指定する twoCellAnchor にする（oneCellAnchor は、印刷の
        倍率で縮むセルに対して画像が縮まず、枠からはみ出した）。画像のパスが無い画面は、2.1 の枠に「（画像未添付）」の文字を入れる。
@@ -49,7 +51,12 @@
       "sheet_name": "2. ORD0101(受注一覧)",         # 省略可。31文字を超えるときに指定する
       "layouts": [                                  # 2.1 画面レイアウト。省略可（省略すると、「（画像未添付）」の文字を入れる）
         {"image": "images/ord0101.png",             # 画像のパス（定義JSONのあるフォルダからの相対）。省略可
-         "caption": "初期表示"}                      # 画像の見出し。省略可
+         "caption": "初期表示",                      # 画像の見出し。省略可
+         "elements": [                               # 画像の上の赤枠と番号。省略可
+           {"no": "1",                               # 2.3 画面項目定義の No.（表に無い番号はエラー）
+            "x": 0.10, "y": 0.20, "width": 0.30, "height": 0.05,   # 画像の左上を原点とした0〜1の割合
+            "label_x": 0.08, "label_y": 0.20}       # 番号の位置。省略可（省略すると、赤枠の左上の上）
+         ]}
       ],
       "list_areas": [                               # 2.2 一覧表示。一覧のある領域。無ければ []
         {"name": "検索結果", "paging": "有", "sort": "受注日の降順", "note": "-"}
@@ -62,7 +69,9 @@
             "edit": "＜入力チェック＞\\n全角50文字以内",    # 編集仕様。表示変換・入力チェック・表示条件
             "initial": "-", "required": "-",        # required は ○ か -
             "domain": "顧客名",                      # ドメイン名
-            "phys": "searchForm.customerName",      # 画面項目名（物理）
+            "phys": "customerName",                 # 画面項目名（物理）。入力項目の name 属性（変数名と同じ値）。入力項目以外は "-"
+            "item_id": "customer-name",             # 画面項目ID。項目に付ける id 属性（画面内で一意）。付けられない項目は "-"
+            "phys_note": "-",                       # 備考。item_id が "-" の項目は、特定する方法を書く
             "cont": false,                          # 省略可。true なら、直前の項目の続き（番号を振らない）
             "changed": false}                       # 省略可。true にすると、その行の文字色を赤にする
          ]}
@@ -84,7 +93,7 @@
            {"table": {"columns": [{"title": "No.", "span": 1}, {"title": "項目", "span": 8}],
                       "rows": [["1", "…"]], "indent": 1}}
          ],
-         "handover": [                              # 画面引継ぎ項目（内部設計情報）。省略可
+         "handover": [                              # 画面引継ぎ項目（内部設計情報）。省略可。省略、または項目が無いときは「引継ぎ項目なし」の1行になる
            {"group": "検索条件", "prefix": "order",
             "items": [{"name": "顧客名", "store": "ルートのクエリ", "value": "検索条件の入力値",
                        "desc": "戻ったときの再検索に使う", "note": "-"}]}
@@ -143,6 +152,7 @@ from fit_change_history_rows import (  # noqa: E402
     _merged_width,
     fit_rows as fit_history_rows,
 )
+from extend_function_design_template import has_extended_columns  # noqa: E402
 from fit_row_heights import WORD, fit_sheet  # noqa: E402
 from insert_rows import insert_rows_keep_layout  # noqa: E402
 from normalize_change_history import normalize as normalize_history  # noqa: E402
@@ -169,8 +179,9 @@ HISTORY_SHEET = "変更履歴"
 COVER_SHEET = "表紙"
 PRODUCT_NAME = "システム機能設計書(画面)"
 
-# スタイルを取り込む最大の列（AU列。シートの使用範囲）
-MAX_COL = 47
+# スタイルを取り込む最大の列（AW列）。内部設計情報の「画面項目ID」「備考」の列まで含める
+# （テンプレートに足してある。extend_function_design_template.py）
+MAX_COL = 49
 
 # 『1.1. 取引概要』: 取引概要の行（10〜29）、想定利用ユーザの行（30〜34）。値は G列から書く
 OV_FIRST, OV_LAST = 10, 29
@@ -212,8 +223,26 @@ ITEM_COLS = {
     "initial": "AA",
     "required": "AD",
     "domain": "AE",
-    "phys": "AL",
+    "phys": "AL",  # 画面項目名（物理）: 入力項目の name 属性。変数名と同じ値にそろえる
+    "item_id": "AP",  # 画面項目ID: 項目に付ける id 属性（テンプレートに足してある列）
+    "phys_note": "AT",  # 備考: id を付けられない項目の特定方法など（テンプレートに足してある列）
 }
+# 画面項目種別のうち、入力欄（画面項目名（物理）に name 属性を書く対象）
+INPUT_TYPES = (
+    "text",
+    "text(disable)",
+    "textarea",
+    "radio",
+    "checkbox",
+    "select(pulldown)",
+    "select(multiple)",
+    "password",
+    "file",
+)
+# 画面項目名（物理）・画面項目IDに書いてはいけない仮置きの表記（設計で決める値のため）
+PLACEHOLDER_RE = re.compile(r"T\.?B\.?D", re.IGNORECASE)
+# 引き継ぐ値のないイベントに、画面引継ぎ項目の表の代わりに書く文
+HANDOVER_NONE_TEXT = "引継ぎ項目なし"
 # 一覧表示
 LIST_COLS = {"no": "D", "name": "E", "paging": "N", "sort": "Q", "note": "V"}
 # 入出力一覧
@@ -642,10 +671,40 @@ def _validate(d, base_dir):
                 need(g, "items", gw, (list,))
                 for m, it in enumerate(g.get("items") or []):
                     need(it, "name", "%s.items[%d]" % (gw, m))
+        # 赤枠に付ける番号は、2.3 画面項目定義の No.（続きの行を除いて1から振る）にする
+        item_nos = {
+            str(n + 1)
+            for n in range(
+                sum(
+                    1
+                    for g in s.get("regions") or []
+                    for it in g.get("items") or []
+                    if not it.get("cont")
+                )
+            )
+        }
         for j, lay in enumerate(s.get("layouts") or []):
             img = lay.get("image")
             if img and not (Path(base_dir) / img).is_file():
                 errs.append("%s.layouts[%d]: 画像が見つかりません: %s" % (w, j, img))
+            elements = lay.get("elements") or []
+            if elements and not img:
+                errs.append("%s.layouts[%d]: elements は、画像があるときだけ指定できます。" % (w, j))
+            for k, el in enumerate(elements):
+                lw = "%s.layouts[%d].elements[%d]" % (w, j, k)
+                if str(el.get("no")) not in item_nos:
+                    errs.append("%s: no は、2.3 画面項目定義の No. にしてください: %s" % (lw, el.get("no")))
+                vals = [el.get(key) for key in ("x", "y", "width", "height")]
+                if any(type(v) not in (int, float) for v in vals):
+                    errs.append("%s: x・y・width・height は、数値で指定してください。" % lw)
+                    continue
+                x, y, ew, eh = vals
+                if x < 0 or y < 0 or ew <= 0 or eh <= 0 or x + ew > 1.0001 or y + eh > 1.0001:
+                    errs.append("%s: 位置が画像の範囲（0〜1）の外です。" % lw)
+                for key in ("label_x", "label_y"):
+                    v = el.get(key)
+                    if v is not None and (type(v) not in (int, float) or not 0 <= v <= 1):
+                        errs.append("%s: %s は、0〜1で指定してください。" % (lw, key))
     return errs
 
 
@@ -734,6 +793,20 @@ def _build_overview(wb, d, report):
 # ---------------------------------------------------------------------------
 # 『2. 画面ID(画面名)』
 # ---------------------------------------------------------------------------
+def _check_internal_columns(ws):
+    """テンプレートに、内部設計情報の「画面項目ID」「備考」の列があることを確かめる。
+
+    列は、テンプレートに足してある（extend_function_design_template.py）。
+    古いテンプレートや原本を指定したときは、行や列がずれたまま書かないよう、ここで止める。
+    """
+    if not has_extended_columns(ws):
+        raise AssertionError(
+            "テンプレートに、内部設計情報の「画面項目ID」「備考」の列がありません。"
+            "assets/templates/フォーマット/ のテンプレートを指定してください"
+            "（原本や古いテンプレートは、extend_function_design_template.py で列を足せます）。"
+        )
+
+
 class _Template:
     """複製・編集の前に取り込んだ、画面シートのひな形。"""
 
@@ -824,6 +897,50 @@ def _end_cell(ws, row, col, cx, cy):
     return c, left, r, top
 
 
+def _has_handover(e):
+    """イベントに、引き継ぐ値（名前が「-」でない項目）が1つでもあるか。"""
+    return any(
+        not _is_blank(it.get("name")) and it.get("name") != "-"
+        for g in e.get("handover") or []
+        for it in g.get("items") or []
+    )
+
+
+def _check_internal_names(it, screen, seen_ids, warn):
+    """画面項目名（物理）・画面項目IDの書き方を検査し、問題を警告に積む。
+
+    Args:
+        it: 項目の定義。
+        screen: 警告に付ける画面の名前。
+        seen_ids: この画面で、すでに使った画面項目ID {ID: 項目名}。更新する。
+        warn: 警告のリスト。
+    """
+    label = it.get("name") or "（続きの行）"
+    where = "[%s] 2.3 画面項目「%s」" % (screen, label)
+    phys, item_id, note = it.get("phys"), it.get("item_id"), it.get("phys_note")
+    for title, val in (("画面項目名（物理）", phys), ("画面項目ID", item_id)):
+        if isinstance(val, str) and PLACEHOLDER_RE.search(val):
+            warn.append(
+                "%s: %sに「T.B.D」があります。設計で決める値なので、決めて書いてください。" % (where, title)
+            )
+    if it.get("type") in INPUT_TYPES and (_is_blank(phys) or phys == "-"):
+        warn.append(
+            "%s: 入力項目ですが、画面項目名（物理）（name 属性。変数名と同じ値）がありません。" % where
+        )
+    if (_is_blank(item_id) or item_id == "-") and _is_blank(note):
+        warn.append(
+            "%s: 画面項目IDがありません。付けられない項目は、備考に特定する方法を書いてください。" % where
+        )
+    if isinstance(item_id, str) and item_id not in ("", "-"):
+        if item_id in seen_ids:
+            warn.append(
+                "%s: 画面項目ID「%s」が、「%s」と重複しています。画面内で一意にしてください。"
+                % (where, item_id, seen_ids[item_id])
+            )
+        else:
+            seen_ids[item_id] = label
+
+
 def _build_screen(wb, ws, num, sc, tpl, base_dir, ctx):
     """1画面分のシートを組み立てる。
 
@@ -893,6 +1010,7 @@ def _build_screen(wb, ws, num, sc, tpl, base_dir, ctx):
                 "cx": pw * EMU_PER_PIXEL,
                 "cy": ph * EMU_PER_PIXEL,
                 "name": "画面レイアウト %s" % sc["id"],
+                "elements": lay.get("elements") or [],
             }
         )
         cursor += rows + 1
@@ -947,12 +1065,14 @@ def _build_screen(wb, ws, num, sc, tpl, base_dir, ctx):
     have = ITEM_BLOCK_LAST - ITEM_BLOCK_FIRST + 1
     delta = _resize_rows(ws, first, have, len(plan))
     item_rows = []
+    seen_item_ids = {}  # 画面項目ID → 項目名（同じ画面内の重複を見つける）
     for i, p in enumerate(plan):
         r = first + i
         if p[0] == "region":
             _stamp_block(ws, r, tpl.region_row)
             _put(ws, r, _col(ITEM_COLS["no"]), "領域名：%s" % p[1]["name"])
-            _put(ws, r, _col(ITEM_COLS["phys"]), "-")
+            for key in ("phys", "item_id", "phys_note"):
+                _put(ws, r, _col(ITEM_COLS[key]), "-")
         else:
             it, n = p[1], p[2]
             _stamp_block(ws, r, tpl.item_row)
@@ -974,7 +1094,9 @@ def _build_screen(wb, ws, num, sc, tpl, base_dir, ctx):
             _put(ws, r, _col(ITEM_COLS["initial"]), _dash(it.get("initial")))
             _put(ws, r, _col(ITEM_COLS["required"]), _circle(it.get("required")))
             _put(ws, r, _col(ITEM_COLS["domain"]), _dash(it.get("domain")))
-            _put(ws, r, _col(ITEM_COLS["phys"]), _dash(it.get("phys")))
+            for key in ("phys", "item_id", "phys_note"):
+                _put(ws, r, _col(ITEM_COLS[key]), _dash(it.get(key)))
+            _check_internal_names(it, name, seen_item_ids, warn)
             item_rows.append(r)
             if it.get("changed"):
                 _mark(red, ws, r, [_col(c) for c in ITEM_COLS.values()])
@@ -1067,15 +1189,16 @@ def _build_screen(wb, ws, num, sc, tpl, base_dir, ctx):
     for k, e in enumerate(events):
         title = e["name"] if e["name"].endswith("イベント") else e["name"] + "イベント"
         hand_plan.append(("head", "（%d） %s" % (k + 1, title)))
+        if not _has_handover(e):
+            # 引き継ぐ値がないイベントは、表を出さず、1行で示す（「-」だけの表を並べない）
+            hand_plan.append(("none", None))
+            hand_plan.append(("blank", None))
+            continue
         hand_plan.append(("blank", None))
         hand_plan.append(("hdr", None))
-        groups = e.get("handover") or [
-            {"group": "-", "prefix": "-", "items": [{"name": "-"}]}
-        ]
-        for g in groups:
+        for g in e["handover"]:
             hand_plan.append(("group", g))
-            items = g["items"] or [{"name": "-"}]
-            for n, it in enumerate(items):
+            for n, it in enumerate(g["items"]):
                 hand_plan.append(
                     ("item", (it, n + 1, e.get("changed") or it.get("changed")))
                 )
@@ -1084,6 +1207,14 @@ def _build_screen(wb, ws, num, sc, tpl, base_dir, ctx):
     first = HAND_BLOCK_FIRST + off
     have = HAND_BLOCK_LAST - HAND_BLOCK_FIRST + 1
     _clear_block_values(ws, first, first + have - 1)
+    # 結合は、このあとの _stamp_block で作り直すため、先に外す。
+    # 行を減らすときに、見出しの2行の結合が、削除する行にまたがって止まるのを防ぐ
+    for m in [
+        m
+        for m in ws.merged_cells.ranges
+        if m.min_row >= first and m.max_row <= first + have - 1
+    ]:
+        ws.unmerge_cells(str(m))
     _resize_rows(ws, first, have, nrows)
     r = first
     hand_fit_rows = []
@@ -1094,6 +1225,11 @@ def _build_screen(wb, ws, num, sc, tpl, base_dir, ctx):
             r += 1
         elif kind == "blank":
             _stamp_block(ws, r, tpl.hand_blank)
+            r += 1
+        elif kind == "none":
+            _stamp_block(ws, r, tpl.hand_blank)
+            ws.row_dimensions[r].height = tpl.hand_head["heights"][0]
+            _put_text(ws, r, 3, HANDOVER_NONE_TEXT)
             r += 1
         elif kind == "hdr":
             _stamp_block(ws, r, tpl.hand_hdr, keep_values=True)
@@ -1486,32 +1622,68 @@ def insert_pictures(xlsx_path, output_path, placements):
                 ]
                 shape_id = max(ids, default=1) + 1
                 tc, tco, tr, tro = p["to"]
-                pic = (
+                anchor = (
                     '<xdr:twoCellAnchor editAs="oneCell"><xdr:from><xdr:col>%d</xdr:col><xdr:colOff>0</xdr:colOff>'
                     "<xdr:row>%d</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:from>"
                     "<xdr:to><xdr:col>%d</xdr:col><xdr:colOff>%d</xdr:colOff>"
                     "<xdr:row>%d</xdr:row><xdr:rowOff>%d</xdr:rowOff></xdr:to>"
+                    % (p["col"] - 1, p["row"] - 1, tc, tco, tr, tro)
+                )
+                pic = (
                     '<xdr:pic><xdr:nvPicPr><xdr:cNvPr id="%d" name="%s"/>'
                     '<xdr:cNvPicPr><a:picLocks noChangeAspect="1"/></xdr:cNvPicPr></xdr:nvPicPr>'
                     '<xdr:blipFill><a:blip xmlns:r="%s" r:embed="%s"/><a:stretch><a:fillRect/></a:stretch></xdr:blipFill>'
                     '<xdr:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="%d" cy="%d"/></a:xfrm>'
-                    '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom></xdr:spPr></xdr:pic><xdr:clientData/></xdr:twoCellAnchor>'
-                    % (
-                        p["col"] - 1,
-                        p["row"] - 1,
-                        tc,
-                        tco,
-                        tr,
-                        tro,
-                        shape_id,
-                        p["name"],
-                        NS_R,
-                        rid,
-                        p["cx"],
-                        p["cy"],
-                    )
+                    '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom></xdr:spPr></xdr:pic>'
+                    % (shape_id, p["name"], NS_R, rid, p["cx"], p["cy"])
                 )
-                drawing_xml = drawing_xml.replace("</xdr:wsDr>", pic + "</xdr:wsDr>")
+                elements = p.get("elements") or []
+                if elements:
+                    # 赤枠と番号は、画像と1つのグループにする。
+                    # グループの中の座標は、画像の大きさ（EMU）と同じにし、印刷の倍率で画像が縮んでも、赤枠がずれないようにする。
+                    # 赤枠と番号は、Excelで動かせる図形とテキストボックスにする（画像に描き込まない）
+                    children = [pic]
+                    sid = shape_id + 1
+                    for el in elements:
+                        x, y = int(el["x"] * p["cx"]), int(el["y"] * p["cy"])
+                        w, h = int(el["width"] * p["cx"]), int(el["height"] * p["cy"])
+                        children.append(
+                            '<xdr:sp macro="" textlink=""><xdr:nvSpPr><xdr:cNvPr id="%d" name="赤枠 %s"/><xdr:cNvSpPr/></xdr:nvSpPr>'
+                            '<xdr:spPr><a:xfrm><a:off x="%d" y="%d"/><a:ext cx="%d" cy="%d"/></a:xfrm>'
+                            '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/>'
+                            '<a:ln w="19050"><a:solidFill><a:srgbClr val="FF0000"/></a:solidFill></a:ln></xdr:spPr></xdr:sp>'
+                            % (sid, el["no"], x, y, w, h)
+                        )
+                        sid += 1
+                        # 番号は、既定では赤枠の左上の外側（上）に置く。画像の文字に重なるときは label_x・label_y で動かす
+                        text = str(el["no"])
+                        lw = (8 + 8 * len(text)) * EMU_PER_PIXEL
+                        lh = 15 * EMU_PER_PIXEL
+                        lx = int(el["label_x"] * p["cx"]) if "label_x" in el else x
+                        ly = int(el["label_y"] * p["cy"]) if "label_y" in el else max(0, y - lh)
+                        lx, ly = min(lx, p["cx"] - lw), min(ly, p["cy"] - lh)
+                        children.append(
+                            '<xdr:sp macro="" textlink=""><xdr:nvSpPr><xdr:cNvPr id="%d" name="番号 %s"/><xdr:cNvSpPr txBox="1"/></xdr:nvSpPr>'
+                            '<xdr:spPr><a:xfrm><a:off x="%d" y="%d"/><a:ext cx="%d" cy="%d"/></a:xfrm>'
+                            '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
+                            '<a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill><a:ln><a:noFill/></a:ln></xdr:spPr>'
+                            '<xdr:txBody><a:bodyPr wrap="none" lIns="0" tIns="0" rIns="0" bIns="0" anchor="ctr"/><a:lstStyle/>'
+                            '<a:p><a:pPr algn="ctr"/><a:r><a:rPr lang="ja-JP" sz="900" b="1"><a:solidFill><a:srgbClr val="FF0000"/></a:solidFill></a:rPr>'
+                            "<a:t>%s</a:t></a:r></a:p></xdr:txBody></xdr:sp>"
+                            % (sid, text, lx, ly, lw, lh, text)
+                        )
+                        sid += 1
+                    body = (
+                        '<xdr:grpSp><xdr:nvGrpSpPr><xdr:cNvPr id="%d" name="%s（赤枠つき）"/><xdr:cNvGrpSpPr/></xdr:nvGrpSpPr>'
+                        '<xdr:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="%d" cy="%d"/>'
+                        '<a:chOff x="0" y="0"/><a:chExt cx="%d" cy="%d"/></a:xfrm></xdr:grpSpPr>%s</xdr:grpSp>'
+                        % (sid, p["name"], p["cx"], p["cy"], p["cx"], p["cy"], "".join(children))
+                    )
+                else:
+                    body = pic
+                drawing_xml = drawing_xml.replace(
+                    "</xdr:wsDr>", anchor + body + "<xdr:clientData/></xdr:twoCellAnchor></xdr:wsDr>"
+                )
             files[drawing_path] = drawing_xml.encode("utf-8")
             files[d_rels_path] = d_rels.encode("utf-8")
         if 'Extension="png"' not in content_types:
@@ -1553,6 +1725,7 @@ def build(template, definition_path, output):
     try:
         wb = openpyxl.load_workbook(template)
         ws_tpl = wb[SCREEN_TEMPLATE_SHEET]
+        _check_internal_columns(ws_tpl)
         tpl = _Template(ws_tpl)
 
         # サーバ通信有無の選択肢は、データシートの見出しから探す

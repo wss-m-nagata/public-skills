@@ -5,53 +5,12 @@
 
 # Node.jsコーディング規約（webapp）
 
-本ドキュメントは、WebアプリのNode.js（TypeScript、Vue）のコードの書き方と、Nodeのバージョン、パッケージの追加の決まりを定める。  
+本ドキュメントは、WebアプリのNode.js（TypeScript）のコードの書き方と、Nodeのバージョン、パッケージの追加の決まりを定める。  
 画面の構成と方針（ファイルの置き場所、部品の分け方、メッセージの管理など）は、[フロントエンド実装方針.md](../../nuxt/docs/20_rules/フロントエンド実装方針.md)で定める。
 
 `> [AI]`で始まる引用は、AIが従う指示と、AIに伝える前提である。人は、読み飛ばしてよい（書き方は、[screen-design-rules/README.md](../../nuxt/docs/20_rules/screen-design-rules/README.md)の「`[AI]`」の記載に従う）。
 
-## Vueのファイルの書き方
-
-### ファイルの中の順番
-
-1つのファイルの中は、次の順番で書く。
-
-1. `<script setup lang="ts">`
-2. `<template>`
-3. `<style scoped>`（必要な場合だけ）
-
-**理由**: 順番がそろっていると、どのファイルでも、処理・画面・見た目の場所をすぐに見つけられる。
-
-## 名前の付け方
-
-| 対象 | 付け方 | 例 |
-| --- | --- | --- |
-| 共通の部品のファイル | パスカルケースで、先頭に`App`と分類名を付ける | `components/app/feedback/AppFeedbackConfirmDialog.vue` |
-| 共通の部品の分類のディレクトリ | 小文字の英単語 | `components/app/feedback/` |
-| 機能の部品のファイル | パスカルケースで、先頭に機能名を付ける | `components/products/ProductsList.vue` |
-| 機能のディレクトリ | ケバブケース | `components/products/` |
-| ページのファイル | ケバブケース（URLになるため） | `pages/products.vue` |
-| composableのファイルと関数 | キャメルケースで、先頭に`use`を付ける | `useProduct.ts`、`useProduct()` |
-| utilsのファイルと関数 | キャメルケース | `buildProductList.ts`、`buildProductList()` |
-| 型 | パスカルケース | `Product`、`ProductResult` |
-| `data-testid` | ケバブケース | [E2Eテスト作成規約.md](E2Eテスト作成規約.md)の「画面側に識別子を付ける」に従う |
-
-**理由**: 部品のファイル名を、置いたディレクトリ名で始めると、ファイル名と同じ名前で、部品を使える（`<AppFeedbackConfirmDialog />`）。
-
-> [AI]
-> - Nuxtは、部品が置かれたディレクトリの名前を、部品の名前の先頭に付ける。ファイル名を、ディレクトリ名のパスカルケースで始めれば、重複が除かれる。始めなければ、`<AppFeedbackAppConfirmDialog />`のように、長い名前になる。
-
-## CSS
-
-- 画面全体で共通のCSSは、`app/assets/css/`に置き、`nuxt.config.ts`の`css`に登録する。
-- 1つの部品やページだけに効かせるCSSは、そのファイルの`<style scoped>`に書く。
-- テンプレートに固定の見た目を`style`属性で直接指定しない。
-- 部品のパラメーターや実行時の状態に応じた値は、`:style`で指定してよい。
-- 色は、色コードを直接書かず、Vuetifyのテーマに定義した名前（`primary`など）で指定する。
-- CSSの詳しい書き方は[CSSコーディング規約](../../nuxt/docs/20_rules/CSSコーディング規約.md)に従う。
-
-**理由**: 色の値を画面ごとに書くと、色を変えるときに、すべての画面を直すことになる。  
-テーマの名前で指定しておけば、テーマの定義を1か所直すだけで済む。
+Vue・Nuxt固有の書き方は、[Nuxtコーディング規約](../../nuxt/docs/20_rules/Nuxtコーディング規約.md)に従う。
 
 ## TypeScript
 

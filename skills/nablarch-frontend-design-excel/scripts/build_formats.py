@@ -13,7 +13,8 @@ Nablarch開発標準の画面系テンプレート（原本）から、このス
    「関係者外秘」「PJ関係者限り」の図形は残す。
 2. 原本の「表紙」シートの内容を消し、見本（バックエンド用テンプレートの表紙）の内容に置き換える。
    成果物名（J14）は、ファイル名から取る。
-3. openpyxl で保存し、図形の元から図形を戻す（restore_shapes.py）。
+3. システム機能設計書(画面)だけ、内部設計情報に「画面項目ID」「備考」の列を足す（extend_function_design_template.py）。
+4. openpyxl で保存し、図形の元から図形を戻す（restore_shapes.py）。
 
 画面遷移図の「図形」（箱・矢印）は、本体のシートにある。
 本体のシートの図形も、restore_shapes.py が戻すため、この処理で消えない。
@@ -39,6 +40,10 @@ from pathlib import Path
 import openpyxl
 
 sys.path.insert(0, str(Path(__file__).parent))
+from extend_function_design_template import (  # noqa: E402
+    SCREEN_TEMPLATE_SHEET,
+    extend_internal_columns,
+)
 from restore_shapes import restore_shapes  # noqa: E402
 from xlsx_common import ensure_utf8_stdio  # noqa: E402
 
@@ -158,6 +163,9 @@ def main():
             removed = make_shape_source(original, shape_src)
             wb = openpyxl.load_workbook(original)
             copy_cover(sample_ws, wb["表紙"], product_name_of(original), name_cell)
+            # システム機能設計書(画面)は、内部設計情報に「画面項目ID」「備考」の列を足す
+            if original.name.startswith("システム機能設計書(画面)"):
+                extend_internal_columns(wb[SCREEN_TEMPLATE_SHEET])
             saved = tmp / "saved.xlsx"
             wb.save(saved)
             out = out_dir / original.name

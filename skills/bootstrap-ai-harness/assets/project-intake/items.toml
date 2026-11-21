@@ -1,0 +1,982 @@
+# 入力シート（プロジェクト入力シート.xlsx）の項目の正本。
+# Excel のひな形と記入要領（references/intake-guide.md）は、scripts/project-intake/build_intake.py でここから作る。
+# 項目を変えたら、build_intake.py を実行して、Excel と記入要領を作り直す。
+# 記入例は、架空のアプリ「備品管理システム」の値にする（このファイルは公開される）。
+
+[guide]
+title = "AI駆動開発の環境づくり 入力シート"
+
+[[guide.usage]]
+label = "このシートについて"
+text = """
+このExcelを埋めて bootstrap-ai-harness スキルを呼ぶと、AI駆動開発の環境（規約・AI向けの指示・資料の置き場所など）を作ります。
+必須の項目がすべて埋まっていれば、AIは質問せずに作業を進めます。"""
+
+[[guide.usage]]
+label = "記入するセル"
+text = """
+黄色のセル（記入欄）だけに記入します。ほかのセルは変えません。
+項目の表には、AIが項目を見分けるための列（ID）が隠れています。行や列を消したり、入れ替えたりしません。"""
+
+[[guide.usage]]
+label = "必須・任意"
+text = """
+必須：必ず記入します。
+条件付き必須：説明に書いた条件に当てはまるときだけ記入します。
+任意：空欄のときは「既定値」の値を使います。既定値と違う値にするときだけ記入します。"""
+
+[[guide.usage]]
+label = "言葉の補足"
+text = "項目のセルの右上に赤い印があるものは、マウスを合わせると、言葉の補足が出ます。"
+
+[[guide.usage]]
+label = "決まっていないとき"
+text = "「未定」と書きます。AIは、未定の項目を推測で埋めず、未決定事項として報告します。"
+
+[[guide.usage]]
+label = "書いてはいけないもの"
+text = "パスワード、トークン、秘密鍵、接続文字列などの秘密情報は書きません。"
+
+[[guide.usage]]
+label = "記入例"
+text = "記入例は、架空のアプリ「備品管理システム」のものです。灰色の文字の行やセルは書き換えません。"
+
+[guide.consult]
+lead = ["書き方が分からない項目や、自分のプロジェクトでどう答えればよいか分からない項目は、AIに相談できます。", "Claude Code に、下のテンプレートを貼り、【】の部分を書き換えて指示します。", "AIは bootstrap-ai-harness スキルを使い、このExcelの書き方に沿って答えます。"]
+footnote = "※ フルパスは、エクスプローラーでファイルを右クリックし、「パスのコピー」で取れます。"
+
+[[guide.consult.prompts]]
+purpose = "項目の意味を聞く"
+text = """
+bootstrap-ai-harness スキルを使って、入力シートの書き方を教えてください。
+入力シート：【このExcelのフルパス】
+シートと項目：【例：インフラシートの「既存のVPCを使うか」】
+聞きたいこと：【例：何を選べばよいか分からない】
+分かっていること：【例：社内のDBにつなぐ予定がある】"""
+
+[[guide.consult.prompts]]
+purpose = "資料から下書きを作ってもらう"
+text = """
+bootstrap-ai-harness スキルを使って、入力シートの下書きを作ってください。
+入力シート：【このExcelのフルパス】
+読んでほしい資料：インプット資料シートに書いた資料
+下書きしてほしいシート：【例：プロジェクト概要、画面とメニュー】
+資料から分からない項目は空欄のままにし、誰に何を確かめればよいかを一覧にしてください。"""
+
+[[guide.consult.prompts]]
+purpose = "記入漏れを確かめてもらう"
+text = """
+bootstrap-ai-harness スキルを使って、入力シートの記入漏れと、項目どうしの食い違いを確かめてください。
+入力シート：【このExcelのフルパス】
+Excelは直さず、結果だけ教えてください。"""
+
+[[guide.consult.prompts]]
+purpose = "環境を作ってもらう"
+text = """
+bootstrap-ai-harness スキルを使って、入力シートの内容で、AI駆動開発の環境を作ってください。
+入力シート：【このExcelのフルパス】
+作る場所：【新しいアプリのリポジトリのフルパス】"""
+
+[[sheets]]
+key = "project"
+kind = "items"
+name = "プロジェクト概要"
+summary = "今回のプロジェクトは何で、目的は何か。"
+lead = ["今回のプロジェクトは何で、目的は何か。", "黄色の「記入欄」に記入します。任意の項目は、空欄なら既定値を使います。"]
+
+[[sheets.items]]
+id = "project.name"
+name = "プロジェクト名"
+required = "必須"
+description = "資料・リポジトリ・画面で使う正式な名前。"
+example = "備品管理システム"
+reflect = "README.md、AGENTS.md の名前"
+
+[[sheets.items]]
+id = "project.summary"
+name = "何を作るか"
+required = "必須"
+description = "今回作るアプリを1〜3文で書く。"
+example = "社内の備品（PC・モニターなど）の台帳と貸出を、画面から管理するWebアプリ。"
+reflect = "README.md、AGENTS.md の概要"
+
+[[sheets.items]]
+id = "project.purpose"
+name = "目的"
+required = "必須"
+description = "解決したい課題と、得たい効果。"
+example = "Excelの台帳と紙の貸出記録をなくし、所在が分からない備品と、棚卸の作業時間を減らす。"
+reflect = "README.md の目的"
+
+[[sheets.items]]
+id = "project.background"
+name = "背景"
+required = "任意"
+description = "このプロジェクトを始めた経緯。インプット資料に書いてあれば、その資料名だけでよい。"
+example = "要件定義書「1. 背景」を参照。"
+reflect = "README.md（必要な場合だけ）"
+
+[[sheets.items]]
+id = "project.users"
+name = "利用者"
+required = "必須"
+description = "誰が、どこから、どのくらいの人数で使うか。"
+example = "総務部の担当者（約10名）と、備品を借りる社員。社内のPCから使う。"
+reflect = "README.md、docs/20_rules/アーキテクチャ.md の利用者"
+
+[[sheets.items]]
+id = "project.scope"
+name = "対象範囲"
+required = "必須"
+description = "今回作る範囲（機能・業務）。"
+example = "備品台帳、貸出と返却、発注の管理。"
+reflect = "README.md、docs/20_rules/アーキテクチャ.md の対象範囲"
+
+[[sheets.items]]
+id = "project.out_of_scope"
+name = "対象外"
+required = "任意"
+description = "今回は作らないと決めているもの。"
+example = "会計システムとの自動連携（次の段階で行う）。"
+reflect = "README.md の対象範囲（対象外として）"
+
+[[sheets.items]]
+id = "project.milestones"
+name = "期限・マイルストーン"
+required = "任意"
+description = "リリースの時期や、区切りの日付。"
+example = "2027/03 本番リリース"
+reflect = "資料には書かない（課題管理先で管理する）"
+
+[[sheets.items]]
+id = "project.reviewer"
+name = "レビュー・コミットする人"
+required = "任意"
+description = "AIの変更をレビューし、コミットする人。改版履歴の担当者に使う。会社の略称＋氏名。"
+example = "ABC山田 太郎"
+reflect = "改版履歴の担当者（スクリプトの --author）。空欄なら、AIは推測せず、記入用の表記のまま残す"
+
+[[sheets.items]]
+id = "project.repository"
+name = "リポジトリ"
+required = "任意"
+description = "GitHubのリポジトリ（owner/name）。まだ無ければ空欄。"
+example = "example-org/asset-management"
+reflect = "README.md、Issueテンプレート、GitHub Actions の設定"
+
+[[sheets]]
+key = "inputs"
+kind = "list"
+name = "インプット資料"
+summary = "要件定義書・企画書など、前段の資料の場所と、見てほしいところ。"
+lead = ["要件定義書・企画書・業務フローなど、このプロジェクトの前提になる資料を1行に1つ書きます。", "場所は、ファイルサーバーならフルパス（\\\\サーバー名\\共有名\\...）、Webならリンクを書きます。", "AIが読む範囲を絞れるよう、見てほしいシート・ページと、そこに何が書いてあるかを書きます。", "資料名を書いた行は、「場所」と「見てほしいシート・ページ」も書きます（未記入として数えます）。"]
+rows = 20
+required_with = ["location", "pages"]
+
+[[sheets.columns]]
+id = "name"
+name = "資料名"
+width = 26
+example = "備品管理 要件定義書"
+
+[[sheets.columns]]
+id = "kind"
+name = "種類"
+width = 14
+example = "要件定義"
+choices = ["企画", "要件定義", "業務フロー", "画面イメージ", "用語集", "既存システムの資料", "その他"]
+
+[[sheets.columns]]
+id = "location"
+name = "場所（フルパスまたはリンク）"
+width = 50
+example = "\\\\fileserver\\share\\asset-mgmt\\10_要件定義\\備品管理_要件定義書_v1.2.xlsx"
+
+[[sheets.columns]]
+id = "pages"
+name = "見てほしいシート・ページ"
+width = 30
+example = "「機能一覧」「画面一覧」シート"
+
+[[sheets.columns]]
+id = "summary"
+name = "記載内容の概要"
+width = 44
+example = "「機能一覧」に作る機能と優先度、「画面一覧」に画面名と利用者。"
+
+[[sheets.columns]]
+id = "note"
+name = "補足（優先度、版、注意点など）"
+width = 40
+example = "v1.2が最新。「非機能」シートは未確定なので参考程度。"
+
+[[sheets]]
+key = "app"
+kind = "items"
+name = "アプリ構成"
+summary = "業務の塊（サービス）、DB、外部連携、認証などの構成。"
+lead = ["このアプリは、画面（フロントエンド）を1つ作り、バックエンドを業務の塊（サービス）ごとに分けて作ります。", "下の図で構成を確かめてから、黄色の「記入欄」に記入します。任意の項目は、空欄なら既定値を使います。"]
+figure = "service_figure.png"
+
+[[sheets.items]]
+id = "app.services"
+name = "業務の塊（サービス）の分け方"
+required = "任意"
+description = "上の図のように、バックエンドを業務の塊（サービス）ごとに分けます。塊の名前と、扱う業務・データを、1行に1つ書きます。分け方は図の右の目安を見ます。分からなければ空欄にします。"
+example = """
+備品：備品台帳の登録・参照
+貸出：貸出と返却の記録"""
+default = "サービスを1つにする（アプリ全体を1つのサービスで作る）"
+note = """
+サービス：バックエンドを分ける単位。サービスごとに、API・データ（テーブル）・資料を持つ。
+分け方が分からなければ空欄にする。サービスを1つにして始め、後から分けることもできる。"""
+reflect = "docs/20_rules/アーキテクチャ.md のサービスと責務、service-template と service-root-template の適用先（backend/<サービス名>/）"
+
+[[sheets.items]]
+id = "app.service_stack"
+name = "サービスの言語と依存管理"
+required = "任意"
+description = "業務の塊（サービス）ごとの言語・部品の管理・テストの道具。"
+example = "既定のまま"
+default = "Python、uv、pytest"
+note = """
+依存管理：使う部品（ライブラリ）とその版を管理すること。
+uv：Pythonの部品を管理する道具。
+pytest：Pythonの単体テストの道具。"""
+reflect = "サービスのアーキテクチャ、backend/<サービス名>/AGENTS.md の技術スタック"
+
+[[sheets.items]]
+id = "app.database"
+name = "使うデータベース"
+required = "必須"
+description = """
+このアプリはデータベース（DB）を使う前提で作る。使うDBの種類と、新しく作るか既存のDBを使うかを書く。
+未定のとき：AWSの環境のDBが無いため、開発者のPCで動かすDBを使い、開発者のPCでだけ動作確認できる形で環境を作る。AWSの環境での動作確認は、DBが決まってからにする。"""
+example = "PostgreSQL（Amazon Aurora）。新しく作る。"
+note = """
+データベース（DB）：アプリのデータを保存する場所。
+種類：PostgreSQL、MySQL など。AWSでは、Amazon Aurora や Amazon RDS で動かすことが多い。
+既存のDB：ほかのシステムがすでに使っているDBに、このアプリのテーブルを置くこと。
+未定のときは、開発者のPCで動かすDBを使い、開発者のPCでだけ動作確認する。"""
+reflect = "全体とサービスのアーキテクチャの {{DBの責任分界}}、インストール手順、ローカル動作確認手順"
+
+[[sheets.items]]
+id = "app.db_owner"
+name = "DBの所有者と変更責任"
+required = "任意"
+description = "DBを持つ部署と、テーブルの追加・変更を誰が行うか。"
+example = "所有は総務部。テーブルの変更は開発チームが行う。"
+default = "開発チームが持ち、テーブルの変更も開発チームが行う"
+note = """
+所有者：DBを持ち、運用する部署。
+変更責任：テーブルの追加・変更（DDL、マイグレーション）を誰が行うか。
+既存のDBを使う場合は、そのDBを持つ部署に確かめる。"""
+reflect = "全体とサービスのアーキテクチャの {{DBの責任分界}}"
+
+[[sheets.items]]
+id = "app.test_db"
+name = "テスト用のDB"
+required = "任意"
+description = "テストで使うDBと管理者。"
+example = "既定のまま"
+default = "テスト専用のDBを使う"
+note = "本番のデータを壊さないよう、テストだけに使うDBを用意する。"
+reflect = "docs/20_rules/テスト規約.md"
+
+[[sheets.items]]
+id = "app.external"
+name = "外部連携の有無"
+required = "必須"
+description = """
+選択：あり／なし／未定
+未定のとき：外部連携の節を「未決定」として残し、未決定事項として報告する。"""
+example = "あり"
+choices = ["あり", "なし", "未定"]
+reflect = "docs/20_rules/アーキテクチャ.md の利用者と外部システム"
+
+[[sheets.items]]
+id = "app.external_targets"
+name = "外部連携の対象と責任分界"
+required = "条件付き必須"
+required_if = { id = "app.external", equals = "あり" }
+description = "外部連携がある場合に書く。相手のシステムと、どこまでをこのアプリが受け持つか。"
+example = "会計システム：発注のCSVを出力し、決まったフォルダに置くまでをこのアプリが受け持つ。"
+note = """
+外部連携：ほかのシステムとデータをやり取りすること（ファイルの受け渡し、APIの呼び出しなど）。
+責任分界：どこまでをこのアプリが作り・運用し、どこからを相手のシステムが受け持つかの境目。"""
+reflect = "docs/20_rules/アーキテクチャ.md の利用者と外部システム、必要な外部インタフェースの設計書"
+
+[[sheets.items]]
+id = "app.login"
+name = "画面のログインの方式"
+required = "任意"
+description = "利用者が画面にログインする方式。"
+example = "既定のまま"
+default = "Amazon Cognito。パスワードと、ワンタイムパスワード（認証アプリ）の2要素認証"
+note = """
+Cognito：AWSのログインの仕組み。
+ワンタイムパスワード：スマートフォンの認証アプリ（Google Authenticator、Microsoft Authenticator など）に出る、30秒ごとに変わる6桁の数字。
+利用者は、初めてログインするときに、認証アプリを登録する。
+社内の共通のログイン（シングルサインオン）を使う場合などだけ、記入する。"""
+reflect = "docs/20_rules/アーキテクチャ.md の {{認証と環境の方針}}"
+
+[[sheets.items]]
+id = "app.user_registration"
+name = "利用者の登録"
+required = "任意"
+description = "利用者の登録・削除を誰が行うか。"
+example = "既定のまま"
+default = "開発者が登録・削除する"
+note = """
+利用者を Cognito に登録・削除する人。
+利用者が増えたり、退職したりしたときに、依頼を受けて登録・削除する。"""
+reflect = "docs/20_rules/アーキテクチャ.md の {{認証と環境の方針}}、運用手順"
+
+[[sheets.items]]
+id = "app.roles"
+name = "権限の分け方"
+required = "任意"
+description = "ログインした人ごとに、使える機能を分けるか。分ける場合は、権限の種類を書く。"
+example = "参照だけの人と、更新もできる人の2種類"
+default = "分けない（ログインできる人は、すべての機能を使える）"
+note = """
+認可：ログインした人に、何をしてよいかを決めること。
+例：参照だけできる人と、更新もできる人を分ける。"""
+reflect = "docs/20_rules/アーキテクチャ.md の {{認証と環境の方針}}"
+
+[[sheets.items]]
+id = "app.test_users"
+name = "テストユーザー"
+required = "任意"
+description = "テスト用の利用者の用意と管理の方法。パスワードは書かない。"
+example = "既定のまま"
+default = "開発者ごとに1つ、開発者が作る"
+note = """
+テストでログインするための利用者。
+パスワードは、このExcelに書かない。"""
+reflect = "docs/20_rules/テスト規約.md、テストの進め方"
+
+[[sheets.items]]
+id = "app.publishing"
+name = "画面とAPIの公開方式"
+required = "任意"
+description = "画面とAPIをどう公開するか。"
+example = "既定のまま"
+default = "画面とAPIを同じドメインで公開する。CloudFrontが、パスの先頭（サービス名）を見て、サービスごとのAPIに振り分ける"
+note = """
+CloudFront：画面とAPIを、利用者に届けるAWSの仕組み。URLのパスを見て、転送先を振り分けられる。
+画面とAPIを同じドメインにすると、ブラウザーの制限（CORS）がかからず、事前の確認の通信（プリフライト）も起きない。
+例：
+https://asset.example.com/ → 画面
+https://asset.example.com/lending/... → 貸出サービスのAPI
+https://asset.example.com/purchase/... → 発注サービスのAPI"""
+reflect = "docs/20_rules/アーキテクチャ.md の「画面とAPIの転送」「APIの転送の設定」「画面のURLの振り分け」、API共通仕様、フロントエンド実装方針、URL命名規則"
+
+[[sheets.items]]
+id = "app.glossary"
+name = "業務用語"
+required = "任意"
+description = "用語集に載せる用語。インプット資料にあれば、その資料名とシートでよい。"
+example = "インプット資料 No.2 の「用語」シート"
+reflect = "docs/30_glossary/用語集.md"
+
+[[sheets]]
+key = "dev"
+kind = "items"
+name = "開発の進め方"
+summary = "役割、テスト、設計書の置き場所、課題管理。"
+lead = ["役割、テスト、設計書の置き場所、課題管理。", "黄色の「記入欄」に記入します。任意の項目は、空欄なら既定値を使います。"]
+
+[[sheets.items]]
+id = "dev.roles"
+name = "人とAIの役割"
+required = "任意"
+description = "誰が何をするか。"
+example = "既定のまま"
+default = "AIが変更し、人がレビュー・コミット・プッシュ・マージする"
+note = """
+レビュー：変更の中身を人が確かめること。
+コミット：変更を記録すること。
+プッシュ：記録を共有の場所（GitHub）に送ること。
+マージ：確かめた変更を本流に取り込むこと。"""
+reflect = "AGENTS.md、docs/20_rules/リポジトリ規約.md の作業の流れと担当"
+
+[[sheets.items]]
+id = "dev.test_method"
+name = "テストの方法"
+required = "任意"
+description = "単体テストと画面のテストの道具。"
+example = "既定のまま"
+default = "フロントエンドの単体テストはVitest（Nuxt環境では@nuxt/test-utils）、Pythonサービスの単体テストはpytest、画面のE2EテストはPlaywright"
+note = """
+単体テスト：関数やAPIを1つずつ確かめるテスト。
+E2Eテスト：ブラウザーで画面を操作し、最初から最後まで確かめるテスト。
+Playwright：ブラウザーを自動で操作する道具。"""
+reflect = "docs/20_rules/テスト規約.md、テストの進め方"
+
+[[sheets.items]]
+id = "dev.test_data"
+name = "テストデータ"
+required = "任意"
+description = "テストで使うデータの用意と後片付け。"
+example = "既定のまま"
+default = "テストごとに準備し、終わったら消す"
+reflect = "docs/20_rules/テスト規約.md"
+
+[[sheets.items]]
+id = "dev.test_env"
+name = "テスト環境とAPIの接続先"
+required = "任意"
+description = "テストで接続する環境と、共有の環境でのデータの準備・削除を誰がどう行うか。接続文字列やパスワードは書かない。"
+example = "dev環境。共有のデータは開発チームが準備・削除する。"
+reflect = "docs/20_rules/テスト規約.md、テストの進め方"
+
+[[sheets.items]]
+id = "dev.design_doc_master"
+name = "設計書の正式版の置き場所"
+required = "必須"
+description = "設計書の正式版を置く場所。ファイルサーバーならフルパス。リポジトリに置く場合は「リポジトリ」と書く。"
+example = "\\\\fileserver\\share\\asset-mgmt\\設計書\\正式版"
+note = """
+正式版：レビューが済んだ、正しいとする設計書。
+ファイルサーバーの場合は \\\\サーバー名\\共有名\\... の形のフルパスで書く。"""
+reflect = "docs/50_operation/AI駆動開発の運用/ の {{設計書の正式版の置き場所}}"
+
+[[sheets.items]]
+id = "dev.design_doc_work"
+name = "設計書の作業場の置き場所"
+required = "任意"
+description = "設計書を作る・直すときの作業場所。フルパス。"
+example = "\\\\fileserver\\share\\asset-mgmt\\設計書\\作業中"
+default = "設計書の正式版と同じ場所の「作業中」フォルダ"
+note = "作業場：設計書を作る・直すときに、正式版とは別に使う場所。レビューが済んだら、正式版へ反映する。"
+reflect = "docs/50_operation/AI駆動開発の運用/ の作業場の置き場所"
+
+[[sheets.items]]
+id = "dev.issue_tracker"
+name = "課題管理"
+required = "任意"
+description = "課題と未決定事項を管理する場所。"
+example = "既定のまま"
+default = "GitHub Issues"
+note = "GitHub Issues：GitHubで、課題や作業を1件ずつ管理する機能。"
+reflect = "docs/20_rules/リポジトリ規約.md の課題管理、Issueテンプレート"
+
+[[sheets.items]]
+id = "dev.tools"
+name = "使用ツールと権限"
+required = "任意"
+description = "AIが使ってよいツールと、使える範囲。秘密情報は書かない。"
+example = "DBの参照ツール（開発のDBの読み取りだけ）"
+note = "AIが使ってよいツール（DBの参照ツール、ブラウザーの操作など）と、その範囲（読み取りだけ、など）。"
+reflect = "AGENTS.md のツールの使い方"
+
+[[sheets.items]]
+id = "dev.extra_skills"
+name = "追加スキル"
+required = "任意"
+description = "標準のもの以外に、このプロジェクトで使うスキル。"
+example = ""
+reflect = ".claude/skills/、AGENTS.md のスキルの一覧"
+
+[[sheets]]
+key = "infra"
+kind = "items"
+name = "インフラ"
+summary = "AWSの環境、ネットワーク、デプロイの前提。"
+lead = ["AWSの環境、ネットワーク、デプロイの前提。", "黄色の「記入欄」に記入します。任意の項目は、空欄なら既定値を使います。"]
+
+[[sheets.items]]
+id = "infra.aws_id"
+name = "AWS識別名"
+required = "必須"
+description = "AWSのリソースの名前の先頭に付ける名前。英小文字。"
+example = "asset"
+note = """
+AWSのリソース（Lambda、S3など）の名前の先頭に付ける、このアプリを表す短い名前。
+ほかのアプリのリソースと区別するために使う。"""
+reflect = "docs/20_rules/AWSリソース命名規則.md の識別名"
+
+[[sheets.items]]
+id = "infra.envs"
+name = "環境名"
+required = "必須"
+description = "作る環境の名前。複数あればカンマで区切る。"
+example = "dev, prod"
+note = """
+環境：同じアプリを用途ごとに分けて動かす場所。
+例：dev（開発）、stg（検証）、prod（本番）。"""
+reflect = "docs/20_rules/AWSリソース命名規則.md の環境名"
+
+[[sheets.items]]
+id = "infra.region"
+name = "リージョン"
+required = "任意"
+description = "使うAWSのリージョン。"
+example = "既定のまま"
+default = "ap-northeast-1（東京）"
+note = "AWSのデータセンターがある地域。日本なら ap-northeast-1（東京）か ap-northeast-3（大阪）。"
+reflect = "docs/20_rules/AWSリソース命名規則.md のリージョン"
+
+[[sheets.items]]
+id = "infra.service_abbr"
+name = "サービス略称"
+required = "必須"
+description = "AWSの名前に使う、サービスごとの短い名前。"
+example = "lending → lnd"
+note = "AWSのリソースの名前は長さに上限があるため、サービス名を短くした名前を使う。"
+reflect = "docs/20_rules/AWSリソース命名規則.md のサービスの略称の一覧"
+
+[[sheets.items]]
+id = "infra.aws_mfa"
+name = "AWSへのサインインの2要素認証"
+required = "必須"
+description = """
+開発者がAWSにサインインするとき、2要素認証（MFA）が必要か。アプリの画面のログインとは別。選択：あり／なし／不明
+不明のとき：AIが確かめ方を案内し、人がAWSに接続して確かめ、この欄を直す。確かめるまでは、未決定事項として報告する。"""
+example = "あり"
+choices = ["あり", "なし", "不明"]
+note = """
+開発者がAWS（画面やコマンド）にサインインするときの話。アプリの画面のログインとは別。
+2要素認証（MFA）：パスワードに加えて、スマートフォンのアプリなどのコードでも本人を確かめる仕組み。
+ありの場合、AWSのコマンドを使う前に、コードを入力する手順が要る。
+確かめ方：AWSの画面（IAM）で、自分のユーザーに「MFAデバイス」が登録されているか。社内の決まりで必須かどうかは、AWSの管理者に確かめる。"""
+reflect = "インストール手順の、AWSにサインインする手順"
+
+[[sheets.items]]
+id = "infra.domain"
+name = "ドメイン"
+required = "任意"
+description = "画面を公開するドメイン。決まっていなければ空欄。"
+example = "asset.example.com"
+default = "CloudFrontが付けるドメイン（*.cloudfront.net）"
+note = "画面のアドレス（URL）の、https:// の後ろの部分。例：asset.example.com"
+reflect = "docs/20_rules/アーキテクチャ.md の「画面とAPIの転送」"
+
+[[sheets.items]]
+id = "infra.ip_restriction"
+name = "IP制限をかけるか"
+required = "任意"
+description = "決まった場所（社内のネットワークなど）からだけ、画面とAPIを使えるようにするか。選択：かける／かけない"
+example = "既定のまま"
+default = "かける"
+choices = ["かける", "かけない"]
+note = """
+IP制限：決まったIPアドレスから来たアクセスだけを通し、ほかはすべて断る仕組み。AWS WAF という機能で行う。
+画面とAPIはどちらもCloudFrontを通るため、1か所の設定で両方にかかる。
+社外に公開するなど、かけられない事情があるときだけ「かけない」を選ぶ。"""
+reflect = "docs/20_rules/アーキテクチャ.md の「IP制限」「API Gatewayへの直接のアクセスを防ぐ」、AWSリソース命名規則のWAFの行（かけない場合は消す）"
+
+[[sheets.items]]
+id = "infra.allowed_ips"
+name = "許可するIPアドレス"
+required = "条件付き必須"
+required_if = { id = "infra.ip_restriction", equals = "かける" }
+description = "IP制限をかける場合に、アクセスを許可するグローバルIPアドレス。複数あればカンマで区切る。決まっていなければ「未定」と書く（本番の環境を作るまでに決める）。"
+example = "203.0.113.10/32, 203.0.113.20/32"
+note = """
+社内のネットワークや VPN が、インターネットに出るときのIPアドレス（グローバルIP）を書く。
+社内のPCで確かめるIPアドレス（192.168.… など）ではない。
+IPアドレスが固定であることが前提。分からなければ、社内のネットワークの担当者に確かめる。
+「未定」のときは、本番の環境を作るまでに決める。"""
+reflect = "資料には書かない。インフラのコードを作るときに、入力シートから読んで設定に使う"
+
+[[sheets.items]]
+id = "infra.vpc"
+name = "既存のVPCを使うか"
+required = "必須"
+description = """
+Lambdaなどを既存のVPCに置くか。選択：使う／新しく作る／VPCを使わない／不明
+不明のとき：AIが確かめ方を案内し、人がAWSに接続して確かめ、この欄を直す。確かめるまでは、未決定事項として報告する。"""
+example = "使う"
+choices = ["使う", "新しく作る", "VPCを使わない", "不明"]
+note = """
+VPC：AWSの中に作る、社内専用のネットワーク。
+社内のDBや、ほかのシステムにつなぐ場合は、既存のVPCを使うことが多い。
+分からなければ「不明」を選ぶ。
+確かめ方：AWSの画面（VPC）に、このアプリで使うVPCがあるか。どれを使うかは、AWSの管理者に確かめる。"""
+reflect = "docs/20_rules/アーキテクチャ.md のインフラ"
+
+[[sheets.items]]
+id = "infra.vpc_id"
+name = "既存のVPCの名前・ID"
+required = "条件付き必須"
+required_if = { id = "infra.vpc", equals = "使う" }
+description = "既存のVPCを使う場合に書く。環境ごとに違えば、環境ごとに書く。"
+example = "dev: vpc-0123456789abcdef0"
+note = "VPCのID：vpc- で始まる番号。AWSの画面（VPC）で確かめられる。"
+reflect = "資料には書かない。インフラのコードを作るときに、入力シートから読んで設定に使う"
+
+[[sheets.items]]
+id = "infra.oidc"
+name = "OIDCプロバイダーの有無"
+required = "条件付き必須"
+required_if = { id = "infra.deploy", equals = "GitHub Actions" }
+description = """
+GitHub ActionsでデプロイするときにAWSへ接続するための設定が、AWSアカウントにあるか。選択：あり／なし／不明
+なしのとき：AIが作り方の手順を手順書に書き、人がAWSに接続して1回だけ作る。
+不明のとき：AIが確かめ方を案内し、人がAWSに接続して確かめ、この欄を直す。確かめるまでは、未決定事項として報告する。"""
+example = "不明"
+choices = ["あり", "なし", "不明"]
+note = """
+GitHub Actions（GitHubの自動実行の機能）から、パスワードやキーを保存せずにAWSへ接続するための設定。
+AWSのアカウントに1つしか作れない。ほかのアプリで作っていれば「あり」。
+実際は「あり」なのに「なし」と答えると、作るときにエラーになる。迷ったら「不明」を選ぶ。
+確かめ方：AWSの画面（IAM）の「IDプロバイダー」に token.actions.githubusercontent.com があるか。"""
+reflect = "docs/20_rules/アーキテクチャ.md の「GitHub Actions用のIAMロール」、インストール手順（なしのときの作り方）"
+
+[[sheets.items]]
+id = "infra.cdk_bootstrap"
+name = "cdk bootstrap が済んでいるか"
+required = "任意"
+description = """
+使うAWSのアカウントとリージョンで、CDKを使う準備が済んでいるか。人ごとではなく、アカウントとリージョンの組ごとに1回だけ行う。選択：済み／まだ／不明
+まだのとき：AIが手順を手順書に書き、人がAWSに接続して1回だけ行う。
+不明のとき：AIが確かめ方を案内し、人がAWSに接続して確かめ、この欄を直す。確かめるまでは、未決定事項として報告する。"""
+example = "済み"
+default = "不明（確かめ方を案内する）"
+choices = ["済み", "まだ", "不明"]
+note = """
+AWS CDK（AWSのリソースをプログラムで作る道具）を使う前に行う準備。CDKがデプロイに使うS3のバケットや権限を作る。
+人ごとではなく、AWSのアカウントとリージョンの組ごとに1回だけ行う。ほかのアプリでCDKを使っていれば、済んでいることが多い。
+IP制限をかける場合は、使うリージョン（東京など）に加えて、us-east-1（バージニア北部）でも要る。CloudFront用のWAFは、us-east-1に作る決まりだから。
+確かめ方：AWSの画面（CloudFormation）で、リージョンごとに CDKToolkit というスタックがあるか。"""
+reflect = "インストール手順（まだのときの手順。AWSアカウントの管理者が行う）"
+
+[[sheets.items]]
+id = "infra.deploy"
+name = "デプロイの方法"
+required = "任意"
+description = "デプロイを何で行うか。"
+example = "既定のまま"
+default = "GitHub Actions"
+note = """
+デプロイ：作ったプログラムを、AWSの環境に反映すること。
+GitHub Actions：GitHubで、決まった操作（テスト、デプロイなど）を自動で実行する機能。"""
+reflect = "docs/20_rules/アーキテクチャ.md のデプロイ"
+
+[[sheets.items]]
+id = "infra.deploy_rules"
+name = "環境ごとのデプロイの担当と条件"
+required = "任意"
+description = "環境ごとに、誰が、どのタイミングでデプロイするか。"
+example = "dev: mainへのマージで自動。prod: 承認者が手動で実行。"
+reflect = "docs/20_rules/アーキテクチャ.md の {{対象プロジェクトで採用するワークフローと実行条件}}"
+
+[[sheets]]
+key = "screen"
+kind = "items"
+name = "画面"
+summary = "画面規約の前提。ブランドカラー・対応端末・画面の一覧以外は既定値を使える。"
+lead = ["画面規約の前提。ブランドカラー・対応端末・画面の一覧以外は既定値を使える。", "黄色の「記入欄」に記入します。任意の項目は、空欄なら既定値を使います。"]
+
+[[sheets.items]]
+id = "screen.brand_color"
+name = "ブランドカラー"
+required = "必須"
+description = """
+このWebサイトを象徴する色。ボタン・選択中の表示・リンクに使う。会社のロゴの色や、好みの色を書く。16進数で書くか、分からなければ「濃い緑」のように言葉で書く。
+特に無ければ「指定なし」と書く（DADSの既定の青を使う）。"""
+example = "#3460fb"
+note = """
+このWebサイトを象徴する色。ボタンやリンクなど、主な操作の色に使う。
+決め方の例：会社のロゴやコーポレートカラーの色、サービスのイメージに合う色、好みの色。
+16進数（#3460fb など）が分からなければ、「濃い緑」のように言葉で書いてもよい。
+ボタンやリンクの文字にも使うため、白い背景で読みにくい明るい色のときは、AIが同じ色合いで濃さを変えた案を出す。"""
+reflect = "画面規約（generate-screen-design-rules に渡す）"
+
+[[sheets.items]]
+id = "screen.devices"
+name = "対応端末"
+required = "必須"
+description = "画面を使う端末。複数あればカンマで区切る。例：社内のPC、タブレット、スマートフォン"
+example = "社内のPC"
+reflect = "画面規約（generate-screen-design-rules に渡す）"
+
+[[sheets.items]]
+id = "screen.screen_list"
+name = "画面とメニューの一覧"
+required = "必須"
+description = "「画面とメニュー」シートに書く。ここには「シートに記入」と書く。"
+example = "シートに記入"
+reflect = "「画面とメニュー」シートを読む"
+
+[[sheets.items]]
+id = "screen.system_name"
+name = "システム名"
+required = "任意"
+description = "Headerの左に表示する名前。"
+example = "備品管理システム"
+default = "プロジェクト概要のプロジェクト名"
+reflect = "画面規約の Header"
+
+[[sheets.items]]
+id = "screen.design_system"
+name = "デザインシステム"
+required = "任意"
+description = "画面規約のもとにするデザインシステム。"
+example = "既定のまま"
+default = "デジタル庁デザインシステム（DADS）を主、IBM Carbonで不足を補う"
+note = """
+デザインシステム：色・文字・部品の見た目と使い方の決まりをまとめたもの。
+DADS：デジタル庁デザインシステム。
+IBM Carbon：IBMのデザインシステム。業務システムの画面の構成を補うために使う。"""
+reflect = "画面規約"
+
+[[sheets.items]]
+id = "screen.component_library"
+name = "部品のライブラリ"
+required = "任意"
+description = "画面の部品に使うライブラリ。"
+example = "既定のまま"
+default = "Vuetify"
+note = "Vuetify：ボタン・入力欄・表などの画面の部品をまとめたもの（Vue用）。"
+reflect = "画面規約、フロントエンド実装方針"
+
+[[sheets.items]]
+id = "screen.target_width"
+name = "想定の画面の幅"
+required = "任意"
+description = "横にスクロールせずに収める画面の幅。"
+example = "既定のまま"
+default = "1,536px（1,920×1,080の画面を125%に拡大したときの幅）"
+reflect = "画面規約"
+
+[[sheets.items]]
+id = "screen.narrow_breakpoint"
+name = "狭い画面の境目"
+required = "任意"
+description = "これより狭い画面では、情報や操作が欠けないことだけを確かめる。"
+example = "既定のまま"
+default = "768px"
+reflect = "画面規約"
+
+[[sheets.items]]
+id = "screen.font"
+name = "フォント"
+required = "任意"
+description = "本文と等幅のフォント。"
+example = "既定のまま"
+default = "Noto Sans JP、Noto Sans Mono（外部のサイトから読み込まず、パッケージに含める）"
+reflect = "画面規約"
+
+[[sheets.items]]
+id = "screen.font_size"
+name = "文字の大きさ"
+required = "任意"
+description = "本文と、領域が狭い場所の文字の大きさ。"
+example = "既定のまま"
+default = "本文16px。表・ツリー・サイドパネル・フォームのラベルは14px。14px未満は使わない"
+reflect = "画面規約"
+
+[[sheets.items]]
+id = "screen.font_weight"
+name = "文字の太さ"
+required = "任意"
+description = "使う文字の太さ。"
+example = "既定のまま"
+default = "400（標準）と700（太字）だけ"
+reflect = "画面規約"
+
+[[sheets.items]]
+id = "screen.radius"
+name = "角丸"
+required = "任意"
+description = "ボタン・入力欄・カードなどの角の丸さ。"
+example = "既定のまま"
+default = "8px"
+reflect = "画面規約"
+
+[[sheets.items]]
+id = "screen.spacing"
+name = "余白"
+required = "任意"
+description = "部品どうしと、ページの外周の余白。"
+example = "既定のまま"
+default = "部品どうし8px、ページの外周は左右20px・上下10px"
+reflect = "画面規約"
+
+[[sheets.items]]
+id = "screen.table_header_color"
+name = "表の見出しの背景色"
+required = "任意"
+description = "表の見出しの背景の色。"
+example = "既定のまま"
+default = "#d6edf0"
+reflect = "画面規約"
+
+[[sheets.items]]
+id = "screen.header_height"
+name = "Headerの高さ"
+required = "任意"
+description = "画面の上に固定するHeaderの高さ。"
+example = "既定のまま"
+default = "48px"
+note = "Header：画面の一番上の帯。システム名やログイン中の利用者を表示する。"
+reflect = "画面規約"
+
+[[sheets.items]]
+id = "screen.side_navigation"
+name = "Side Navigation"
+required = "任意"
+description = "左のメニューの幅と、表示の方式。"
+example = "既定のまま"
+default = "幅256px。開いた状態で固定し、メニューのボタンで閉じられる"
+note = "画面の左に出すメニュー。"
+reflect = "画面規約"
+
+[[sheets.items]]
+id = "screen.menu_url"
+name = "メニューの階層とURL"
+required = "任意"
+description = "メニューの階層の数と、画面のURLの付け方。"
+example = "既定のまま"
+default = "3階層。URLは /<第1階層>/<第2階層>/<画面> の英小文字・ハイフン区切り"
+reflect = "docs/20_rules/URL命名規則.md、画面規約"
+
+[[sheets]]
+key = "screens"
+kind = "list"
+name = "画面とメニュー"
+summary = "作る画面とメニューの一覧。"
+lead = ["作る画面を1行に1つ書きます。メニューに出す画面は、メニューの階層も書きます。", "URLは決まっていなければ空欄にします（URLの付け方に沿ってAIが案を出します）。"]
+rows = 40
+required_rows = 1
+
+[[sheets.columns]]
+id = "menu1"
+name = "メニュー（第1階層）"
+width = 20
+example = "備品"
+
+[[sheets.columns]]
+id = "menu2"
+name = "メニュー（第2階層）"
+width = 20
+example = "備品台帳"
+
+[[sheets.columns]]
+id = "name"
+name = "画面名"
+width = 24
+example = "備品一覧"
+
+[[sheets.columns]]
+id = "url"
+name = "URL"
+width = 34
+example = "/asset/ledger/list"
+
+[[sheets.columns]]
+id = "kind"
+name = "画面の種類"
+width = 16
+example = "検索・一覧"
+choices = ["検索・一覧", "詳細", "登録・編集", "参照・編集", "ダッシュボード", "その他"]
+
+[[sheets.columns]]
+id = "summary"
+name = "画面の概要"
+width = 44
+example = "備品を条件で探し、一覧で表示する。"
+
+[[sheets.columns]]
+id = "users"
+name = "主な利用者"
+width = 18
+example = "総務部の担当者"
+
+[[sheets.columns]]
+id = "note"
+name = "補足"
+width = 30
+example = "メニューから開く"
+
+[[sheets]]
+key = "harness"
+kind = "items"
+name = "ハーネスの設定"
+summary = "スキルの導入先や、Claude Codeのおすすめの設定。"
+lead = ["スキルの導入先や、Claude Codeのおすすめの設定。", "黄色の「記入欄」に記入します。任意の項目は、空欄なら既定値を使います。"]
+
+[[sheets.items]]
+id = "harness.skills_repo"
+name = "公開スキルのリポジトリ"
+required = "必須"
+description = "設計書・図などのスキルを導入する、公開スキルのGitHubリポジトリ（owner/repository）。"
+example = "example-org/agent-skills"
+note = """
+スキル：AIに作業の手順を教えるファイル。
+設計書や図を作るスキルを、このリポジトリから取り込む。"""
+reflect = ".agents/config/bootstrap-ai-harness/settings.md の「公開スキルのリポジトリ」"
+
+[[sheets.items]]
+id = "harness.app_root"
+name = "アプリのルート"
+required = "任意"
+description = "保存時の整形の対象にするディレクトリ。リポジトリの直下にアプリがあるときは「.」。"
+example = "既定のまま"
+default = "."
+note = "アプリのファイルを置く一番上のフォルダ。リポジトリの直下にアプリがあれば「.」。"
+reflect = ".agents/config/bootstrap-ai-harness/settings.md の「アプリのルート」"
+
+[[sheets.items]]
+id = "harness.permissions"
+name = "承認なしの許可・確認・禁止"
+required = "任意"
+description = "Claude Codeの、おすすめの許可の設定を入れるか。選択：する／しない"
+example = "する"
+default = "する"
+choices = ["する", "しない"]
+note = "AIがコマンドを実行するとき、毎回確認を求めずに実行してよいもの、確認を求めるもの、禁止するものの設定。"
+reflect = ".agents/config/bootstrap-ai-harness/settings.md、.claude/settings.json"
+
+[[sheets.items]]
+id = "harness.formatter_hooks"
+name = "保存時の整形のフック"
+required = "任意"
+description = "ファイルの保存時に、自動で整形するか。選択：する／しない"
+example = "する"
+default = "する"
+choices = ["する", "しない"]
+note = """
+ファイルを保存するたびに、書き方（字下げ、改行など）を自動でそろえる設定。
+Prettier：画面のプログラム用。Black：Python用。"""
+reflect = ".agents/config/bootstrap-ai-harness/settings.md、.claude/settings.json"
+
+[[sheets.items]]
+id = "harness.github_actions"
+name = "GitHub Actions"
+required = "任意"
+description = "PRのAIレビューなどの、GitHub Actionsのひな形を入れるか。選択：する／しない"
+example = "する"
+default = "しない"
+choices = ["する", "しない"]
+note = """
+GitHubで、決まった操作を自動で実行する機能。
+PRのAIレビュー：変更の依頼（プルリクエスト）をAIが確かめる。
+Issueの自動ラベル付け：課題に、種類のラベルを自動で付ける。"""
+reflect = ".agents/config/bootstrap-ai-harness/settings.md、.github/"
+
+[[sheets.items]]
+id = "harness.github_actions_features"
+name = "GitHub Actionsで使う機能"
+required = "条件付き必須"
+required_if = { id = "harness.github_actions", equals = "する" }
+description = "GitHub Actionsを入れる場合に、使う機能をカンマで区切って書く。PRのAIレビュー、Issueの自動ラベル付け、デプロイ前のテスト"
+example = "PRのAIレビュー, Issueの自動ラベル付け"
+reflect = ".agents/config/bootstrap-ai-harness/settings.md の備考"
+
+[[sheets.items]]
+id = "harness.github_actions_ack"
+name = "GitHub Actionsの前提の了解"
+required = "条件付き必須"
+required_if = { id = "harness.github_actions", equals = "する" }
+description = "GitHub Actionsを入れる場合に、シークレットの登録・費用・起票者の権限の前提を了解したか。選択：了解した"
+example = "了解した"
+choices = ["了解した"]
+note = """
+シークレット：AIを使うためのキーを、GitHubに登録する必要がある。
+費用：AIの利用料がかかる。
+起票者の権限：自動で動くのは、権限のある人が起票した課題だけ。"""
+reflect = ".agents/config/bootstrap-ai-harness/settings.md の備考"

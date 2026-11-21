@@ -9,5 +9,5 @@
 - [API共通仕様](40_spec/API共通仕様.md)：APIの共通入出力。
 - [AI駆動開発の運用](50_operation/AI駆動開発の運用/README.md)：役割、処理フロー、利用ツール、スキル、ハーネス。
 
-画面の規約は[フロントエンド実装方針](../nuxt/docs/20_rules/フロントエンド実装方針.md)と[CSSコーディング規約](../nuxt/docs/20_rules/CSSコーディング規約.md)を参照する。
+画面の規約は[フロントエンド実装方針](../nuxt/docs/20_rules/フロントエンド実装方針.md)、[Nuxtコーディング規約](../nuxt/docs/20_rules/Nuxtコーディング規約.md)と[CSSコーディング規約](../nuxt/docs/20_rules/CSSコーディング規約.md)を参照する。
 各サービスのAPI仕様と設計は、そのサービスの資料に置く。
