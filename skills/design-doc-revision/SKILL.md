@@ -1,6 +1,6 @@
 ---
 name: design-doc-revision
-description: 共有の場所の設計書（Excel・処理フロー図・ER図など）を、課題に合わせて直し、レビュー担当者の確認を経て正本へ反映するまでを行う。作業フォルダの作成、正本からの取得（読み取りのみ）、変更箇所一覧・確認資料の作成、置き場へ上げる・正本へ反映するスクリプトの作成まで。場所と運用は、ハーネスを読み、読めないものだけ質問して .agents/config/design-doc-revision/settings.md に保存する。「設計書を直して」「変更箇所一覧を作って」「確認資料を作って」「正本に反映する」等で使う。
+description: 共有の場所の設計書（Excel・処理フロー図・ER図など）を、課題に合わせて直し、レビュー担当者の確認を経て正本へ反映するまでを行う。作業フォルダの作成、正本からの取得（読み取りのみ）、変更箇所一覧・確認資料の作成、置き場へ上げる・正本へ反映するスクリプトの作成まで。場所と運用は、ハーネスを読み、読めないものだけ質問して .agents/config/design-doc-revision/settings.md に保存する。「設計書を直して」「変更箇所一覧を作って」「確認資料を作って」「正本に反映する」等で使う。Keywords：design document revision, change list, design review, document management.
 license: MIT
 ---
 

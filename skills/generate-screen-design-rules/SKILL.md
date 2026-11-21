@@ -2,6 +2,7 @@
 description: |
     プロジェクトの画面設計規約を作成・更新する。 Markdownテンプレートをもとに、 DADSを主、IBM Carbon Design Systemを補完として具体的な規約を埋め、 プロジェクト固有の判断が必要な項目をユーザーに確認して確定する。
     画面設計の基本原則（設計原則）についての問い合わせにも、同梱の参照資料で答える。
+    Keywords：UI design guidelines, design system, Digital Agency Design System, Carbon Design System.
 license: MIT
 name: generate-screen-design-rules
 ---

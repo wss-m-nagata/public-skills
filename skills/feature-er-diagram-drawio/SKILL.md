@@ -1,6 +1,6 @@
 ---
 name: feature-er-diagram-drawio
-description: 処理フロー図の1まとまりが使うテーブルだけを載せた「機能別ER図」（.drawio）を、spec JSON から作成・更新・検査する。現行DDLからの変更を［変更］［新規］［廃止］で示す。DDLの場所と図の置き場は、ハーネスを読み、読めないものだけ質問して .agents/config/feature-er-diagram-drawio/settings.md に保存する。「ER図を作って」「処理フローに合わせてER図を作って」「ER図を直して」「ER図が決まりどおりか確かめて」等で、スキル名を言われなくても使う。
+description: 処理フロー図の1まとまりが使うテーブルだけを載せた「機能別ER図」（.drawio）を、spec JSON から作成・更新・検査する。現行DDLからの変更を［変更］［新規］［廃止］で示す。DDLの場所と図の置き場は、ハーネスを読み、読めないものだけ質問して .agents/config/feature-er-diagram-drawio/settings.md に保存する。「ER図を作って」「処理フローに合わせてER図を作って」「ER図を直して」「ER図が決まりどおりか確かめて」等で、スキル名を言われなくても使う。Keywords：ER diagram, draw.io, database design, DDL, schema change.
 license: MIT
 ---
 

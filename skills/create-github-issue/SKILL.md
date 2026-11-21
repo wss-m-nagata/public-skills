@@ -1,6 +1,6 @@
 ---
 name: create-github-issue
-description: GitHub Issue を .github/ISSUE_TEMPLATE/ のテンプレートから作り、起点ブランチを決めて作業ブランチを用意する。作成後の進捗コメント・チェックの整理・引き継ぎも扱う。種別とブランチの規則は、まずプロジェクトのハーネスを読み、読めないものだけ質問して .agents/config/create-github-issue/settings.md に保存する。「issueを作って」「issue立てたい」「バグ報告をあげて」「issueとブランチを用意して」「進捗コメントを書いて」等で、スキル名を言われなくても使う。
+description: GitHub Issue を .github/ISSUE_TEMPLATE/ のテンプレートから作り、起点ブランチを決めて作業ブランチを用意する。作成後の進捗コメント・チェックの整理・引き継ぎも扱う。種別とブランチの規則は、まずプロジェクトのハーネスを読み、読めないものだけ質問して .agents/config/create-github-issue/settings.md に保存する。「issueを作って」「issue立てたい」「バグ報告をあげて」「issueとブランチを用意して」「進捗コメントを書いて」等で、スキル名を言われなくても使う。Keywords：GitHub issue, issue template, branch workflow, progress tracking, handoff.
 license: MIT
 ---
 

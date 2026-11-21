@@ -1,6 +1,6 @@
 ---
 name: pre-push-check
-description: プッシュする前に、変わった領域（フロントエンド・バックエンドなど）ごとに、全テスト・AIレビュー・規約チェックを行い、結果と指摘を報告する。規約とテストの進め方は、ハーネスを毎回読んで使う。初回は、読み取れるものを先に調べ、読めないものだけ質問して .agents/config/pre-push-check/settings.md に保存する。コミット・プッシュ・PRの作成・指摘の修正はしない。「プッシュ前の確認」「push前のテストとレビュー」「規約に沿っているか確かめて」「流し直して」等で使う。
+description: プッシュする前に、変わった領域（フロントエンド・バックエンドなど）ごとに、全テスト・AIレビュー・規約チェックを行い、結果と指摘を報告する。規約とテストの進め方は、ハーネスを毎回読んで使う。初回は、読み取れるものを先に調べ、読めないものだけ質問して .agents/config/pre-push-check/settings.md に保存する。コミット・プッシュ・PRの作成・指摘の修正はしない。「プッシュ前の確認」「push前のテストとレビュー」「規約に沿っているか確かめて」「流し直して」等で使う。Keywords：pre-push check, test automation, AI code review, coding standards, quality gate.
 license: MIT
 ---
 

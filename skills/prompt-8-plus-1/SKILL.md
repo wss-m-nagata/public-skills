@@ -1,6 +1,6 @@
 ---
 name: prompt-8-plus-1
-description: 8+1の公式を用いて、目的に合う再利用可能なプロンプトを設計、改善、レビューする。ユーザーが「8+1」「プロンプトを作成」「プロンプトを改善」「プロンプトを構造化」と依頼したときに使用する。
+description: 8+1の公式を用いて、目的に合う再利用可能なプロンプトを設計、改善、レビューする。ユーザーが「8+1」「プロンプトを作成」「プロンプトを改善」「プロンプトを構造化」と依頼したときに使用する。Keywords：prompt engineering, prompt template, prompt design, prompt review.
 license: MIT
 ---
 

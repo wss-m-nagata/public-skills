@@ -1,7 +1,7 @@
 ---
 name: dev-document-writing
 license: MIT
-description: ドキュメントの種別（規約・仕様書・設計書・手順書・案内・タスク・課題管理・ソースコード・AI向け指示）ごとに、何を書き、何を書かないか、改版履歴を持つかを定める。README.md と AGENTS.md の書き方も定める。ドキュメントやコメントを書く・直す・見直す・点検するとき、種別の判定や、経緯・未決定事項・理由・TODOの書き場所に迷うときは、頼まれなくても必ず使う。Excel・図・コードそのものの編集は、別のスキルに任せる。
+description: ドキュメントの種別（規約・仕様書・設計書・手順書・案内・タスク・課題管理・ソースコード・AI向け指示）ごとに、何を書き、何を書かないか、改版履歴を持つかを定める。README.md と AGENTS.md の書き方も定める。ドキュメントやコメントを書く・直す・見直す・点検するとき、種別の判定や、経緯・未決定事項・理由・TODOの書き場所に迷うときは、頼まれなくても必ず使う。Excel・図・コードそのものの編集は、別のスキルに任せる。Keywords：technical writing, documentation guidelines, README, AGENTS.md, code comments.
 ---
 
 # ドキュメントの書き方

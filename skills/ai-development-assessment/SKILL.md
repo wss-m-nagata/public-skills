@@ -1,6 +1,6 @@
 ---
 name: ai-development-assessment
-description: プロジェクトにおけるAI駆動開発の実践状況を、「AI駆動開発 実践力カタログ」評価基準に基づいて確認・採点し、Excelへ出力する。確認済みの項目は state ファイルに保存し、次回評価時は原則再確認しない。「AI駆動開発の実践度を診断して」「実践力カタログで評価して」「前回の続きから評価して」等で使う。
+description: プロジェクトにおけるAI駆動開発の実践状況を、「AI駆動開発 実践力カタログ」評価基準に基づいて確認・採点し、Excelへ出力する。確認済みの項目は state ファイルに保存し、次回評価時は原則再確認しない。「AI駆動開発の実践度を診断して」「実践力カタログで評価して」「前回の続きから評価して」等で使う。Keywords：AI-driven development, maturity assessment, development practices, Excel report.
 disable-model-invocation: false
 license: MIT
 allowed-tools: Read Grep Glob Write Bash(./skills/ai-development-assessment/scripts/*)

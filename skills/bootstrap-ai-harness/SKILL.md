@@ -1,6 +1,6 @@
 ---
 name: bootstrap-ai-harness
-description: Nuxt・Vue・VuetifyのWeb画面、サービス単位のPython API、AWS CDK、Playwrightを前提に、新規WebアプリのAI駆動開発ハーネスを構築する。利用者が記入した入力シート（Excel）を読み、規約・AI向け指示・設計資料の配置をテンプレートから整え、画面規約・設計書用のスキルを導入する。入力シートの項目の意味を聞かれたとき、資料から入力シートの下書きを作るとき、入力シートの記入漏れを確かめるときにも使用する。アプリやインフラの実装コードの生成には使用しない。
+description: Nuxt・Vue・VuetifyのWeb画面、サービス単位のPython API、AWS CDK、Playwrightを前提に、新規WebアプリのAI駆動開発ハーネスを構築する。利用者が記入した入力シート（Excel）を読み、規約・AI向け指示・設計資料の配置をテンプレートから整え、画面規約・設計書用のスキルを導入する。入力シートの項目の意味を聞かれたとき、資料から入力シートの下書きを作るとき、入力シートの記入漏れを確かめるときにも使用する。アプリやインフラの実装コードの生成には使用しない。Keywords：AI coding harness, project setup, AGENTS.md, CLAUDE.md, coding standards.
 license: MIT
 ---
 

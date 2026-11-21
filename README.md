@@ -6,6 +6,10 @@ Public, reusable skills for building internal business applications with generat
 
 Start with [bootstrap-ai-harness](skills/bootstrap-ai-harness/SKILL.md) for a new app, or install individual skills for your existing workflow. The bootstrap skill supports a stack based on Nuxt, Vue, Vuetify, Python APIs, AWS CDK, and Playwright. Each skill's `SKILL.md` explains its requirements and how to use it.
 
+## Language
+
+The skills are written in Japanese, and the documents they produce (designs, diagrams, issues, and reviews) are in Japanese as well. They are built for development practices common in Japanese enterprise projects, such as Excel-based design documents and the Nablarch development standards. Agents can still read and run them in other languages, but expect Japanese terminology and output. A Japanese version of this README is available at [README.ja.md](README.ja.md).
+
 ## Available skills
 
 | Skill | What it does |

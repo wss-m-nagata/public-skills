@@ -1,6 +1,6 @@
 ---
 name: nablarch-frontend-design-excel
-description: Nablarch開発標準のフロントエンド（画面）の設計書Excelを作成・更新するスキル。画面系の設計（画面一覧・画面遷移図・システム機能設計書(画面)・単体テスト仕様書(画面)。必要に応じて、リクエスト一覧・コード設計書・メッセージ設計書・共通コンポーネント一覧/設計書・同単体テスト仕様書、独自様式の画面共通部品設計書）を対象にし、SPA（Vue/Nuxt/React等）向けに読み替えて書く。「画面一覧を作って」「画面遷移図を作って」「画面の機能設計書を書いて」「画面の単体テスト仕様書を作って」など、画面系の設計書Excelへの記入・追加・更新を依頼されたら、スキル名がなくても使うこと。結合セル・背景色・罫線・プルダウン・隠れた数式を壊さずに反映する。バックエンドの設計書は nablarch-basic-design-excel を使う。
+description: Nablarch開発標準のフロントエンド（画面）の設計書Excelを作成・更新するスキル。画面系の設計（画面一覧・画面遷移図・システム機能設計書(画面)・単体テスト仕様書(画面)。必要に応じて、リクエスト一覧・コード設計書・メッセージ設計書・共通コンポーネント一覧/設計書・同単体テスト仕様書、独自様式の画面共通部品設計書）を対象にし、SPA（Vue/Nuxt/React等）向けに読み替えて書く。「画面一覧を作って」「画面遷移図を作って」「画面の機能設計書を書いて」「画面の単体テスト仕様書を作って」など、画面系の設計書Excelへの記入・追加・更新を依頼されたら、スキル名がなくても使うこと。バックエンドの設計書は nablarch-basic-design-excel を使う。Keywords：Nablarch, screen design document, screen transition diagram, SPA, unit test specification, Excel automation.
 license: MIT
 allowed-tools: Read Grep Glob Write Bash
 ---

@@ -1,6 +1,6 @@
 ---
 name: a5er-editor
-description: A5:SQL Mk-2 のER図ファイル(.a5er)を解析・編集・新規生成する。テーブル/カラムの追加・削除・変更、PK/FK、インデックス、論理名、リレーションなど.a5erに対するあらゆる編集で使うこと。独自エスケープ形式で手編集は壊れやすいため、同梱の scripts/a5er_tool.py を活用する。
+description: A5:SQL Mk-2 のER図ファイル(.a5er)を解析・編集・新規生成する。テーブル/カラムの追加・削除・変更、PK/FK、インデックス、論理名、リレーションなど.a5erに対するあらゆる編集で使うこと。独自エスケープ形式で手編集は壊れやすいため、同梱の scripts/a5er_tool.py を活用する。Keywords：A5:SQL Mk-2, ER diagram, database schema, data modeling.
 license: MIT
 allowed-tools: Read Grep Glob Write
 ---
