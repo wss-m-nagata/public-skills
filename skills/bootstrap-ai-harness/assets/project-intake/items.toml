@@ -544,6 +544,17 @@ note = """
 reflect = "インストール手順の、AWSにサインインする手順"
 
 [[sheets.items]]
+id = "infra.api_origin"
+name = "APIの公開方式"
+required = "任意"
+description = "CloudFrontからサービスのAPIへ転送するときの接続先を選ぶ。"
+choices = ["Lambda 関数 URL", "API Gateway"]
+default = "Lambda 関数 URL"
+example = "Lambda 関数 URL"
+note = "API Gatewayを選ぶと、CloudFrontは各サービスのREST APIへ転送する。旧版の入力シートにこの項目がない場合もLambda 関数 URLを使う。"
+reflect = "AWSインフラ設計書、アーキテクチャ、CDK作成方針、デプロイ手順"
+
+[[sheets.items]]
 id = "infra.domain"
 name = "ドメイン"
 required = "任意"
@@ -565,7 +576,7 @@ note = """
 IP制限：決まったIPアドレスから来たアクセスだけを通し、ほかはすべて断る仕組み。AWS WAF という機能で行う。
 画面とAPIはどちらもCloudFrontを通るため、1か所の設定で両方にかかる。
 社外に公開するなど、かけられない事情があるときだけ「かけない」を選ぶ。"""
-reflect = "docs/20_rules/アーキテクチャ.md の「IP制限」「API Gatewayへの直接のアクセスを防ぐ」、AWSリソース命名規則のWAFの行（かけない場合は消す）"
+reflect = "AWSインフラ設計書、アーキテクチャのIP制限、AWSリソース命名規則、デプロイ手順"
 
 [[sheets.items]]
 id = "infra.allowed_ips"
@@ -623,7 +634,7 @@ GitHub Actions（GitHubの自動実行の機能）から、パスワードやキ
 AWSのアカウントに1つしか作れない。ほかのアプリで作っていれば「あり」。
 実際は「あり」なのに「なし」と答えると、作るときにエラーになる。迷ったら「不明」を選ぶ。
 確かめ方：AWSの画面（IAM）の「IDプロバイダー」に token.actions.githubusercontent.com があるか。"""
-reflect = "docs/20_rules/アーキテクチャ.md の「GitHub Actions用のIAMロール」、インストール手順（なしのときの作り方）"
+reflect = "CDK作成方針、デプロイ手順の管理基盤（なしのときの作り方）"
 
 [[sheets.items]]
 id = "infra.cdk_bootstrap"
@@ -641,7 +652,7 @@ AWS CDK（AWSのリソースをプログラムで作る道具）を使う前に�
 人ごとではなく、AWSのアカウントとリージョンの組ごとに1回だけ行う。ほかのアプリでCDKを使っていれば、済んでいることが多い。
 IP制限をかける場合は、使うリージョン（東京など）に加えて、us-east-1（バージニア北部）でも要る。CloudFront用のWAFは、us-east-1に作る決まりだから。
 確かめ方：AWSの画面（CloudFormation）で、リージョンごとに CDKToolkit というスタックがあるか。"""
-reflect = "インストール手順（まだのときの手順。AWSアカウントの管理者が行う）"
+reflect = "デプロイ手順の新しい環境の構築（未実施の対象をAWSアカウントの管理者が準備する）"
 
 [[sheets.items]]
 id = "infra.deploy"

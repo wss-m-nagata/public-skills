@@ -85,6 +85,7 @@ CI実装は、運用に必要な自動化（PRのAIレビュー、Issueの自動
    項目ごとの反映先は、記入要領の「反映先」に従う。
    未決定事項や未実装のものを確定済みの事実にしない。
    対象に既存ファイルがある場合は上書きせず、内容を確認して統合する。
+   [インフラ設計の適用](references/infra-design.md)に従い、APIの公開方式に対応するAWSインフラ設計書を配置し、規約とデプロイ手順をそろえる。
    反映した項目と反映先、未決定の項目を、反映の記録に書く。
 4. [必須スキルの導入](references/skills.md)に従い、設計書・図、汎用版、外部のスキルを導入する。
    公開スキルのリポジトリは、入力シートの「公開スキルのリポジトリ」を使う。
@@ -118,6 +119,7 @@ CI実装は、運用に必要な自動化（PRのAIレビュー、Issueの自動
 | [references/intake-guide.md](references/intake-guide.md) | 入力シートの記入要領。項目ごとの意味、選択肢、既定値、未定・不明のときの扱い、反映先。どの使い方でも読む。`items.toml`から作る |
 | [references/design.md](references/design.md) | 対象アプリの構成、テンプレートの配置・適用手順、元資料から引き継ぐ範囲。テンプレートを適用するときに読む。 |
 | [references/customization.md](references/customization.md) | 入力シートの値の反映方法と、標準案と異なる値の場合の調整。入力シートの値を資料に反映するときに読む。 |
+| [references/infra-design.md](references/infra-design.md) と `assets/infra-design/` | APIの公開方式に対応するAWSインフラ設計書と適用手順。 |
 | [references/skills.md](references/skills.md) | 導入するスキル（設計書・図、汎用版、外部）の用途、導入コマンド、`.gitignore`の扱い、画面規約と設計書の作成手順。スキルの導入や成果物の作成時に読む。 |
 | [references/github-actions/setup.md](references/github-actions/setup.md) | GitHub Actions（PRのAIレビュー、Issueの自動ラベル付け、デプロイ前のテスト）を設定する任意の手順。入力シートで「する」と記入されたときに読む。 |
 | [references/recommended-settings/setup.md](references/recommended-settings/setup.md) | Claude Codeのおすすめの設定（承認なしの許可・確認・禁止、保存時の整形のフック）を反映する任意の手順と、設定の保存方法。環境を作るときに読む。 |

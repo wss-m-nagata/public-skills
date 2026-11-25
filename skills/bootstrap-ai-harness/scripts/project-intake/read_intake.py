@@ -63,14 +63,17 @@ def _read_items(wb, data: dict) -> list[dict]:
     result = []
     for sheet in data["sheets"]:
         for item in sheet.get("items", []):
-            if item["id"] not in values:
+            if item["id"] not in values and item["id"] != "infra.api_origin":
                 raise ValueError(f"項目「{item['name']}」（{item['id']}）が、Excelにありません。ひな形が古いか、行が消されています。")
-            raw = values[item["id"]]
+            # APIの公開方式の行がない旧版にも既定値を適用する。
+            raw = values.get(item["id"], "")
             value = "" if raw in _AS_EMPTY else raw
             default = item.get("default", "")
             if value.startswith(_UNDECIDED):
                 status, resolved = "未決定", value
             elif value:
+                if item["id"] == "infra.api_origin" and value not in item["choices"]:
+                    raise ValueError(f"「{item['name']}」は {' または '.join(item['choices'])} を指定してください。")
                 status, resolved = "記入", value
             elif default and item["required"] == OPT:
                 status, resolved = "既定値", default

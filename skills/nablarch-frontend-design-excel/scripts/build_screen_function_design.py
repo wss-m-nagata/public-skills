@@ -52,6 +52,7 @@
       "layouts": [                                  # 2.1 画面レイアウト。省略可（省略すると、「（画像未添付）」の文字を入れる）
         {"image": "images/ord0101.png",             # 画像のパス（定義JSONのあるフォルダからの相対）。省略可
          "caption": "初期表示",                      # 画像の見出し。省略可
+         "expected_item_nos": ["1"],                 # --check-layouts では必須。その状態で表示する項目の No.
          "elements": [                               # 画像の上の赤枠と番号。省略可
            {"no": "1",                               # 2.3 画面項目定義の No.（表に無い番号はエラー）
             "x": 0.10, "y": 0.20, "width": 0.30, "height": 0.05,   # 画像の左上を原点とした0〜1の割合
@@ -548,7 +549,7 @@ def _sheet_name(num, sc):
     return sc.get("sheet_name") or "%d. %s(%s)" % (num, sc["id"], sc["name"])
 
 
-def _validate(d, base_dir):
+def _validate(d, base_dir, *, check_layouts=False):
     """定義を検査し、誤りの一覧を返す。仕様に無い値は補わない。"""
     errs = []
 
@@ -683,19 +684,39 @@ def _validate(d, base_dir):
                 )
             )
         }
-        for j, lay in enumerate(s.get("layouts") or []):
+        layouts = s.get("layouts") or []
+        if check_layouts and not layouts:
+            errs.append(f"{w}: 画面状態と画像を layouts に指定してください。")
+        covered_nos = set()
+        for j, lay in enumerate(layouts):
+            location = f"{w}.layouts[{j}]"
             img = lay.get("image")
+            if check_layouts and not img:
+                errs.append(f"{location}: 画面状態の画像を指定してください。")
             if img and not (Path(base_dir) / img).is_file():
                 errs.append("%s.layouts[%d]: 画像が見つかりません: %s" % (w, j, img))
-            elements = lay.get("elements") or []
+            elements = lay.get("elements")
+            if elements is None:
+                elements = []
+            if not isinstance(elements, list):
+                errs.append(f"{location}: elements は配列で指定してください。")
+                continue
             if elements and not img:
                 errs.append("%s.layouts[%d]: elements は、画像があるときだけ指定できます。" % (w, j))
+            seen_nos = set()
             for k, el in enumerate(elements):
                 lw = "%s.layouts[%d].elements[%d]" % (w, j, k)
-                if str(el.get("no")) not in item_nos:
+                if not isinstance(el, dict):
+                    errs.append(f"{lw}: 赤枠はオブジェクトで指定してください。")
+                    continue
+                no = str(el.get("no"))
+                if no not in item_nos:
                     errs.append("%s: no は、2.3 画面項目定義の No. にしてください: %s" % (lw, el.get("no")))
+                if check_layouts and no in seen_nos:
+                    errs.append(f"{lw}: 同じ画像内で項目 No. {no} が重複しています。")
+                seen_nos.add(no)
                 vals = [el.get(key) for key in ("x", "y", "width", "height")]
-                if any(type(v) not in (int, float) for v in vals):
+                if any(type(v) not in (int, float) or not math.isfinite(v) for v in vals):
                     errs.append("%s: x・y・width・height は、数値で指定してください。" % lw)
                     continue
                 x, y, ew, eh = vals
@@ -705,6 +726,25 @@ def _validate(d, base_dir):
                     v = el.get(key)
                     if v is not None and (type(v) not in (int, float) or not 0 <= v <= 1):
                         errs.append("%s: %s は、0〜1で指定してください。" % (lw, key))
+            if not check_layouts:
+                continue
+            expected = lay.get("expected_item_nos")
+            if not isinstance(expected, list) or any(
+                type(no) not in (str, int) for no in expected
+            ):
+                errs.append(f"{location}: この状態で表示する項目 No. を expected_item_nos に配列で指定してください。")
+                continue
+            expected_nos = {str(no) for no in expected}
+            if len(expected_nos) != len(expected) or expected_nos - item_nos:
+                errs.append(f"{location}: expected_item_nos には画面項目定義の No. を重複なく指定してください。")
+            if expected_nos != seen_nos:
+                missing = ", ".join(sorted(expected_nos - seen_nos)) or "なし"
+                extra = ", ".join(sorted(seen_nos - expected_nos)) or "なし"
+                errs.append(f"{location}: 赤枠の項目 No. が一致しません（不足: {missing}、余分: {extra}）。")
+            covered_nos.update(seen_nos)
+        if check_layouts and item_nos - covered_nos:
+            missing = ", ".join(sorted(item_nos - covered_nos))
+            errs.append(f"{w}: どの画像にも赤枠がない画面項目 No. があります: {missing}")
     return errs
 
 
@@ -1704,7 +1744,7 @@ def insert_pictures(xlsx_path, output_path, placements):
 # ---------------------------------------------------------------------------
 # 全体
 # ---------------------------------------------------------------------------
-def build(template, definition_path, output):
+def build(template, definition_path, output, *, check_layouts=False):
     """定義JSONからシステム機能設計書(画面)を組み立てる。
 
     Returns:
@@ -1712,7 +1752,7 @@ def build(template, definition_path, output):
     """
     base_dir = os.path.dirname(os.path.abspath(definition_path))
     d = json.load(open(definition_path, encoding="utf-8"))
-    errs = _validate(d, base_dir)
+    errs = _validate(d, base_dir, check_layouts=check_layouts)
     if errs:
         raise DefinitionError("\n".join(errs))
 
@@ -1832,9 +1872,13 @@ def main():
     ap.add_argument("template")
     ap.add_argument("definition")
     ap.add_argument("output")
+    ap.add_argument(
+        "--check-layouts", action="store_true",
+        help="完成確認として、画面状態ごとの画像と画面項目番号の対応を検査する。",
+    )
     a = ap.parse_args()
     try:
-        report = build(a.template, a.definition, a.output)
+        report = build(a.template, a.definition, a.output, check_layouts=a.check_layouts)
     except DefinitionError as e:
         print("NG: 定義に誤りがあります。出力は作っていません。")
         print(str(e))

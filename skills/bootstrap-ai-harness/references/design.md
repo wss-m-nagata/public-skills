@@ -3,7 +3,8 @@
 ## 対象と構造
 
 `assets/project-template/`はWebアプリをルートとした出力用の基本構成である。
-Nuxt・Vue・VuetifyのSPA、API GatewayとLambdaのバックエンド、AWS CDK、Python、Playwrightを基本とする。
+Nuxt・Vue・VuetifyのSPA、Lambdaのバックエンド、AWS CDK、Python、Playwrightを基本とする。
+APIの公開方式とAWSインフラ設計書は[インフラ設計の適用](infra-design.md)に従う。
 サービス本体の言語は、入力シートの「サービスの言語と依存管理」に従う（既定値はPython）。
 
 | テンプレート | 展開先と役割 |

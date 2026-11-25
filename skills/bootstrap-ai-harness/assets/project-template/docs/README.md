@@ -5,6 +5,7 @@
 - [Pythonコーディング規約](20_rules/Pythonコーディング規約.md)、[Node.jsコーディング規約](20_rules/Node.jsコーディング規約.md)、[API実装方針](20_rules/API実装方針.md)：実装の共通ルール。
 - [テスト規約](20_rules/テスト規約.md)、[E2Eテスト作成規約](20_rules/E2Eテスト作成規約.md)：テストの対象と作成方法。
 - [AWSリソース命名規則](20_rules/AWSリソース命名規則.md)、[URL命名規則](20_rules/URL命名規則.md)：名前とURLの付け方。
+- [CDKコーディング規約](20_rules/CDKコーディング規約.md)と[CDK作成方針](20_rules/CDK作成方針.md)で、実装の決まりとスタックの構成を確認する。
 - [用語集](30_glossary/用語集.md)：業務用語と略語。
 - [API共通仕様](40_spec/API共通仕様.md)：APIの共通入出力。
 - [AI駆動開発の運用](50_operation/AI駆動開発の運用/README.md)：役割、処理フロー、利用ツール、スキル、ハーネス。

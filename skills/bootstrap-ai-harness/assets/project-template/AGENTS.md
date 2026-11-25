@@ -12,6 +12,7 @@ AIが変更し、人がレビュー、必要な調整、コミットを行う。
 
 - 作業と文書の規則は[リポジトリ規約](docs/20_rules/リポジトリ規約.md)に従う。
 - 構成と資料配置は[アーキテクチャ](docs/20_rules/アーキテクチャ.md)に従う。
+- CDK は[コーディング規約](docs/20_rules/CDKコーディング規約.md)と[作成方針](docs/20_rules/CDK作成方針.md)に従う。
 - Pythonは[Pythonコーディング規約](docs/20_rules/Pythonコーディング規約.md)、Python APIは[API実装方針](docs/20_rules/API実装方針.md)に従う。
 - TypeScriptの共通事項は[Node.jsコーディング規約](docs/20_rules/Node.jsコーディング規約.md)、Vue・Nuxt固有の書き方は[Nuxtコーディング規約](nuxt/docs/20_rules/Nuxtコーディング規約.md)、画面の構成と責務は[フロントエンド実装方針](nuxt/docs/20_rules/フロントエンド実装方針.md)に従う。
 - テストは[テスト規約](docs/20_rules/テスト規約.md)と[E2Eテスト作成規約](docs/20_rules/E2Eテスト作成規約.md)に従う。
