@@ -17,6 +17,7 @@ Claude CodeやCodexから、新規Webアプリの開発環境づくり、画面�
 | [ai-development-assessment](skills/ai-development-assessment/SKILL.md) | プロジェクトのAI駆動開発の実践状況を「AI駆動開発 実践力カタログ」評価基準に基づいて確認・採点し、Excelへ出力する。 |
 | [bootstrap-ai-harness](skills/bootstrap-ai-harness/SKILL.md) | Nuxt・Vue・Vuetify、Python API、AWS CDK、Playwrightを前提とする新規Webアプリ向けに、AI開発用の資料・指示・スキルの配置と運用を整える。 |
 | [create-github-issue](skills/create-github-issue/SKILL.md) | GitHub Issue を、リポジトリの Issue テンプレートから作り、作業用のブランチを用意する。作成後の進捗コメントや引き継ぎも扱う。 |
+| [define-development-concept](skills/define-development-concept/SKILL.md) | 要件定義に先立ち、開発構想の概要・スコープ・To-Be・検討事項を整理し、関係者の認識を合わせる。 |
 | [dev-document-writing](skills/dev-document-writing/SKILL.md) | ドキュメントの種別（規約・仕様書・設計書・手順書・案内・タスク・課題管理・ソースコード・AI向け指示）ごとに、何を書き、何を書かないかを定める。README.md と AGENTS.md の書き方も扱う。 |
 | [data-flow-volume](skills/data-flow-volume/SKILL.md) | 設計資料を基にデータの流れとテーブル別の想定件数、更新頻度、保持期間などを整理し、Excelにまとめる。 |
 | [design-doc-revision](skills/design-doc-revision/SKILL.md) | 共有の場所の設計書を課題に合わせて直し、変更箇所一覧・確認資料を作り、レビューを経て正本へ反映するまでの手順を行う。 |

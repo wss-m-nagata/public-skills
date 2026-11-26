@@ -18,6 +18,7 @@ The skills are written in Japanese, and the documents they produce (designs, dia
 | [ai-development-assessment](skills/ai-development-assessment/SKILL.md) | Assess a project's AI-assisted development practices against a rubric and export the results to Excel. |
 | [bootstrap-ai-harness](skills/bootstrap-ai-harness/SKILL.md) | Set up project documentation, agent instructions, and skills for a new web app. |
 | [create-github-issue](skills/create-github-issue/SKILL.md) | Create GitHub issues from repository templates, prepare working branches, and document progress and handoffs. |
+| [define-development-concept](skills/define-development-concept/SKILL.md) | Organize the overview, scope, target state, and open questions for a development initiative before requirements definition. |
 | [dev-document-writing](skills/dev-document-writing/SKILL.md) | Define what belongs in standards, specifications, designs, procedures, and other project documents, including README and AGENTS.md files. |
 | [data-flow-volume](skills/data-flow-volume/SKILL.md) | Turn design inputs into an Excel summary of data flows, estimated record counts, update frequencies, and retention periods. |
 | [design-doc-revision](skills/design-doc-revision/SKILL.md) | Revise shared design documents, prepare change summaries and review materials, and apply reviewed changes to the authoritative copy. |
