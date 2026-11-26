@@ -5,16 +5,35 @@ Markdownで整理した内容から、打ち合わせ相手が読み、考えを
 
 ## 生成する
 
-Windowsのデスクトップ版Microsoft ExcelとWindows PowerShellを使う。
 [入力JSONの例](../assets/workbook-input.example.json)を参考に内容を用意する。
-[生成スクリプト](../scripts/build-workbook.ps1)は、同梱の[空テンプレート](../assets/concept-workbook.xlsx)からブックを新規作成する。
+どちらの生成スクリプトも、同梱の[空テンプレート](../assets/concept-workbook.xlsx)からブックを新規作成する。
 レビュー中は、同じブックを同じ場所・ファイル名で更新する。記入や手修正を受けたブックは、そのファイルを土台に編集する。未記入の版を再生成した場合も、確認後に既存ファイルと差し替える。
+
+### 標準のPowerShell版
+
+Windowsのデスクトップ版Microsoft ExcelとWindows PowerShellが利用できる場合は、[build-workbook.ps1](../scripts/build-workbook.ps1) を使う。
 
 ```powershell
 & '<スキル>/scripts/build-workbook.ps1' -InputJson '<入力.json>' -OutputWorkbook '<出力.xlsx>'
 ```
 
 印刷プレビューの出力には `-PreviewPdf '<確認用.pdf>'` を付ける。
+
+### 代替のPython版
+
+macOSやLinuxなど、標準の生成方法が使えないときに [build-workbook.py](../scripts/build-workbook.py) を使う。
+実行環境にPython 3.10以上と `openpyxl` 3.1系を用意する。コマンド名が `python3` の環境では読み替える。
+
+```sh
+python -m pip install "openpyxl>=3.1,<4"
+python -B "<スキル>/scripts/build-workbook.py" --input-json "<入力.json>" --output-workbook "<出力.xlsx>"
+```
+
+Python版は表紙・変更履歴・本文4シートを作成し、図の箱と矢印を編集可能なExcel図形として保存する。
+PDF出力は標準のPowerShell版か、生成したブックを開く表計算アプリの印刷機能を使う。
+フォントや印刷結果は閲覧環境によって変わるため、共有前に文字の収まりを確かめる。
+
+### 共通の入力JSON
 
 - `project`、`title`、`position`、`version` が表紙に入る。システム名とサブシステム名は、内容が分かる場合に `system`、`subsystem` を入れる。
 - `history` に古い順に版を並べる。各行は `version`、`date`（YYYY-MM-DD）、`category`、`area`、`summary`、任意の `author` で構成する。末尾の版数を表紙とそろえる。

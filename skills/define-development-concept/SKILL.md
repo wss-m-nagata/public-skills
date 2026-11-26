@@ -30,5 +30,8 @@ description: システム開発や業務改善の構想段階で、要件定義�
 
 [Markdownのひな形](assets/concept-template.md)で考えを整理し、[引き継ぎ支援の記載例](references/handover-example.md)を粒度の参考にする。
 打ち合わせ用の成果物は、[Excelの作り方](references/excel-layout.md)に従って作る。
+Windowsとデスクトップ版Microsoft Excelが使える場合は、標準の [build-workbook.ps1](scripts/build-workbook.ps1) をWindows PowerShellで実行する。
+それが使えない環境では、[build-workbook.py](scripts/build-workbook.py) で同じ入力JSONからExcelを生成する。
+Python版にはPython 3.10以上と `openpyxl` 3.1系が必要で、`python -m pip install "openpyxl>=3.1,<4"` で準備できる。環境に応じて `python3` を使う。
 作成者用の記入欄を左の印刷範囲内に、提示側の図・記載例を対応する位置の右側に置く。
 見直しでは、図から会話を始められるか、今日決める問いが分かるか、同じ説明が繰り返されていないかを確認する。
